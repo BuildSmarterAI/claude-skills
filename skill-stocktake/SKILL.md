@@ -1,4 +1,5 @@
 ---
+name: skill-stocktake
 description: "Use when auditing Claude skills and commands for quality. Supports Quick Scan (changed skills only) and Full Stocktake modes with sequential subagent batch evaluation."
 origin: ECC
 ---
@@ -89,7 +90,7 @@ Each skill is evaluated against this checklist:
 
 ```
 - [ ] Content overlap with other skills checked
-- [ ] Overlap with MEMORY.md / CLAUDE.md checked
+- [ ] Overlap with ~/.claude/rules/ files checked (or MEMORY.md / CLAUDE.md if present)
 - [ ] Freshness of technical references verified (use WebSearch if tool names / CLI flags / APIs are present)
 - [ ] Usage frequency considered
 ```
