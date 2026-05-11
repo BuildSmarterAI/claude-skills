@@ -521,3 +521,112 @@ Before shipping a new endpoint:
 - [ ] Response does not leak internal details (stack traces, SQL errors)
 - [ ] Consistent naming with existing endpoints (camelCase vs snake_case)
 - [ ] Documented (OpenAPI/Swagger spec updated)
+
+## Backend Implementation Patterns
+
+> Absorbed from the retired `backend-patterns` skill. The patterns below cover server-side implementation; the rest of this skill covers API contract design. Use both together.
+
+### Repository + Service Layer
+
+Separate data access from business logic. Repository owns persistence; service owns business rules.
+
+```typescript
+interface ResourceRepository {
+  findAll(filters?: Filters): Promise<Resource[]>
+  findById(id: string): Promise<Resource | null>
+  create(data: CreateDto): Promise<Resource>
+  update(id: string, data: UpdateDto): Promise<Resource>
+  delete(id: string): Promise<void>
+}
+
+class ResourceService {
+  constructor(private repo: ResourceRepository) {}
+
+  async searchWithRanking(query: string, limit = 10): Promise<Resource[]> {
+    const embedding = await generateEmbedding(query)
+    const ranked = await this.vectorSearch(embedding, limit)
+    const resources = await this.repo.findByIds(ranked.map(r => r.id))
+    return resources.sort((a, b) =>
+      (ranked.find(r => r.id === b.id)?.score || 0) -
+      (ranked.find(r => r.id === a.id)?.score || 0)
+    )
+  }
+}
+```
+
+Benefit: swap the repo (in-memory, Supabase, REST proxy) without touching service logic — critical for testability.
+
+### Retry With Exponential Backoff
+
+Wrap any flaky upstream call (HTTP, LLM, queue producer):
+
+```typescript
+async function fetchWithRetry<T>(
+  fn: () => Promise<T>,
+  maxRetries = 3
+): Promise<T> {
+  let lastError: Error
+  for (let i = 0; i < maxRetries; i++) {
+    try {
+      return await fn()
+    } catch (error) {
+      lastError = error as Error
+      if (i < maxRetries - 1) {
+        const delay = Math.pow(2, i) * 1000  // 1s, 2s, 4s
+        await new Promise(resolve => setTimeout(resolve, delay))
+      }
+    }
+  }
+  throw lastError!
+}
+```
+
+Pair with jitter (`delay * (0.5 + Math.random())`) for distributed callers to avoid thundering herd.
+
+### In-Process Job Queue
+
+When you need async processing inside a single server (no Redis/SQS), serialize jobs through an in-memory queue:
+
+```typescript
+class JobQueue<T> {
+  private queue: T[] = []
+  private processing = false
+
+  async add(job: T): Promise<void> {
+    this.queue.push(job)
+    if (!this.processing) this.process()
+  }
+
+  private async process(): Promise<void> {
+    this.processing = true
+    while (this.queue.length > 0) {
+      const job = this.queue.shift()!
+      try { await this.execute(job) }
+      catch (error) { console.error('Job failed:', error) }
+    }
+    this.processing = false
+  }
+
+  private async execute(_job: T): Promise<void> {
+    // Override per job type
+  }
+}
+```
+
+Caveat: state lives in process memory only — jobs are lost on restart. Move to Redis-backed queue (BullMQ, Sidekiq) when durability matters.
+
+### Structured Logging
+
+Use a single structured logger (pino, winston, structlog) rather than `console.log`. Include request_id, user_id, latency_ms, and outcome on every line so logs are joinable downstream.
+
+```typescript
+logger.info({
+  request_id: ctx.requestId,
+  user_id: ctx.userId,
+  route: '/api/users',
+  status: 200,
+  latency_ms: 42,
+}, 'request completed')
+```
+
+The why-this-matters: when a customer complains about a slow request, grep on `request_id` returns the entire chain (auth → service → repo → upstream). With unstructured `console.log`, that join requires guessing.

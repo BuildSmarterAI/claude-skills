@@ -140,6 +140,48 @@ judge:
 - **Track cost alongside pass rate** — a 95% agent at 10x the cost may not be the right choice
 - **Version your task definitions** — they are test fixtures, treat them as code
 
+## Evaluation Methodology (EDD)
+
+> Absorbed from the retired `eval-harness` skill. The above describes the tool; this section describes the methodology — eval-driven development (EDD), where you write evals BEFORE coding.
+
+### pass@k vs pass^k
+
+Two distinct success metrics for non-deterministic agents:
+
+- **pass@k** — "at least one success in k attempts". pass@1 = first-attempt success rate. pass@3 = ≥1/3 attempts pass. Target: pass@3 > 90% for typical capability evals.
+- **pass^k** — "all k trials succeed". pass^3 = three consecutive passes. Higher bar; use for critical paths (auth, payments, irreversible writes) where flaky-pass would ship a regression.
+
+A 70% pass@1 agent has only 34% pass^3 (0.7³). Pick the metric that matches the cost of a wrong answer in production.
+
+### EDD Workflow
+
+1. **Define** (before coding):
+   ```
+   EVAL DEFINITION: feature-xyz
+   Capability evals: [3-5 things this feature MUST do]
+   Regression evals: [3-5 things that MUST keep working]
+   Success metrics: pass@3 > 90% capability, pass^3 = 100% regression
+   ```
+
+2. **Implement** to pass the defined evals — no extra scope.
+
+3. **Evaluate**: run capability + regression sets, record pass@k AND pass^k.
+
+4. **Report**:
+   ```
+   Capability evals:  3/3 passed (pass@1=67%, pass@3=100%)
+   Regression evals:  3/3 passed (pass^3=100%)
+   Status: READY FOR REVIEW
+   ```
+
+### Where to Store Evals
+
+Convention from eval-harness: `.claude/evals/<feature>/` containing:
+- `definition.md` — the capability + regression lists with success metrics
+- `runs/` — JSON results, one file per agent run, for trend analysis
+
+This sits alongside the YAML task definitions used by the CLI above; the YAML drives execution, this folder records intent.
+
 ## Links
 
 - Repository: [github.com/joaquinhuigomez/agent-eval](https://github.com/joaquinhuigomez/agent-eval)

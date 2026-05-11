@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python ~/.claude/skills/skill-stocktake/scripts/scan.py)",
+      "Bash(python -c \"import json; d=json.load\\(open\\('/tmp/stocktake-inventory.json'\\)\\); print\\('global:', d['scan_summary']['global']\\); print\\('project:', d['scan_summary']['project']\\); print\\('total skills:', len\\(d['skills']\\)\\)\")",
+      "Bash(python scripts/scan.py)",
+      "Bash(python -c \"import json; d=json.load\\(open\\('inventory.json'\\)\\); print\\('global:', d['scan_summary']['global']\\); print\\('project:', d['scan_summary']['project']\\); print\\('total entries:', len\\(d['skills']\\)\\)\")",
+      "Bash(python -c ' *)",
+      "Read(//c/Users/Harris87/.claude/commands/**)",
+      "Read(//c/Users/Harris87/.claude/**)",
+      "Bash(git -C ~/.claude rev-parse --show-toplevel)",
+      "Bash(git -C ~/.claude/skills rev-parse --show-toplevel)",
+      "Bash(git -C ~/.claude/skills/skill-stocktake rev-parse --show-toplevel)",
+      "Bash(git -C ~/.claude/commands rev-parse --show-toplevel)",
+      "Bash(tar -czf ~/.claude/backups/commands-pre-stocktake-2026-05-11.tar.gz -C ~/.claude commands)"
+    ]
+  }
+}
