@@ -30,7 +30,7 @@ Standard approaches fail:
 
 ## The Solution: Iterative Retrieval
 
-A 4-phase loop that progressively refines context:
+A 4-phase loop that progressively refines context using Claude Code's built-in tools:
 
 ```
 ┌─────────────────────────────────────────────┐
@@ -50,94 +50,71 @@ A 4-phase loop that progressively refines context:
 
 ### Phase 1: DISPATCH
 
-Initial broad query to gather candidate files:
+Start with the broadest signal-hunt that costs the fewest tokens. Pair a `Glob` for file shape with a `Grep` for terminology:
 
-```javascript
-// Start with high-level intent
-const initialQuery = {
-  patterns: ['src/**/*.ts', 'lib/**/*.ts'],
-  keywords: ['authentication', 'user', 'session'],
-  excludes: ['*.test.ts', '*.spec.ts']
-};
-
-// Dispatch to retrieval agent
-const candidates = await retrieveFiles(initialQuery);
 ```
+Glob("src/**/*.{ts,tsx,js}")
+  → file inventory; note hot directories
+
+Grep("authentication|session|user",
+     glob="src/**/*.{ts,tsx,js}",
+     output_mode="files_with_matches",
+     head_limit=20)
+  → small set of candidate files to inspect
+```
+
+Do not Read full files yet — you are only collecting candidates.
 
 ### Phase 2: EVALUATE
 
-Assess retrieved content for relevance:
+For each candidate, judge relevance against the task before committing more tokens:
 
-```javascript
-function evaluateRelevance(files, task) {
-  return files.map(file => ({
-    path: file.path,
-    relevance: scoreRelevance(file.content, task),
-    reason: explainRelevance(file.content, task),
-    missingContext: identifyGaps(file.content, task)
-  }));
-}
+```
+For each candidate path from Phase 1:
+  Grep("<task-specific term>", path=<file>, -A=3, -B=1, -n=true)
+    → snippet view; is the match load-bearing or incidental?
+
+  If snippet looks central:
+    Read(<file>, offset=<match_line - 20>, limit=60)
+    → confirm the surrounding logic actually implements the target
 ```
 
-Scoring criteria:
-- **High (0.8-1.0)**: Directly implements target functionality
-- **Medium (0.5-0.7)**: Contains related patterns or types
-- **Low (0.2-0.4)**: Tangentially related
-- **None (0-0.2)**: Not relevant, exclude
+Scoring criteria (assign mentally, do not over-engineer):
+- **High (0.8-1.0)**: Directly implements target functionality — keep in context
+- **Medium (0.5-0.7)**: Related types, callers, or helpers — keep a reference
+- **Low (0.2-0.4)**: Tangentially related — note path only
+- **None (0-0.2)**: Not relevant — add to exclude list
 
 ### Phase 3: REFINE
 
-Update search criteria based on evaluation:
+Use what Phase 2 revealed to rewrite the next query. Three refinement moves:
 
-```javascript
-function refineQuery(evaluation, previousQuery) {
-  return {
-    // Add new patterns discovered in high-relevance files
-    patterns: [...previousQuery.patterns, ...extractPatterns(evaluation)],
+1. **Adopt the codebase's vocabulary.** If you searched `rate limit` and only found `throttle`, switch terms.
+2. **Narrow the path scope.** If 3 of 4 hot files live under `src/auth/`, scope the next `Grep` with `path="src/auth/"`.
+3. **Target the gap.** If you have the middleware but not its caller, search for imports of the symbol you found.
 
-    // Add terminology found in codebase
-    keywords: [...previousQuery.keywords, ...extractKeywords(evaluation)],
-
-    // Exclude confirmed irrelevant paths
-    excludes: [...previousQuery.excludes, ...evaluation
-      .filter(e => e.relevance < 0.2)
-      .map(e => e.path)
-    ],
-
-    // Target specific gaps
-    focusAreas: evaluation
-      .flatMap(e => e.missingContext)
-      .filter(unique)
-  };
-}
+```
+Grep("import.*<symbol>|require.*<symbol>",
+     glob="src/**/*.ts",
+     output_mode="content",
+     -n=true)
+  → finds call sites; reveals where the bug is triggered, not just where it lives
 ```
 
 ### Phase 4: LOOP
 
-Repeat with refined criteria (max 3 cycles):
+Repeat with refined criteria. Stop conditions (whichever comes first):
+- 3 high-relevance files identified AND no remaining critical gaps
+- 3 cycles completed
+- A subagent dispatch can answer the remaining question with what you have
 
-```javascript
-async function iterativeRetrieve(task, maxCycles = 3) {
-  let query = createInitialQuery(task);
-  let bestContext = [];
+When you need a focused second opinion without polluting your own context, dispatch a subagent:
 
-  for (let cycle = 0; cycle < maxCycles; cycle++) {
-    const candidates = await retrieveFiles(query);
-    const evaluation = evaluateRelevance(candidates, task);
-
-    // Check if we have sufficient context
-    const highRelevance = evaluation.filter(e => e.relevance >= 0.7);
-    if (highRelevance.length >= 3 && !hasCriticalGaps(evaluation)) {
-      return highRelevance;
-    }
-
-    // Refine and continue
-    query = refineQuery(evaluation, query);
-    bestContext = mergeContext(bestContext, highRelevance);
-  }
-
-  return bestContext;
-}
+```
+Task(description="Verify <hypothesis>",
+     prompt="Read <file>:<line-range>. Answer: <single sharp question>.
+            Do not explore beyond the cited range unless the answer
+            requires it. Return citations.")
 ```
 
 ## Practical Examples
@@ -147,17 +124,33 @@ async function iterativeRetrieve(task, maxCycles = 3) {
 ```
 Task: "Fix the authentication token expiry bug"
 
-Cycle 1:
-  DISPATCH: Search for "token", "auth", "expiry" in src/**
-  EVALUATE: Found auth.ts (0.9), tokens.ts (0.8), user.ts (0.3)
-  REFINE: Add "refresh", "jwt" keywords; exclude user.ts
+Cycle 1 — broad signal hunt:
+  Glob("src/**/*auth*.{ts,tsx,js}")
+    → 12 candidate files
+  Grep("validateToken|authenticate|verify",
+       glob="src/**/*.ts",
+       output_mode="files_with_matches")
+    → 4 hot files: auth.ts, tokens.ts, middleware.ts, user.ts
 
-Cycle 2:
-  DISPATCH: Search refined terms
-  EVALUATE: Found session-manager.ts (0.95), jwt-utils.ts (0.85)
-  REFINE: Sufficient context (2 high-relevance files)
+Cycle 2 — narrow to the bug surface:
+  Grep("session.*expir|token.*expir|exp.*claim",
+       path="src/auth/",
+       -A=10, -B=2, -n=true)
+    → match cluster in middleware.ts:120-180 and tokens.ts:45-70
+  Read("src/auth/middleware.ts", offset=110, limit=80)
+    → confirms refresh path; user.ts is unrelated (drop it)
 
-Result: auth.ts, tokens.ts, session-manager.ts, jwt-utils.ts
+Cycle 3 — refine with subagent:
+  Task(description="Verify session expiry refresh logic",
+       prompt="Read src/auth/middleware.ts:120-180 and
+              src/auth/tokens.ts:45-70. Does the refresh path
+              correctly extend the JWT exp claim, or does it just
+              create a new session entry without expiring the old?
+              Cite line numbers.")
+    → subagent reports: new session created, old not invalidated
+
+Result: auth.ts, tokens.ts, middleware.ts:120-180 — bug localized
+        without ever loading user.ts or full middleware.ts into context
 ```
 
 ### Example 2: Feature Implementation
@@ -165,47 +158,63 @@ Result: auth.ts, tokens.ts, session-manager.ts, jwt-utils.ts
 ```
 Task: "Add rate limiting to API endpoints"
 
-Cycle 1:
-  DISPATCH: Search "rate", "limit", "api" in routes/**
-  EVALUATE: No matches - codebase uses "throttle" terminology
-  REFINE: Add "throttle", "middleware" keywords
+Cycle 1 — broad signal hunt:
+  Grep("rate.?limit|RateLimit",
+       glob="src/**/*.ts",
+       output_mode="files_with_matches")
+    → 0 matches; the codebase does not use this term
 
-Cycle 2:
-  DISPATCH: Search refined terms
-  EVALUATE: Found throttle.ts (0.9), middleware/index.ts (0.7)
-  REFINE: Need router patterns
+Cycle 2 — adopt local vocabulary:
+  Glob("src/middleware/**/*.ts")
+    → 8 middleware files
+  Grep("throttle|debounce|quota|bucket",
+       glob="src/**/*.ts",
+       output_mode="files_with_matches")
+    → throttle.ts, middleware/index.ts — terminology is "throttle"
 
-Cycle 3:
-  DISPATCH: Search "router", "express" patterns
-  EVALUATE: Found router-setup.ts (0.8)
-  REFINE: Sufficient context
+Cycle 3 — find the wiring:
+  Read("src/middleware/throttle.ts")  -- small file, read whole
+  Grep("app\\.use|router\\.use|registerMiddleware",
+       glob="src/**/*.ts",
+       -A=3, -n=true)
+    → router-setup.ts:42 registers middleware chain
 
-Result: throttle.ts, middleware/index.ts, router-setup.ts
+Result: throttle.ts (pattern to follow), middleware/index.ts
+        (registration point), router-setup.ts:42 (insertion site)
 ```
 
-## Integration with Agents
+## Integration with Subagent Prompts
 
-Use in agent prompts:
+When delegating retrieval to a subagent, give it the loop as instructions:
 
 ```markdown
-When retrieving context for this task:
-1. Start with broad keyword search
-2. Evaluate each file's relevance (0-1 scale)
-3. Identify what context is still missing
-4. Refine search criteria and repeat (max 3 cycles)
-5. Return files with relevance >= 0.7
+You are retrieving context for: <task>
+
+Run up to 3 cycles:
+
+1. DISPATCH — broad Glob + Grep with task keywords. Do not Read yet.
+2. EVALUATE — Grep each candidate with -A/-B for snippet context.
+   Read only when a snippet looks central, and pass offset+limit
+   to avoid loading the whole file.
+3. REFINE — adopt codebase vocabulary, narrow path scope, target gaps.
+4. STOP when you have 3 high-relevance files and no critical gaps,
+   or after 3 cycles.
+
+Return: file paths with line ranges and a one-line relevance note each.
 ```
 
 ## Best Practices
 
-1. **Start broad, narrow progressively** - Don't over-specify initial queries
-2. **Learn codebase terminology** - First cycle often reveals naming conventions
-3. **Track what's missing** - Explicit gap identification drives refinement
-4. **Stop at "good enough"** - 3 high-relevance files beats 10 mediocre ones
-5. **Exclude confidently** - Low-relevance files won't become relevant
+1. **Start broad, narrow progressively** — first `Grep` should use `output_mode="files_with_matches"`, never `content`
+2. **Learn codebase terminology before reading** — Cycle 1 often reveals the project says `throttle` not `rate limit`
+3. **Use `offset` + `limit` on `Read`** — load 60 lines around a hit, not the whole 800-line file
+4. **Track what's missing explicitly** — write the gap as a sentence before forming the next query
+5. **Stop at "good enough"** — 3 high-relevance files beats 10 mediocre ones
+6. **Dispatch subagents for verification, not exploration** — give them a sharp question and a cited range
 
 ## Related
 
-- [The Longform Guide](https://x.com/affaanmustafa/status/2014040193557471352) - Subagent orchestration section
-- `continuous-learning` skill - For patterns that improve over time
+- `superpowers:dispatching-parallel-agents` — when retrieval branches are independent
+- `superpowers:systematic-debugging` — pairs well with iterative retrieval during bug hunts
+- `continuous-learning-v2` skill — for patterns that improve over time
 - Agent definitions in `~/.claude/agents/`

@@ -6,811 +6,286 @@ origin: ECC
 
 # Python Testing Patterns
 
-Comprehensive testing strategies for Python applications using pytest, TDD methodology, and best practices.
+Senior pytest reference card. Recipes for the things that actually trip people up.
 
-## When to Activate
+> TDD philosophy lives in `superpowers:test-driven-development`. Coverage minimums (80%), AAA structure, and descriptive naming live in `~/.claude/rules/common/testing.md`. Framework choice (pytest) and `pytest.mark` categorization live in `~/.claude/rules/python/testing.md`. **This skill is the pytest cookbook.**
 
-- Writing new Python code (follow TDD: red, green, refactor)
-- Designing test suites for Python projects
-- Reviewing Python test coverage
-- Setting up testing infrastructure
+## Fixture Scopes — Picking the Right One
 
-## Core Testing Philosophy
-
-### Test-Driven Development (TDD)
-
-Always follow the TDD cycle:
-
-1. **RED**: Write a failing test for the desired behavior
-2. **GREEN**: Write minimal code to make the test pass
-3. **REFACTOR**: Improve code while keeping tests green
+Default scope is `function`. Bigger scope = faster suite, more shared state risk.
 
 ```python
-# Step 1: Write failing test (RED)
-def test_add_numbers():
-    result = add(2, 3)
-    assert result == 5
-
-# Step 2: Write minimal implementation (GREEN)
-def add(a, b):
-    return a + b
-
-# Step 3: Refactor if needed (REFACTOR)
+@pytest.fixture                              # per test (default) - safest
+@pytest.fixture(scope="class")               # per TestClass
+@pytest.fixture(scope="module")              # per .py file
+@pytest.fixture(scope="package")             # per package (rare)
+@pytest.fixture(scope="session")             # once per `pytest` invocation
 ```
 
-### Coverage Requirements
+**When `function` is wrong**: spinning up a Docker container, compiling a model, or starting an event loop per test makes the suite glacial. Hoist to `session`.
 
-- **Target**: 80%+ code coverage
-- **Critical paths**: 100% coverage required
-- Use `pytest --cov` to measure coverage
+**When `session` is wrong**: any fixture that yields mutable state (DB connection, in-memory dict). One test mutates it, the next sees the mutation. If you must use `session` scope for an expensive resource, layer a `function`-scoped fixture on top that gives each test an isolated view (e.g. a SAVEPOINT — see SQLAlchemy section).
 
-```bash
-pytest --cov=mypackage --cov-report=term-missing --cov-report=html
-```
-
-## pytest Fundamentals
-
-### Basic Test Structure
+**Async event-loop pitfall**: pytest-asyncio's default `event_loop` is function-scoped. A `session`-scoped async fixture that touches it will raise `RuntimeError: ... attached to a different loop`. Override:
 
 ```python
-import pytest
-
-def test_addition():
-    """Test basic addition."""
-    assert 2 + 2 == 4
-
-def test_string_uppercase():
-    """Test string uppercasing."""
-    text = "hello"
-    assert text.upper() == "HELLO"
-
-def test_list_append():
-    """Test list append."""
-    items = [1, 2, 3]
-    items.append(4)
-    assert 4 in items
-    assert len(items) == 4
-```
-
-### Assertions
-
-```python
-# Equality
-assert result == expected
-
-# Inequality
-assert result != unexpected
-
-# Truthiness
-assert result  # Truthy
-assert not result  # Falsy
-assert result is True  # Exactly True
-assert result is False  # Exactly False
-assert result is None  # Exactly None
-
-# Membership
-assert item in collection
-assert item not in collection
-
-# Comparisons
-assert result > 0
-assert 0 <= result <= 100
-
-# Type checking
-assert isinstance(result, str)
-
-# Exception testing (preferred approach)
-with pytest.raises(ValueError):
-    raise ValueError("error message")
-
-# Check exception message
-with pytest.raises(ValueError, match="invalid input"):
-    raise ValueError("invalid input provided")
-
-# Check exception attributes
-with pytest.raises(ValueError) as exc_info:
-    raise ValueError("error message")
-assert str(exc_info.value) == "error message"
-```
-
-## Fixtures
-
-### Basic Fixture Usage
-
-```python
-import pytest
-
-@pytest.fixture
-def sample_data():
-    """Fixture providing sample data."""
-    return {"name": "Alice", "age": 30}
-
-def test_sample_data(sample_data):
-    """Test using the fixture."""
-    assert sample_data["name"] == "Alice"
-    assert sample_data["age"] == 30
-```
-
-### Fixture with Setup/Teardown
-
-```python
-@pytest.fixture
-def database():
-    """Fixture with setup and teardown."""
-    # Setup
-    db = Database(":memory:")
-    db.create_tables()
-    db.insert_test_data()
-
-    yield db  # Provide to test
-
-    # Teardown
-    db.close()
-
-def test_database_query(database):
-    """Test database operations."""
-    result = database.query("SELECT * FROM users")
-    assert len(result) > 0
-```
-
-### Fixture Scopes
-
-```python
-# Function scope (default) - runs for each test
-@pytest.fixture
-def temp_file():
-    with open("temp.txt", "w") as f:
-        yield f
-    os.remove("temp.txt")
-
-# Module scope - runs once per module
-@pytest.fixture(scope="module")
-def module_db():
-    db = Database(":memory:")
-    db.create_tables()
-    yield db
-    db.close()
-
-# Session scope - runs once per test session
 @pytest.fixture(scope="session")
-def shared_resource():
-    resource = ExpensiveResource()
-    yield resource
-    resource.cleanup()
+def event_loop():
+    loop = asyncio.new_event_loop()
+    yield loop
+    loop.close()
 ```
 
-### Fixture with Parameters
+In `pytest-asyncio >= 0.23`, prefer setting `asyncio_mode = "auto"` and `loop_scope` on the marker instead.
+
+## parametrize — Make Failures Readable
 
 ```python
-@pytest.fixture(params=[1, 2, 3])
-def number(request):
-    """Parameterized fixture."""
-    return request.param
-
-def test_numbers(number):
-    """Test runs 3 times, once for each parameter."""
-    assert number > 0
+@pytest.mark.parametrize("email,valid", [
+    ("alice@example.com", True),
+    ("no-at-sign", False),
+    ("@no-local.com", False),
+    ("", False),
+], ids=["plain", "missing-at", "missing-local", "empty"])
+def test_email_validation(email, valid):
+    assert is_valid_email(email) is valid
 ```
 
-### Using Multiple Fixtures
+Without `ids=`, pytest renders test IDs like `test_email_validation[no-at-sign-False]` for strings but `test_email_validation[case3]` for complex objects — unreadable in CI logs.
+
+**Per-case marks** (skip one case without losing the rest):
 
 ```python
-@pytest.fixture
-def user():
-    return User(id=1, name="Alice")
-
-@pytest.fixture
-def admin():
-    return User(id=2, name="Admin", role="admin")
-
-def test_user_admin_interaction(user, admin):
-    """Test using multiple fixtures."""
-    assert admin.can_manage(user)
-```
-
-### Autouse Fixtures
-
-```python
-@pytest.fixture(autouse=True)
-def reset_config():
-    """Automatically runs before every test."""
-    Config.reset()
-    yield
-    Config.cleanup()
-
-def test_without_fixture_call():
-    # reset_config runs automatically
-    assert Config.get_setting("debug") is False
-```
-
-### Conftest.py for Shared Fixtures
-
-```python
-# tests/conftest.py
-import pytest
-
-@pytest.fixture
-def client():
-    """Shared fixture for all tests."""
-    app = create_app(testing=True)
-    with app.test_client() as client:
-        yield client
-
-@pytest.fixture
-def auth_headers(client):
-    """Generate auth headers for API testing."""
-    response = client.post("/api/login", json={
-        "username": "test",
-        "password": "test"
-    })
-    token = response.json["token"]
-    return {"Authorization": f"Bearer {token}"}
-```
-
-## Parametrization
-
-### Basic Parametrization
-
-```python
-@pytest.mark.parametrize("input,expected", [
-    ("hello", "HELLO"),
-    ("world", "WORLD"),
-    ("PyThOn", "PYTHON"),
+@pytest.mark.parametrize("backend", [
+    "sqlite",
+    pytest.param("postgres", marks=pytest.mark.integration),
+    pytest.param("mysql", marks=pytest.mark.skip(reason="MySQL CI broken")),
+    pytest.param("oracle", marks=pytest.mark.xfail(reason="not supported")),
 ])
-def test_uppercase(input, expected):
-    """Test runs 3 times with different inputs."""
-    assert input.upper() == expected
+def test_backend(backend): ...
 ```
 
-### Multiple Parameters
+**Indirect parametrization** routes the param through a fixture (use when each case needs setup logic):
 
 ```python
-@pytest.mark.parametrize("a,b,expected", [
-    (2, 3, 5),
-    (0, 0, 0),
-    (-1, 1, 0),
-    (100, 200, 300),
-])
-def test_add(a, b, expected):
-    """Test addition with multiple inputs."""
-    assert add(a, b) == expected
-```
-
-### Parametrize with IDs
-
-```python
-@pytest.mark.parametrize("input,expected", [
-    ("valid@email.com", True),
-    ("invalid", False),
-    ("@no-domain.com", False),
-], ids=["valid-email", "missing-at", "missing-domain"])
-def test_email_validation(input, expected):
-    """Test email validation with readable test IDs."""
-    assert is_valid_email(input) is expected
-```
-
-### Parametrized Fixtures
-
-```python
-@pytest.fixture(params=["sqlite", "postgresql", "mysql"])
+@pytest.fixture
 def db(request):
-    """Test against multiple database backends."""
-    if request.param == "sqlite":
-        return Database(":memory:")
-    elif request.param == "postgresql":
-        return Database("postgresql://localhost/test")
-    elif request.param == "mysql":
-        return Database("mysql://localhost/test")
+    return Database(url=DB_URLS[request.param])
 
-def test_database_operations(db):
-    """Test runs 3 times, once for each database."""
-    result = db.query("SELECT 1")
-    assert result is not None
+@pytest.mark.parametrize("db", ["sqlite", "postgres"], indirect=True)
+def test_query(db):
+    assert db.query("SELECT 1") == [(1,)]
 ```
 
-## Markers and Test Selection
+## Mocking — patch vs MagicMock vs autospec
 
-### Custom Markers
+**Patch where the name is *used*, not where it's defined.** This is the #1 mocking bug.
 
 ```python
-# Mark slow tests
-@pytest.mark.slow
-def test_slow_operation():
-    time.sleep(5)
+# myapp/service.py
+from myapp.client import fetch_user      # imported into service's namespace
 
-# Mark integration tests
-@pytest.mark.integration
-def test_api_integration():
-    response = requests.get("https://api.example.com")
-    assert response.status_code == 200
+# WRONG — patches the original, but service.py already bound its own reference
+@patch("myapp.client.fetch_user")
+def test_service(_): ...
 
-# Mark unit tests
-@pytest.mark.unit
-def test_unit_logic():
-    assert calculate(2, 3) == 5
+# RIGHT
+@patch("myapp.service.fetch_user")
+def test_service(_): ...
 ```
 
-### Run Specific Tests
+**Mock class cheat sheet**:
 
-```bash
-# Run only fast tests
-pytest -m "not slow"
+| Use | When |
+|---|---|
+| `Mock()` | Plain stub. Accepts any attribute/call. |
+| `MagicMock()` | Default for `patch()`. Adds dunder support (`__len__`, `__iter__`, context-manager). |
+| `AsyncMock()` | For `async def` functions. `.assert_awaited_once()` instead of `.assert_called_once()`. |
+| `patch(..., autospec=True)` | Mock matches the real callable's signature. Catches `db.qury(...)` typos. **Use by default.** |
+| `patch(..., spec=Foo)` | Like autospec but for class instances. Restricts attributes to those on `Foo`. |
+| `mock_open(read_data="...")` | Mock `open()` including context-manager protocol. |
 
-# Run only integration tests
-pytest -m integration
-
-# Run integration or slow tests
-pytest -m "integration or slow"
-
-# Run tests marked as unit but not slow
-pytest -m "unit and not slow"
-```
-
-### Configure Markers in pytest.ini
-
-```ini
-[pytest]
-markers =
-    slow: marks tests as slow
-    integration: marks tests as integration tests
-    unit: marks tests as unit tests
-    django: marks tests as requiring Django
-```
-
-## Mocking and Patching
-
-### Mocking Functions
+**Side effects**:
 
 ```python
-from unittest.mock import patch, Mock
-
-@patch("mypackage.external_api_call")
-def test_with_mock(api_call_mock):
-    """Test with mocked external API."""
-    api_call_mock.return_value = {"status": "success"}
-
-    result = my_function()
-
-    api_call_mock.assert_called_once()
-    assert result["status"] == "success"
+mock.return_value = 42              # always returns 42
+mock.side_effect = ValueError       # raises on call
+mock.side_effect = [1, 2, 3]        # returns each in sequence, StopIteration after
+mock.side_effect = lambda x: x * 2  # dynamic response
 ```
 
-### Mocking Return Values
+**Async mocking** (`AsyncMock` is auto-applied if patching an `async def`, but not for arbitrary callables returning coroutines):
 
 ```python
-@patch("mypackage.Database.connect")
-def test_database_connection(connect_mock):
-    """Test with mocked database connection."""
-    connect_mock.return_value = MockConnection()
-
-    db = Database()
-    db.connect()
-
-    connect_mock.assert_called_once_with("localhost")
+@patch("myapp.service.fetch_user", new_callable=AsyncMock)
+async def test_service(mock_fetch):
+    mock_fetch.return_value = {"id": 1}
+    result = await service.get_user(1)
+    mock_fetch.assert_awaited_once_with(1)
 ```
 
-### Mocking Exceptions
+## tmp_path and monkeypatch
+
+`tmp_path` is a `pathlib.Path` unique per test, auto-cleaned. Prefer it over `tempfile`.
 
 ```python
-@patch("mypackage.api_call")
-def test_api_error_handling(api_call_mock):
-    """Test error handling with mocked exception."""
-    api_call_mock.side_effect = ConnectionError("Network error")
-
-    with pytest.raises(ConnectionError):
-        api_call()
-
-    api_call_mock.assert_called_once()
+def test_write_config(tmp_path):
+    cfg = tmp_path / "config.yaml"
+    cfg.write_text("debug: true")
+    assert load_config(cfg).debug is True
 ```
 
-### Mocking Context Managers
+`tmp_path_factory` (session-scoped) for fixtures that build expensive on-disk state once.
+
+`monkeypatch` reverts automatically at test teardown. Use for env vars, attributes, `sys.path`, `os.chdir`:
 
 ```python
-@patch("builtins.open", new_callable=mock_open)
-def test_file_reading(mock_file):
-    """Test file reading with mocked open."""
-    mock_file.return_value.read.return_value = "file content"
-
-    result = read_file("test.txt")
-
-    mock_file.assert_called_once_with("test.txt", "r")
-    assert result == "file content"
+def test_with_api_key(monkeypatch):
+    monkeypatch.setenv("API_KEY", "test-key")
+    monkeypatch.setattr("myapp.client.TIMEOUT", 0.1)
+    monkeypatch.delenv("AWS_PROFILE", raising=False)
+    monkeypatch.chdir(tmp_path)
+    monkeypatch.syspath_prepend("/fake/path")
+    # all reverted at test end
 ```
 
-### Using Autospec
+Prefer `monkeypatch.setattr` over `patch` for simple attribute swaps — no decorator stacking, no `with` block.
 
-```python
-@patch("mypackage.DBConnection", autospec=True)
-def test_autospec(db_mock):
-    """Test with autospec to catch API misuse."""
-    db = db_mock.return_value
-    db.query("SELECT * FROM users")
+## conftest.py Layering
 
-    # This would fail if DBConnection doesn't have query method
-    db_mock.assert_called_once()
-```
-
-### Mock Class Instances
-
-```python
-class TestUserService:
-    @patch("mypackage.UserRepository")
-    def test_create_user(self, repo_mock):
-        """Test user creation with mocked repository."""
-        repo_mock.return_value.save.return_value = User(id=1, name="Alice")
-
-        service = UserService(repo_mock.return_value)
-        user = service.create_user(name="Alice")
-
-        assert user.name == "Alice"
-        repo_mock.return_value.save.assert_called_once()
-```
-
-### Mock Property
-
-```python
-@pytest.fixture
-def mock_config():
-    """Create a mock with a property."""
-    config = Mock()
-    type(config).debug = PropertyMock(return_value=True)
-    type(config).api_key = PropertyMock(return_value="test-key")
-    return config
-
-def test_with_mock_config(mock_config):
-    """Test with mocked config properties."""
-    assert mock_config.debug is True
-    assert mock_config.api_key == "test-key"
-```
-
-## Testing Async Code
-
-### Async Tests with pytest-asyncio
-
-```python
-import pytest
-
-@pytest.mark.asyncio
-async def test_async_function():
-    """Test async function."""
-    result = await async_add(2, 3)
-    assert result == 5
-
-@pytest.mark.asyncio
-async def test_async_with_fixture(async_client):
-    """Test async with async fixture."""
-    response = await async_client.get("/api/users")
-    assert response.status_code == 200
-```
-
-### Async Fixture
-
-```python
-@pytest.fixture
-async def async_client():
-    """Async fixture providing async test client."""
-    app = create_app()
-    async with app.test_client() as client:
-        yield client
-
-@pytest.mark.asyncio
-async def test_api_endpoint(async_client):
-    """Test using async fixture."""
-    response = await async_client.get("/api/data")
-    assert response.status_code == 200
-```
-
-### Mocking Async Functions
-
-```python
-@pytest.mark.asyncio
-@patch("mypackage.async_api_call")
-async def test_async_mock(api_call_mock):
-    """Test async function with mock."""
-    api_call_mock.return_value = {"status": "ok"}
-
-    result = await my_async_function()
-
-    api_call_mock.assert_awaited_once()
-    assert result["status"] == "ok"
-```
-
-## Testing Exceptions
-
-### Testing Expected Exceptions
-
-```python
-def test_divide_by_zero():
-    """Test that dividing by zero raises ZeroDivisionError."""
-    with pytest.raises(ZeroDivisionError):
-        divide(10, 0)
-
-def test_custom_exception():
-    """Test custom exception with message."""
-    with pytest.raises(ValueError, match="invalid input"):
-        validate_input("invalid")
-```
-
-### Testing Exception Attributes
-
-```python
-def test_exception_with_details():
-    """Test exception with custom attributes."""
-    with pytest.raises(CustomError) as exc_info:
-        raise CustomError("error", code=400)
-
-    assert exc_info.value.code == 400
-    assert "error" in str(exc_info.value)
-```
-
-## Testing Side Effects
-
-### Testing File Operations
-
-```python
-import tempfile
-import os
-
-def test_file_processing():
-    """Test file processing with temp file."""
-    with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.txt') as f:
-        f.write("test content")
-        temp_path = f.name
-
-    try:
-        result = process_file(temp_path)
-        assert result == "processed: test content"
-    finally:
-        os.unlink(temp_path)
-```
-
-### Testing with pytest's tmp_path Fixture
-
-```python
-def test_with_tmp_path(tmp_path):
-    """Test using pytest's built-in temp path fixture."""
-    test_file = tmp_path / "test.txt"
-    test_file.write_text("hello world")
-
-    result = process_file(str(test_file))
-    assert result == "hello world"
-    # tmp_path automatically cleaned up
-```
-
-### Testing with tmpdir Fixture
-
-```python
-def test_with_tmpdir(tmpdir):
-    """Test using pytest's tmpdir fixture."""
-    test_file = tmpdir.join("test.txt")
-    test_file.write("data")
-
-    result = process_file(str(test_file))
-    assert result == "data"
-```
-
-## Test Organization
-
-### Directory Structure
+Pytest walks **upward** from the test file collecting `conftest.py` files. Fixtures defined closer to the test override ones higher up by name.
 
 ```
 tests/
-├── conftest.py                 # Shared fixtures
-├── __init__.py
-├── unit/                       # Unit tests
-│   ├── __init__.py
-│   ├── test_models.py
-│   ├── test_utils.py
-│   └── test_services.py
-├── integration/                # Integration tests
-│   ├── __init__.py
-│   ├── test_api.py
-│   └── test_database.py
-└── e2e/                        # End-to-end tests
-    ├── __init__.py
-    └── test_user_flow.py
+├── conftest.py              # session-wide: db_engine, app_factory
+├── unit/
+│   ├── conftest.py          # unit-only: mocked_redis
+│   └── test_models.py
+└── integration/
+    ├── conftest.py          # integration: real_redis, http_client
+    └── test_api.py
 ```
 
-### Test Classes
+**Rules of thumb**:
+
+- Put a fixture in the **highest** `conftest.py` that all consumers share — duplicates across files are a smell.
+- Override by re-defining the same fixture name in a lower `conftest.py`. Pytest auto-resolves; no inheritance syntax needed.
+- A fixture in `tests/conftest.py` is visible to all of `tests/`. A fixture in `src/mypkg/conftest.py` is only visible if pytest's `rootdir` includes it. Keep test fixtures under `tests/`.
+- Don't import fixtures from `conftest.py` directly — let pytest discover them via dependency injection.
+
+## FastAPI / Flask Test Clients
+
+**FastAPI** — use `TestClient` (sync, wraps starlette's) or `httpx.AsyncClient` for async. Override dependencies instead of patching:
 
 ```python
-class TestUserService:
-    """Group related tests in a class."""
+from fastapi.testclient import TestClient
+from myapp.main import app
+from myapp.deps import get_db
 
-    @pytest.fixture(autouse=True)
-    def setup(self):
-        """Setup runs before each test in this class."""
-        self.service = UserService()
-
-    def test_create_user(self):
-        """Test user creation."""
-        user = self.service.create_user("Alice")
-        assert user.name == "Alice"
-
-    def test_delete_user(self):
-        """Test user deletion."""
-        user = User(id=1, name="Bob")
-        self.service.delete_user(user)
-        assert not self.service.user_exists(1)
-```
-
-## Best Practices
-
-### DO
-
-- **Follow TDD**: Write tests before code (red-green-refactor)
-- **Test one thing**: Each test should verify a single behavior
-- **Use descriptive names**: `test_user_login_with_invalid_credentials_fails`
-- **Use fixtures**: Eliminate duplication with fixtures
-- **Mock external dependencies**: Don't depend on external services
-- **Test edge cases**: Empty inputs, None values, boundary conditions
-- **Aim for 80%+ coverage**: Focus on critical paths
-- **Keep tests fast**: Use marks to separate slow tests
-
-### DON'T
-
-- **Don't test implementation**: Test behavior, not internals
-- **Don't use complex conditionals in tests**: Keep tests simple
-- **Don't ignore test failures**: All tests must pass
-- **Don't test third-party code**: Trust libraries to work
-- **Don't share state between tests**: Tests should be independent
-- **Don't catch exceptions in tests**: Use `pytest.raises`
-- **Don't use print statements**: Use assertions and pytest output
-- **Don't write tests that are too brittle**: Avoid over-specific mocks
-
-## Common Patterns
-
-### Testing API Endpoints (FastAPI/Flask)
-
-```python
 @pytest.fixture
-def client():
-    app = create_app(testing=True)
-    return app.test_client()
-
-def test_get_user(client):
-    response = client.get("/api/users/1")
-    assert response.status_code == 200
-    assert response.json["id"] == 1
+def client(db_session):
+    app.dependency_overrides[get_db] = lambda: db_session
+    with TestClient(app) as c:
+        yield c
+    app.dependency_overrides.clear()
 
 def test_create_user(client):
-    response = client.post("/api/users", json={
-        "name": "Alice",
-        "email": "alice@example.com"
-    })
-    assert response.status_code == 201
-    assert response.json["name"] == "Alice"
+    r = client.post("/users", json={"name": "Alice"})
+    assert r.status_code == 201
+    assert r.json()["name"] == "Alice"
 ```
 
-### Testing Database Operations
+For async tests, `httpx.AsyncClient(transport=ASGITransport(app=app), base_url="http://test")` — `TestClient` won't run async fixtures correctly inside the same event loop.
+
+**Flask** — push an app context for anything that touches `current_app`, `g`, or `url_for`:
 
 ```python
 @pytest.fixture
-def db_session():
-    """Create a test database session."""
-    session = Session(bind=engine)
-    session.begin_nested()
-    yield session
-    session.rollback()
-    session.close()
+def app():
+    app = create_app({"TESTING": True})
+    with app.app_context():
+        yield app
 
-def test_create_user(db_session):
-    user = User(name="Alice", email="alice@example.com")
-    db_session.add(user)
-    db_session.commit()
-
-    retrieved = db_session.query(User).filter_by(name="Alice").first()
-    assert retrieved.email == "alice@example.com"
+@pytest.fixture
+def client(app):
+    return app.test_client()
 ```
 
-### Testing Class Methods
+## SQLAlchemy — Transaction Per Test (SAVEPOINT)
+
+Naive "rollback at teardown" fails when application code calls `session.commit()`. The right pattern wraps every test in an outer transaction with a nested SAVEPOINT that auto-restarts on commit:
 
 ```python
-class TestCalculator:
-    @pytest.fixture
-    def calculator(self):
-        return Calculator()
+@pytest.fixture(scope="session")
+def engine():
+    eng = create_engine("postgresql://localhost/test")
+    Base.metadata.create_all(eng)
+    yield eng
+    eng.dispose()
 
-    def test_add(self, calculator):
-        assert calculator.add(2, 3) == 5
+@pytest.fixture
+def db_session(engine):
+    connection = engine.connect()
+    transaction = connection.begin()
+    Session = sessionmaker(bind=connection)
+    session = Session()
+    session.begin_nested()  # SAVEPOINT
 
-    def test_divide_by_zero(self, calculator):
-        with pytest.raises(ZeroDivisionError):
-            calculator.divide(10, 0)
+    @event.listens_for(session, "after_transaction_end")
+    def restart_savepoint(sess, trans):
+        if trans.nested and not trans._parent.nested:
+            sess.begin_nested()
+
+    yield session
+
+    session.close()
+    transaction.rollback()  # rolls back ALL nested commits
+    connection.close()
 ```
 
-## pytest Configuration
+Tests can `session.commit()` freely; everything is undone at teardown. ~100x faster than truncating tables between tests.
 
-### pytest.ini
+## Coverage — Gates That Actually Fail CI
 
-```ini
-[pytest]
-testpaths = tests
-python_files = test_*.py
-python_classes = Test*
-python_functions = test_*
-addopts =
-    --strict-markers
-    --disable-warnings
-    --cov=mypackage
-    --cov-report=term-missing
-    --cov-report=html
-markers =
-    slow: marks tests as slow
-    integration: marks tests as integration tests
-    unit: marks tests as unit tests
-```
-
-### pyproject.toml
-
-```toml
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-python_files = ["test_*.py"]
-python_classes = ["Test*"]
-python_functions = ["test_*"]
-addopts = [
-    "--strict-markers",
-    "--cov=mypackage",
-    "--cov-report=term-missing",
-    "--cov-report=html",
-]
-markers = [
-    "slow: marks tests as slow",
-    "integration: marks tests as integration tests",
-    "unit: marks tests as unit tests",
-]
-```
-
-## Running Tests
+Bare `--cov` reports but doesn't fail the build. Use `--cov-fail-under` to enforce the rules/common 80% minimum:
 
 ```bash
-# Run all tests
-pytest
-
-# Run specific file
-pytest tests/test_utils.py
-
-# Run specific test
-pytest tests/test_utils.py::test_function
-
-# Run with verbose output
-pytest -v
-
-# Run with coverage
-pytest --cov=mypackage --cov-report=html
-
-# Run only fast tests
-pytest -m "not slow"
-
-# Run until first failure
-pytest -x
-
-# Run and stop on N failures
-pytest --maxfail=3
-
-# Run last failed tests
-pytest --lf
-
-# Run tests with pattern
-pytest -k "test_user"
-
-# Run with debugger on failure
-pytest --pdb
+pytest --cov=src --cov-branch --cov-report=term-missing --cov-fail-under=80
 ```
 
-## Quick Reference
+- `--cov-branch` catches `if x:` taken only one way (line coverage marks it green).
+- `--cov-report=xml` for Codecov / SonarQube; `=html` for local exploration.
+- `--cov-config=.coveragerc` to exclude `__repr__`, `if TYPE_CHECKING:`, `raise NotImplementedError`, etc.
 
-| Pattern | Usage |
-|---------|-------|
-| `pytest.raises()` | Test expected exceptions |
-| `@pytest.fixture()` | Create reusable test fixtures |
-| `@pytest.mark.parametrize()` | Run tests with multiple inputs |
-| `@pytest.mark.slow` | Mark slow tests |
-| `pytest -m "not slow"` | Skip slow tests |
-| `@patch()` | Mock functions and classes |
-| `tmp_path` fixture | Automatic temp directory |
-| `pytest --cov` | Generate coverage report |
-| `assert` | Simple and readable assertions |
+`.coveragerc`:
 
-**Remember**: Tests are code too. Keep them clean, readable, and maintainable. Good tests catch bugs; great tests prevent them.
+```ini
+[run]
+branch = True
+source = src
+omit = */migrations/*, */tests/*
+
+[report]
+exclude_lines =
+    pragma: no cover
+    raise NotImplementedError
+    if TYPE_CHECKING:
+    if __name__ == .__main__.:
+```
+
+## Useful Flags Worth Memorizing
+
+| Flag | What it does |
+|---|---|
+| `-x` | Stop after first failure |
+| `--lf` | Re-run only last-failed tests |
+| `--ff` | Run failed first, then the rest |
+| `-k "user and not slow"` | Filter by name expression |
+| `-m "integration"` | Filter by marker |
+| `--pdb` | Drop into debugger on failure |
+| `-s` | Don't capture stdout (show `print`) |
+| `-rA` | Show short summary for ALL outcomes (pass/skip/xfail) |
+| `--co` | Collect-only — list tests without running |
+| `-p no:cacheprovider` | Disable `.pytest_cache` (CI) |
+| `--durations=10` | Report 10 slowest tests |
+| `-n auto` | Parallel via pytest-xdist (one proc per CPU) |
