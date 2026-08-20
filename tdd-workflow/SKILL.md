@@ -1,12 +1,16 @@
 ---
 name: tdd-workflow
-description: Use this skill when writing new features, fixing bugs, or refactoring code. Enforces test-driven development with 80%+ coverage including unit, integration, and E2E tests.
+description: Use when writing or fixing TypeScript/Vitest/Playwright tests and you need the stack-specific patterns — unit vs integration vs E2E layout, Vitest ESM mocking, Testing Library queries, Playwright flake avoidance, coverage commands. Covers HOW to write the tests, not WHEN they must be written.
 origin: ECC
 ---
 
 # Test-Driven Development Workflow (TypeScript / Vitest / Playwright)
 
-For generic TDD methodology (RED-GREEN-REFACTOR cycle), see `superpowers:test-driven-development`. This skill covers the TypeScript/Vitest/Playwright stack specifically.
+> **Testing ORDER is governed by `risk-based-tdd` — the canonical doctrine. Do not redefine it here.**
+> That document decides *whether* tests must come first for a given change. This skill covers *how*
+> to write them well on the TypeScript / Vitest / Playwright stack, once that decision is made.
+
+For the generic RED-GREEN-REFACTOR execution loop, see `superpowers:test-driven-development`.
 
 ## When to Activate
 
