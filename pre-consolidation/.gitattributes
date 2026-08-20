@@ -1,0 +1,12 @@
+# This directory is a byte-exact forensic archive. Git must store every file
+# exactly as captured.
+#
+# The machine's global config is `core.autocrlf = input`, which rewrites CRLF to
+# LF on commit. Applied here that would silently corrupt the archive: the
+# `sha256` values in manifest.json are hashes of the RAW bytes, and a normalised
+# checkout would no longer match them, destroying the ability to prove what each
+# store actually contained.
+#
+# `-text` disables all end-of-line conversion for everything below this path.
+# Do not remove it, and do not "fix" the line endings of anything in here.
+* -text

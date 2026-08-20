@@ -1,0 +1,15 @@
+336622e1ae89c101eb9d04651a11e537260aaa82	2026-07-05T01:32:34-05:00	BuildSmarterAI	Merge pull request #2 from BuildSmarterAI/harris/supabase-patterns-skill
+6841d1b20e438fd7f0642d5b1bff8333f3c211df	2026-07-05T01:21:07-05:00	BuildSmarterAI	feat: add supabase patterns skill
+a705d661d060bc23e01301a4cdb5626872682471	2026-05-11T16:13:04-05:00	Harris Khan	Improve (queued trims): heavy content rewrites for 8 skills
+a4ee82100dc3740326932d65111287de473274ac	2026-05-11T14:40:37-05:00	Harris Khan	Improve: collapse fragile descriptions, fix frontmatter, repair broken H1
+4cc85b29ff5023e19880b9f6a8c94453be58172d	2026-05-11T14:39:00-05:00	Harris Khan	Merge: fold backend-patterns + eval-harness + verification-loop into canonical targets
+cb87b0385d43104c2a4ffb21a9427f0c3549eed0	2026-05-11T14:23:24-05:00	Harris Khan	Retire deadweight: 11 skill dirs + 23 dead-language/abandoned commands
+0668bf114473fd8b61ce2bdd7167bc694e5259b2	2026-04-28T17:02:27-05:00	BuildSmarterAI	Merge pull request #1 from BuildSmarterAI/claude/add-claude-documentation-IaLZN
+9fc33a672688ccc308461cabc00dc3261282a023	2026-04-28T19:21:20Z	Claude	Add top-level CLAUDE.md with repo conventions for AI assistants
+0b4eb2e5e07af7dd7149ff817c0e3d8c6a2dfdf3	2026-04-15T12:54:21-05:00	BuildSmarterAI	Remove irrelevant stack skills - keep ECC extras relevant to BuildSmarter
+41aca39145cfa4b066df137c1679cd0ee33bc51b	2026-04-14T21:48:03-05:00	BuildSmarterAI	Add alirezarezvani skills library - engineering, finance, c-level, marketing, product, PM, business-growth, personas
+f94f537207636e7f4224723e2369e1f49f0a85a0	2026-03-31T01:45:08-05:00	BuildSmarterAI	Audit round 3: update investor/market skills, add 4 new domain skills
+2e3779df642b094bc3e8d080d233564ba5db05ed	2026-03-31T01:42:41-05:00	BuildSmarterAI	Audit round 3: update investor/market skills, add 4 new domain skills, remove nutrient
+2b5318b5dba891d44918feaa70afa8a20171d9cd	2026-03-31T01:17:23-05:00	BuildSmarterAI	Remove 28 irrelevant skills - audit cleanup
+97ce863a5c121e73864ae52e801e7339972613be	2026-03-31T01:13:55-05:00	BuildSmarterAI	Add README
+625c7603a534ce372bbbde3a6644b1a1c2283318	2026-03-31T01:11:03-05:00	BuildSmarterAI	BuildSmarter Claude Code skills
