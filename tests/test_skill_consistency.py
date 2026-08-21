@@ -330,5 +330,96 @@ class TestUndeclaredCanonicalSkill(ConsistencyTestCase):
         self.assertViolation(self.run_check(), 'undeclared_canonical_skill', 'stowaway')
 
 
+class TestCatalogVersion(ConsistencyTestCase):
+    """Catalog release identity.
+
+    Risk class: deterministic guardrail (risk-based-tdd s2.16). A catalog that
+    misreports its own version is worse than one with no version at all - a
+    runtime would be attributed to a release it was never deployed from.
+    """
+
+    def write_version(self, payload):
+        import os
+        p = os.path.join(self.b.root, 'catalog-version.json')
+        with open(p, 'w', encoding='utf-8') as fh:
+            json.dump(payload, fh, indent=1)
+        return p
+
+    VALID = {'catalog_version': '1.0.0',
+             'manifest_schema_version': 1,
+             'deployment_state_schema_version': 1}
+
+    def test_valid_version_file_passes(self):
+        self.b.add_skill('alpha')
+        self.write_version(self.VALID)
+        r = self.run_check()
+        self.assertTrue(r.ok, f'valid version file must pass; got {dict(r.violations)}')
+        self.assertEqual(r.counts['catalog_version_checked'], 1)
+
+    def test_absent_version_file_is_tolerated(self):
+        """Absence must not fail: the checker predates versioning and other
+        trees (test fixtures, forks) legitimately have none."""
+        self.b.add_skill('alpha')
+        self.assertTrue(self.run_check().ok)
+
+    def test_unparseable_version_file_is_rejected(self):
+        import os
+        self.b.add_skill('alpha')
+        with open(os.path.join(self.b.root, 'catalog-version.json'), 'w',
+                  encoding='utf-8') as fh:
+            fh.write('{not json')
+        r = self.run_check()
+        self.assertFalse(r.ok)
+        self.assertIn('catalog_version_invalid', r.violations)
+
+    def test_non_semver_catalog_version_is_rejected(self):
+        self.b.add_skill('alpha')
+        bad = dict(self.VALID, catalog_version='v1')
+        self.write_version(bad)
+        r = self.run_check()
+        self.assertFalse(r.ok)
+        self.assertIn('catalog_version_invalid', r.violations)
+
+    def test_missing_required_version_key_is_rejected(self):
+        self.b.add_skill('alpha')
+        bad = dict(self.VALID)
+        del bad['deployment_state_schema_version']
+        self.write_version(bad)
+        r = self.run_check()
+        self.assertFalse(r.ok)
+        self.assertIn('catalog_version_invalid', r.violations)
+
+    def test_manifest_schema_disagreement_is_rejected(self):
+        """The declared manifest schema must match what the manifest says.
+
+        This is the cross-check that makes the version file meaningful rather
+        than a second place to write a number that nothing verifies.
+        """
+        self.b.add_skill('alpha')
+        self.b.write()
+        m = json.load(open(os.path.join(self.b.root, 'manifests', 'skills.json'),
+                           encoding='utf-8'))
+        m['schema'] = 2
+        with open(os.path.join(self.b.root, 'manifests', 'skills.json'), 'w',
+                  encoding='utf-8') as fh:
+            json.dump(m, fh, indent=1)
+        self.write_version(self.VALID)          # declares manifest_schema_version 1
+        r = csc.check_repo(self.b.root)
+        self.assertFalse(r.ok)
+        self.assertIn('manifest_schema_mismatch', r.violations)
+
+    def test_matching_manifest_schema_passes(self):
+        self.b.add_skill('alpha')
+        self.b.write()
+        m = json.load(open(os.path.join(self.b.root, 'manifests', 'skills.json'),
+                           encoding='utf-8'))
+        m['schema'] = 1
+        with open(os.path.join(self.b.root, 'manifests', 'skills.json'), 'w',
+                  encoding='utf-8') as fh:
+            json.dump(m, fh, indent=1)
+        self.write_version(self.VALID)
+        self.assertTrue(csc.check_repo(self.b.root).ok)
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)
