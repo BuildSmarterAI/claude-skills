@@ -132,6 +132,7 @@ When you write or edit code samples inside a skill, default to this stack so exa
 - Push with `git push -u origin <branch>`. Retry transient network failures with exponential backoff; do not force-push.
 - CI **does** run: `.github/workflows/skill-consistency.yml` gates every PR and every push to `main`. Wait for the `Skill consistency` check. Before pushing, run
   `python scripts/check-skill-consistency.py` and `python -m unittest discover -s tests`.
+- Those two answer *"is the repository correct?"*. Runtime parity is a **separate, local** question — `python scripts/deploy-skills.py --check` compares canonical against your own `~/.claude/skills` and `~/.agents/skills`. It is deliberately **not** in CI: a runner has no runtime stores and would report every declared skill as a false CREATE.
 - Releasing the catalog: see `docs/consolidation/RELEASING.md`.
 
 ## Anti-patterns
