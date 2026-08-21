@@ -421,5 +421,111 @@ class TestCatalogVersion(ConsistencyTestCase):
         self.assertTrue(csc.check_repo(self.b.root).ok)
 
 
+class TestRetentionMetadata(ConsistencyTestCase):
+    """Branch retention metadata.
+
+    Risk class: deterministic guardrail (risk-based-tdd s2.16). The failure that
+    matters is a preservation branch silently marked deletable - that is how
+    disaster-recovery history gets tidied away by a future cleanup pass.
+    """
+
+    VALID = {
+        'schema': 1,
+        'branches': {
+            'archive/keepme': {'class': 'PERMANENT-PRESERVATION', 'deletable': False,
+                               'retention': 'indefinite'},
+            'chore/done': {'class': 'MERGED-IMPLEMENTATION', 'deletable': True,
+                           'retention': '2026-09-20'},
+        },
+    }
+
+    def write_retention(self, payload):
+        import os
+        os.makedirs(os.path.join(self.b.root, 'manifests'), exist_ok=True)
+        with open(os.path.join(self.b.root, 'manifests', 'retention.json'), 'w',
+                  encoding='utf-8') as fh:
+            json.dump(payload, fh, indent=1)
+
+    def test_valid_retention_passes(self):
+        self.b.add_skill('alpha')
+        self.b.write()
+        self.write_retention(self.VALID)
+        r = csc.check_repo(self.b.root)
+        self.assertTrue(r.ok, f'valid retention must pass; got {dict(r.violations)}')
+        self.assertEqual(r.counts['retention_branches_checked'], 2)
+
+    def test_absent_retention_is_tolerated(self):
+        self.b.add_skill('alpha')
+        self.assertTrue(self.run_check().ok)
+
+    def test_unparseable_retention_is_rejected(self):
+        import os
+        self.b.add_skill('alpha')
+        self.b.write()
+        os.makedirs(os.path.join(self.b.root, 'manifests'), exist_ok=True)
+        with open(os.path.join(self.b.root, 'manifests', 'retention.json'), 'w',
+                  encoding='utf-8') as fh:
+            fh.write('{nope')
+        r = csc.check_repo(self.b.root)
+        self.assertFalse(r.ok)
+        self.assertIn('retention_invalid', r.violations)
+
+    def test_unknown_class_is_rejected(self):
+        self.b.add_skill('alpha')
+        self.b.write()
+        bad = json.loads(json.dumps(self.VALID))
+        bad['branches']['chore/done']['class'] = 'PROBABLY-FINE'
+        self.write_retention(bad)
+        r = csc.check_repo(self.b.root)
+        self.assertFalse(r.ok)
+        self.assertIn('retention_invalid', r.violations)
+
+    def test_preservation_branch_marked_deletable_is_rejected(self):
+        """The invariant this file exists for.
+
+        A PERMANENT-PRESERVATION branch flagged deletable would let a future
+        cleanup pass destroy the only copy of the pre-consolidation archive.
+        """
+        self.b.add_skill('alpha')
+        self.b.write()
+        bad = json.loads(json.dumps(self.VALID))
+        bad['branches']['archive/keepme']['deletable'] = True
+        self.write_retention(bad)
+        r = csc.check_repo(self.b.root)
+        self.assertFalse(r.ok)
+        self.assertIn('preservation_marked_deletable', r.violations)
+        self.assertIn('archive/keepme',
+                      ' '.join(r.violations['preservation_marked_deletable']))
+
+    def test_active_and_uncertain_may_not_be_deletable(self):
+        for cls in ('ACTIVE', 'UNCERTAIN'):
+            with self.subTest(cls=cls):
+                b = RepoBuilder()
+                self.addCleanup(b.destroy)
+                b.add_skill('alpha')
+                b.write()
+                payload = json.loads(json.dumps(self.VALID))
+                payload['branches']['chore/done'] = {'class': cls, 'deletable': True,
+                                                     'retention': 'n/a'}
+                import os
+                os.makedirs(os.path.join(b.root, 'manifests'), exist_ok=True)
+                with open(os.path.join(b.root, 'manifests', 'retention.json'), 'w',
+                          encoding='utf-8') as fh:
+                    json.dump(payload, fh, indent=1)
+                r = csc.check_repo(b.root)
+                self.assertFalse(r.ok, f'{cls} + deletable must fail')
+                self.assertIn('preservation_marked_deletable', r.violations)
+
+    def test_missing_required_branch_field_is_rejected(self):
+        self.b.add_skill('alpha')
+        self.b.write()
+        bad = json.loads(json.dumps(self.VALID))
+        del bad['branches']['chore/done']['deletable']
+        self.write_retention(bad)
+        r = csc.check_repo(self.b.root)
+        self.assertFalse(r.ok)
+        self.assertIn('retention_invalid', r.violations)
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)
