@@ -45,7 +45,6 @@ if (!apiKey) {
 - [ ] `.env.local` in .gitignore
 - [ ] No secrets in git history
 - [ ] Production secrets in hosting platform (Vercel, Railway)
-
 ### 2. Input Validation
 
 #### Always Validate User Input
@@ -105,7 +104,6 @@ function validateFileUpload(file: File) {
 - [ ] No direct use of user input in queries
 - [ ] Whitelist validation (not blacklist)
 - [ ] Error messages don't leak sensitive info
-
 ### 3. SQL Injection Prevention
 
 #### ❌ NEVER Concatenate SQL
@@ -135,7 +133,6 @@ await db.query(
 - [ ] No string concatenation in SQL
 - [ ] ORM/query builder used correctly
 - [ ] Supabase queries properly sanitized
-
 ### 4. Authentication & Authorization
 
 #### JWT Token Handling
@@ -190,7 +187,6 @@ CREATE POLICY "Users update own data"
 - [ ] Row Level Security enabled in Supabase
 - [ ] Role-based access control implemented
 - [ ] Session management secure
-
 ### 5. XSS Prevention
 
 #### Sanitize HTML
@@ -230,7 +226,6 @@ const securityHeaders = [
 - [ ] CSP headers configured
 - [ ] No unvalidated dynamic content rendering
 - [ ] React's built-in XSS protection used
-
 ### 6. CSRF Protection
 
 #### CSRF Tokens
@@ -261,7 +256,6 @@ res.setHeader('Set-Cookie',
 - [ ] CSRF tokens on state-changing operations
 - [ ] SameSite=Strict on all cookies
 - [ ] Double-submit cookie pattern implemented
-
 ### 7. Rate Limiting
 
 #### API Rate Limiting
@@ -295,7 +289,6 @@ app.use('/api/search', searchLimiter)
 - [ ] Stricter limits on expensive operations
 - [ ] IP-based rate limiting
 - [ ] User-based rate limiting (authenticated)
-
 ### 8. Sensitive Data Exposure
 
 #### Logging
@@ -334,7 +327,6 @@ catch (error) {
 - [ ] Error messages generic for users
 - [ ] Detailed errors only in server logs
 - [ ] No stack traces exposed to users
-
 ### 9. Dependency Security
 
 #### Regular Updates
@@ -369,7 +361,6 @@ npm ci  # Instead of npm install
 - [ ] Regular security updates
 
 ## Security Testing
-
 ### Automated Security Tests
 ```typescript
 // Test authentication
@@ -428,6 +419,7 @@ Before ANY production deployment:
 - [ ] **Row Level Security**: Enabled in Supabase
 - [ ] **CORS**: Properly configured
 - [ ] **File Uploads**: Validated (size, type)
+- [ ] **Wallet Signatures**: Verified (if blockchain)
 
 ## Resources
 

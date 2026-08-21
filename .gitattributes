@@ -1,0 +1,8 @@
+# This repository is the canonical SOURCE for skills that are deployed
+# byte-for-byte into two runtimes, and manifests/skills.json records the
+# expected SHA-256 of each file. Git's core.autocrlf would rewrite line endings
+# on commit, so a fresh clone would no longer match those hashes and
+# scripts/deploy-skills.py would report permanent phantom drift.
+#
+# `-text` disables all end-of-line conversion. Do not remove it.
+* -text

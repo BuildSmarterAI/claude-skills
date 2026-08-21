@@ -1,6 +1,6 @@
 ---
 name: python-patterns
-description: Pythonic idioms, PEP 8 standards, type hints, and best practices for building robust, efficient, and maintainable Python applications.
+description: Pythonic idioms, PEP 8 standards, type hints, and best practices for building robust, efficient, and maintainable Python. Covers EAFP vs LBYL, container and concurrency decision matrices, advanced typing (ParamSpec, Self, overload, Protocol), comprehensions and generators, dataclasses, context managers, decorators, __slots__, packaging and the ruff / mypy / pytest toolchain.
 origin: ECC
 ---
 
@@ -8,9 +8,77 @@ origin: ECC
 
 Deep reference for idiomatic Python. Extends `rules/python/` — see those for PEP 8, formatting tools, basic dataclasses, Protocol, pytest, secrets, and hook configuration. This file covers the harder decisions.
 
+> Merged in D3.5 from two independently curated copies: the canonical decision-oriented spine
+> plus the breadth sections (comprehensions, dataclasses, packaging, tooling, idiom reference)
+> that existed only in the runtime copy. Neither side was discarded.
+
+> Merged in D3.5 from two independently curated copies: the canonical decision-oriented spine
+> plus the breadth sections (comprehensions, dataclasses, packaging, tooling, idiom reference)
+> that existed only in the runtime copy. Neither side was discarded.
+
+> Merged in D3.5 from two independently curated copies: the canonical decision-oriented spine
+> plus the breadth sections (comprehensions, dataclasses, packaging, tooling, idiom reference)
+> that existed only in the runtime copy. Neither side was discarded.
+
 ## When to Activate
 
 Writing, reviewing, refactoring Python; designing packages/modules; resolving "which tool for the job" questions.
+
+## Core Principles
+
+### 1. Readability Counts
+
+Python prioritizes readability. Code should be obvious and easy to understand.
+
+```python
+# Good: Clear and readable
+def get_active_users(users: list[User]) -> list[User]:
+    """Return only active users from the provided list."""
+    return [user for user in users if user.is_active]
+
+
+# Bad: Clever but confusing
+def get_active_users(u):
+    return [x for x in u if x.a]
+```
+
+### 2. Explicit is Better Than Implicit
+
+Avoid magic; be clear about what your code does.
+
+```python
+# Good: Explicit configuration
+import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+)
+
+# Bad: Hidden side effects
+import some_module
+some_module.setup()  # What does this do?
+```
+
+### 3. EAFP - Easier to Ask Forgiveness Than Permission
+
+Python prefers exception handling over checking conditions.
+
+```python
+# Good: EAFP style
+def get_value(dictionary: dict, key: str) -> Any:
+    try:
+        return dictionary[key]
+    except KeyError:
+        return default_value
+
+# Bad: LBYL (Look Before You Leap) style
+def get_value(dictionary: dict, key: str) -> Any:
+    if key in dictionary:
+        return dictionary[key]
+    else:
+        return default_value
+```
 
 ## EAFP vs LBYL
 
@@ -94,6 +162,118 @@ def parse(x): ...
 ```
 
 Use `from __future__ import annotations` to defer evaluation (allows forward refs without quotes; required for some recursive types pre-3.12).
+
+## Comprehensions and Generators
+
+### List Comprehensions
+
+```python
+# Good: List comprehension for simple transformations
+names = [user.name for user in users if user.is_active]
+
+# Bad: Manual loop
+names = []
+for user in users:
+    if user.is_active:
+        names.append(user.name)
+
+# Complex comprehensions should be expanded
+# Bad: Too complex
+result = [x * 2 for x in items if x > 0 if x % 2 == 0]
+
+# Good: Use a generator function
+def filter_and_transform(items: Iterable[int]) -> list[int]:
+    result = []
+    for x in items:
+        if x > 0 and x % 2 == 0:
+            result.append(x * 2)
+    return result
+```
+
+### Generator Expressions
+
+```python
+# Good: Generator for lazy evaluation
+total = sum(x * x for x in range(1_000_000))
+
+# Bad: Creates large intermediate list
+total = sum([x * x for x in range(1_000_000)])
+```
+
+### Generator Functions
+
+```python
+def read_large_file(path: str) -> Iterator[str]:
+    """Read a large file line by line."""
+    with open(path) as f:
+        for line in f:
+            yield line.strip()
+
+# Usage
+for line in read_large_file("huge.txt"):
+    process(line)
+```
+
+## Data Classes and Named Tuples
+
+### Data Classes
+
+```python
+from dataclasses import dataclass, field
+from datetime import datetime
+
+@dataclass
+class User:
+    """User entity with automatic __init__, __repr__, and __eq__."""
+    id: str
+    name: str
+    email: str
+    created_at: datetime = field(default_factory=datetime.now)
+    is_active: bool = True
+
+# Usage
+user = User(
+    id="123",
+    name="Alice",
+    email="alice@example.com"
+)
+```
+
+### Data Classes with Validation
+
+```python
+@dataclass
+class User:
+    email: str
+    age: int
+
+    def __post_init__(self):
+        # Validate email format
+        if "@" not in self.email:
+            raise ValueError(f"Invalid email: {self.email}")
+        # Validate age range
+        if self.age < 0 or self.age > 150:
+            raise ValueError(f"Invalid age: {self.age}")
+```
+
+### Named Tuples
+
+```python
+from typing import NamedTuple
+
+class Point(NamedTuple):
+    """Immutable 2D point."""
+    x: float
+    y: float
+
+    def distance(self, other: 'Point') -> float:
+        return ((self.x - other.x) ** 2 + (self.y - other.y) ** 2) ** 0.5
+
+# Usage
+p1 = Point(0, 0)
+p2 = Point(3, 4)
+print(p1.distance(p2))  # 5.0
+```
 
 ## Error Handling
 
@@ -254,6 +434,80 @@ s = "".join(str(item) for item in items)
 
 For complex assembly, use `io.StringIO`.
 
+## Package Organization
+
+### Standard Project Layout
+
+```
+myproject/
+├── src/
+│   └── mypackage/
+│       ├── __init__.py
+│       ├── main.py
+│       ├── api/
+│       │   ├── __init__.py
+│       │   └── routes.py
+│       ├── models/
+│       │   ├── __init__.py
+│       │   └── user.py
+│       └── utils/
+│           ├── __init__.py
+│           └── helpers.py
+├── tests/
+│   ├── __init__.py
+│   ├── conftest.py
+│   ├── test_api.py
+│   └── test_models.py
+├── pyproject.toml
+├── README.md
+└── .gitignore
+```
+
+### Import Conventions
+
+```python
+# Good: Import order - stdlib, third-party, local
+import os
+import sys
+from pathlib import Path
+
+import requests
+from fastapi import FastAPI
+
+from mypackage.models import User
+from mypackage.utils import format_name
+
+# Good: Use isort for automatic import sorting
+# pip install isort
+```
+
+### __init__.py for Package Exports
+
+```python
+# mypackage/__init__.py
+"""mypackage - A sample Python package."""
+
+__version__ = "1.0.0"
+
+# Export main classes/functions at package level
+from mypackage.models import User, Post
+from mypackage.utils import format_name
+
+__all__ = ["User", "Post", "format_name"]
+```
+
+## Package Exports
+
+```python
+# mypackage/__init__.py
+from mypackage.models import User, Post
+from mypackage.utils import format_name
+__all__ = ["User", "Post", "format_name"]
+__version__ = "1.0.0"
+```
+
+`__all__` controls `from pkg import *` AND signals public API to tools.
+
 ## pyproject.toml
 
 ```toml
@@ -284,17 +538,87 @@ addopts = "--cov=src --cov-report=term-missing --strict-markers"
 markers = ["unit", "integration", "slow"]
 ```
 
-## Package Exports
+## Python Tooling Integration
 
-```python
-# mypackage/__init__.py
-from mypackage.models import User, Post
-from mypackage.utils import format_name
-__all__ = ["User", "Post", "format_name"]
-__version__ = "1.0.0"
+### Essential Commands
+
+```bash
+# Code formatting
+black .
+isort .
+
+# Linting
+ruff check .
+pylint mypackage/
+
+# Type checking
+mypy .
+
+# Testing
+pytest --cov=mypackage --cov-report=html
+
+# Security scanning
+bandit -r .
+
+# Dependency management
+pip-audit
+safety check
 ```
 
-`__all__` controls `from pkg import *` AND signals public API to tools.
+### pyproject.toml Configuration
+
+```toml
+[project]
+name = "mypackage"
+version = "1.0.0"
+requires-python = ">=3.9"
+dependencies = [
+    "requests>=2.31.0",
+    "pydantic>=2.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.4.0",
+    "pytest-cov>=4.1.0",
+    "black>=23.0.0",
+    "ruff>=0.1.0",
+    "mypy>=1.5.0",
+]
+
+[tool.black]
+line-length = 88
+target-version = ['py39']
+
+[tool.ruff]
+line-length = 88
+select = ["E", "F", "I", "N", "W"]
+
+[tool.mypy]
+python_version = "3.9"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--cov=mypackage --cov-report=term-missing"
+```
+
+## Quick Reference: Python Idioms
+
+| Idiom | Description |
+|-------|-------------|
+| EAFP | Easier to Ask Forgiveness than Permission |
+| Context managers | Use `with` for resource management |
+| List comprehensions | For simple transformations |
+| Generators | For lazy evaluation and large datasets |
+| Type hints | Annotate function signatures |
+| Dataclasses | For data containers with auto-generated methods |
+| `__slots__` | For memory optimization |
+| f-strings | For string formatting (Python 3.6+) |
+| `pathlib.Path` | For path operations (Python 3.4+) |
+| `enumerate` | For index-element pairs in loops |
 
 ## Anti-Patterns Worth Memorizing
 
@@ -321,6 +645,58 @@ class C:
 class C:
     def __init__(self): self.items = []          # per-instance
 ```
+
+## Anti-Patterns to Avoid
+
+```python
+# Bad: Mutable default arguments
+def append_to(item, items=[]):
+    items.append(item)
+    return items
+
+# Good: Use None and create new list
+def append_to(item, items=None):
+    if items is None:
+        items = []
+    items.append(item)
+    return items
+
+# Bad: Checking type with type()
+if type(obj) == list:
+    process(obj)
+
+# Good: Use isinstance
+if isinstance(obj, list):
+    process(obj)
+
+# Bad: Comparing to None with ==
+if value == None:
+    process()
+
+# Good: Use is
+if value is None:
+    process()
+
+# Bad: from module import *
+from os.path import *
+
+# Good: Explicit imports
+from os.path import join, exists
+
+# Bad: Bare except
+try:
+    risky_operation()
+except:
+    pass
+
+# Good: Specific exception
+try:
+    risky_operation()
+except SpecificError as e:
+    logger.error(f"Operation failed: {e}")
+```
+
+__Remember__: Python code should be readable, explicit, and follow the principle of least surprise. When in doubt, prioritize clarity over cleverness.
 
 ## Reference
 
