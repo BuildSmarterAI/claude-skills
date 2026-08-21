@@ -3,7 +3,6 @@ name: tdd-workflow
 description: Use when writing or fixing TypeScript/Vitest/Playwright tests and you need the stack-specific patterns — unit vs integration vs E2E layout, Vitest ESM mocking, Testing Library queries, Playwright flake avoidance, coverage commands. Covers HOW to write the tests, not WHEN they must be written.
 origin: ECC
 ---
-
 # Test-Driven Development Workflow (TypeScript / Vitest / Playwright)
 
 > **Testing ORDER is governed by `risk-based-tdd` — the canonical doctrine. Do not redefine it here.**
@@ -19,6 +18,37 @@ For the generic RED-GREEN-REFACTOR execution loop, see `superpowers:test-driven-
 - Refactoring existing TypeScript code
 - Adding Next.js API endpoints
 - Creating new React components
+
+## Core Principles
+
+### 1. Tests BEFORE Code — when the doctrine says so
+For changes the `risk-based-tdd` doctrine classifies as high-risk, write the tests first, then implement code to make them pass. For its low-risk categories, implement first and cover afterwards — coverage is still required.
+
+### 2. Coverage Requirements
+- Minimum 80% coverage (unit + integration + E2E)
+- All edge cases covered
+- Error scenarios tested
+- Boundary conditions verified
+
+### 3. Test Types
+
+#### Unit Tests
+- Individual functions and utilities
+- Component logic
+- Pure functions
+- Helpers and utilities
+
+#### Integration Tests
+- API endpoints
+- Database operations
+- Service interactions
+- External API calls
+
+#### E2E Tests (Playwright)
+- Critical user flows
+- Complete workflows
+- Browser automation
+- UI interactions
 
 ## Stack-Specific Test Types
 
@@ -208,6 +238,77 @@ jest.mock('@/lib/openai', () => ({
 
 Run with `npm run test:coverage`. For Vitest, the equivalent lives under `test.coverage.thresholds` in `vitest.config.ts`.
 
+## Common Testing Mistakes to Avoid
+
+### ❌ WRONG: Testing Implementation Details
+```typescript
+// Don't test internal state
+expect(component.state.count).toBe(5)
+```
+
+### ✅ CORRECT: Test User-Visible Behavior
+```typescript
+// Test what users see
+expect(screen.getByText('Count: 5')).toBeInTheDocument()
+```
+
+### ❌ WRONG: Brittle Selectors
+```typescript
+// Breaks easily
+await page.click('.css-class-xyz')
+```
+
+### ✅ CORRECT: Semantic Selectors
+```typescript
+// Resilient to changes
+await page.click('button:has-text("Submit")')
+await page.click('[data-testid="submit-button"]')
+```
+
+### ❌ WRONG: No Test Isolation
+```typescript
+// Tests depend on each other
+test('creates user', () => { /* ... */ })
+test('updates same user', () => { /* depends on previous test */ })
+```
+
+### ✅ CORRECT: Independent Tests
+```typescript
+// Each test sets up its own data
+test('creates user', () => {
+  const user = createTestUser()
+  // Test logic
+})
+
+test('updates user', () => {
+  const user = createTestUser()
+  // Update logic
+})
+```
+
+## Continuous Testing
+
+### Watch Mode During Development
+```bash
+npm test -- --watch
+# Tests run automatically on file changes
+```
+
+### Pre-Commit Hook
+```bash
+# Runs before every commit
+npm test && npm run lint
+```
+
+### CI/CD Integration
+```yaml
+# GitHub Actions
+- name: Run Tests
+  run: npm test -- --coverage
+- name: Upload Coverage
+  uses: codecov/codecov-action@v3
+```
+
 ## Stack-Specific Gotchas
 
 ### Prefer semantic / testid selectors in Playwright
@@ -224,3 +325,16 @@ Use `NextRequest` from `next/server` directly — don't try to spin up a fake se
 
 ### Playwright timing
 Always pair UI actions that trigger debounced search (e.g. `page.fill` on a search input) with either `page.waitForTimeout(debounceMs)` or, better, `expect(locator).toHaveCount(...)` with a `timeout` option so the assertion polls.
+
+## Best Practices
+
+1. **Let `risk-based-tdd` decide the order** - test-first is mandatory for high-risk changes, optional for low-risk ones; coverage is required either way
+2. **One Assert Per Test** - Focus on single behavior
+3. **Descriptive Test Names** - Explain what's tested
+4. **Arrange-Act-Assert** - Clear test structure
+5. **Mock External Dependencies** - Isolate unit tests
+6. **Test Edge Cases** - Null, undefined, empty, large
+7. **Test Error Paths** - Not just happy paths
+8. **Keep Tests Fast** - Unit tests < 50ms each
+9. **Clean Up After Tests** - No side effects
+10. **Review Coverage Reports** - Identify gaps
