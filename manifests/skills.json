@@ -178,254 +178,414 @@
   {
    "skill": "ads",
    "source": null,
-   "source_present_in_canonical": false,
-   "targets": [],
-   "mode": "REPO_LOCAL",
-   "status": "repo-local",
-   "classification": "C. REPO-LOCAL",
+   "source_present_in_canonical": true,
+   "targets": [
+    "claude",
+    "codex"
+   ],
+   "mode": "IDENTICAL",
+   "status": "active",
+   "classification": "A. GLOBAL-CANONICAL",
    "family": null,
    "canonical_owner": "PENDING IMPORT",
    "origin": null,
    "adapter": null,
-   "expected_sha256": null,
+   "expected_sha256": "66a79f0e6a82bc94fc0937c5592cc51f4ebb0a58a37017ba46ccd19ef89a06fe",
    "divergence_decision": "claude",
    "divergence_reason": "Claude side: 0 structural defects vs Codex side carrying blind Claude->Codex substitution (broken paths / mangled frontmatter)",
    "usage": 2,
-   "notes": "belongs to a product repo"
+   "notes": "belongs to a product repo",
+   "ownership_class": "AGENT-SUPPORTING-GLOBAL",
+   "owner_repo": null,
+   "owner_path": null,
+   "consumer_agents": [
+    "audit-budget",
+    "audit-compliance",
+    "audit-creative",
+    "audit-google",
+    "audit-hyros",
+    "audit-meta",
+    "audit-tracking"
+   ],
+   "runtime_exposure": "ACTIVE",
+   "ownership_reason": "Entry point for the paid-advertising audit fleet: `ads/SKILL.md` explicitly spawns the seven audit-* subagents and names the thirteen ads-* deep-dive skills. No marketing or agency repository exists to own it (constructintel.ai is 4 months stale with no skills directory; there is no buzz/marketing repo), so the honest owner is the global agent-support layer, not a fabricated repo. Only orphan with recorded use (2)."
   },
   {
    "skill": "ads-audit",
    "source": null,
-   "source_present_in_canonical": false,
-   "targets": [],
-   "mode": "REPO_LOCAL",
-   "status": "repo-local",
-   "classification": "C. REPO-LOCAL",
+   "source_present_in_canonical": true,
+   "targets": [
+    "claude",
+    "codex"
+   ],
+   "mode": "IDENTICAL",
+   "status": "active",
+   "classification": "A. GLOBAL-CANONICAL",
    "family": null,
    "canonical_owner": "PENDING IMPORT",
    "origin": null,
    "adapter": null,
-   "expected_sha256": null,
+   "expected_sha256": "d87f9a7b4fa51475d4f3af99884b048bf9daefd2a8703edf30cc4f2915de999c",
    "divergence_decision": "claude",
    "divergence_reason": "Claude side: 0 structural defects vs Codex side carrying blind Claude->Codex substitution (broken paths / mangled frontmatter)",
    "usage": 0,
-   "notes": "belongs to a product repo"
+   "notes": "belongs to a product repo",
+   "ownership_class": "AGENT-SUPPORTING-GLOBAL",
+   "owner_repo": null,
+   "owner_path": null,
+   "consumer_agents": [
+    "ads (orchestrator)"
+   ],
+   "runtime_exposure": "ACTIVE",
+   "ownership_reason": "Deep-dive layer of the ads capability; referenced by name from `ads/SKILL.md`. The audit-* agents are self-contained and do NOT consume it, so the dependency runs skill -> agent, not agent -> skill. Proposed for ON_DEMAND in orphan-runtime-exposure-plan.md, deferred because it is unproven that a skill disabled via skillOverrides is still reachable when named by another skill."
   },
   {
    "skill": "ads-budget",
    "source": null,
-   "source_present_in_canonical": false,
-   "targets": [],
-   "mode": "REPO_LOCAL",
-   "status": "repo-local",
-   "classification": "C. REPO-LOCAL",
+   "source_present_in_canonical": true,
+   "targets": [
+    "claude",
+    "codex"
+   ],
+   "mode": "IDENTICAL",
+   "status": "active",
+   "classification": "A. GLOBAL-CANONICAL",
    "family": null,
    "canonical_owner": "PENDING IMPORT",
    "origin": null,
    "adapter": null,
-   "expected_sha256": null,
+   "expected_sha256": "b048d6d5903c2a40415e827a31a31673830b0f5bf3cba37ef272a95023ef452c",
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,
-   "notes": "belongs to a product repo"
+   "notes": "belongs to a product repo",
+   "ownership_class": "AGENT-SUPPORTING-GLOBAL",
+   "owner_repo": null,
+   "owner_path": null,
+   "consumer_agents": [
+    "ads (orchestrator)"
+   ],
+   "runtime_exposure": "ACTIVE",
+   "ownership_reason": "Deep-dive layer of the ads capability; referenced by name from `ads/SKILL.md`. The audit-* agents are self-contained and do NOT consume it, so the dependency runs skill -> agent, not agent -> skill. Proposed for ON_DEMAND in orphan-runtime-exposure-plan.md, deferred because it is unproven that a skill disabled via skillOverrides is still reachable when named by another skill."
   },
   {
    "skill": "ads-competitor",
    "source": null,
-   "source_present_in_canonical": false,
-   "targets": [],
-   "mode": "REPO_LOCAL",
-   "status": "repo-local",
-   "classification": "C. REPO-LOCAL",
+   "source_present_in_canonical": true,
+   "targets": [
+    "claude",
+    "codex"
+   ],
+   "mode": "IDENTICAL",
+   "status": "active",
+   "classification": "A. GLOBAL-CANONICAL",
    "family": null,
    "canonical_owner": "PENDING IMPORT",
    "origin": null,
    "adapter": null,
-   "expected_sha256": null,
+   "expected_sha256": "60e01694fcb1b39f8c42ecae1cb9ec8aa45b7cbed6bb7c3445375ce225e31c8d",
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,
-   "notes": "belongs to a product repo"
+   "notes": "belongs to a product repo",
+   "ownership_class": "AGENT-SUPPORTING-GLOBAL",
+   "owner_repo": null,
+   "owner_path": null,
+   "consumer_agents": [
+    "ads (orchestrator)"
+   ],
+   "runtime_exposure": "ACTIVE",
+   "ownership_reason": "Deep-dive layer of the ads capability; referenced by name from `ads/SKILL.md`. The audit-* agents are self-contained and do NOT consume it, so the dependency runs skill -> agent, not agent -> skill. Proposed for ON_DEMAND in orphan-runtime-exposure-plan.md, deferred because it is unproven that a skill disabled via skillOverrides is still reachable when named by another skill."
   },
   {
    "skill": "ads-creative",
    "source": null,
-   "source_present_in_canonical": false,
-   "targets": [],
-   "mode": "REPO_LOCAL",
-   "status": "repo-local",
-   "classification": "C. REPO-LOCAL",
+   "source_present_in_canonical": true,
+   "targets": [
+    "claude",
+    "codex"
+   ],
+   "mode": "IDENTICAL",
+   "status": "active",
+   "classification": "A. GLOBAL-CANONICAL",
    "family": null,
    "canonical_owner": "PENDING IMPORT",
    "origin": null,
    "adapter": null,
-   "expected_sha256": null,
+   "expected_sha256": "74c31b1f57df9e99156a0689d5145b4aedfb3116f114b12a93efa719744798a2",
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,
-   "notes": "belongs to a product repo"
+   "notes": "belongs to a product repo",
+   "ownership_class": "AGENT-SUPPORTING-GLOBAL",
+   "owner_repo": null,
+   "owner_path": null,
+   "consumer_agents": [
+    "ads (orchestrator)"
+   ],
+   "runtime_exposure": "ACTIVE",
+   "ownership_reason": "Deep-dive layer of the ads capability; referenced by name from `ads/SKILL.md`. The audit-* agents are self-contained and do NOT consume it, so the dependency runs skill -> agent, not agent -> skill. Proposed for ON_DEMAND in orphan-runtime-exposure-plan.md, deferred because it is unproven that a skill disabled via skillOverrides is still reachable when named by another skill."
   },
   {
    "skill": "ads-google",
    "source": null,
-   "source_present_in_canonical": false,
-   "targets": [],
-   "mode": "REPO_LOCAL",
-   "status": "repo-local",
-   "classification": "C. REPO-LOCAL",
+   "source_present_in_canonical": true,
+   "targets": [
+    "claude",
+    "codex"
+   ],
+   "mode": "IDENTICAL",
+   "status": "active",
+   "classification": "A. GLOBAL-CANONICAL",
    "family": null,
    "canonical_owner": "PENDING IMPORT",
    "origin": null,
    "adapter": null,
-   "expected_sha256": null,
+   "expected_sha256": "159c021e1163de713d09414a14ff77103a26df557a7f74375658875b3afa2ec3",
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,
-   "notes": "belongs to a product repo"
+   "notes": "belongs to a product repo",
+   "ownership_class": "AGENT-SUPPORTING-GLOBAL",
+   "owner_repo": null,
+   "owner_path": null,
+   "consumer_agents": [
+    "ads (orchestrator)"
+   ],
+   "runtime_exposure": "ACTIVE",
+   "ownership_reason": "Deep-dive layer of the ads capability; referenced by name from `ads/SKILL.md`. The audit-* agents are self-contained and do NOT consume it, so the dependency runs skill -> agent, not agent -> skill. Proposed for ON_DEMAND in orphan-runtime-exposure-plan.md, deferred because it is unproven that a skill disabled via skillOverrides is still reachable when named by another skill."
   },
   {
    "skill": "ads-hyros",
    "source": null,
-   "source_present_in_canonical": false,
-   "targets": [],
-   "mode": "REPO_LOCAL",
-   "status": "repo-local",
-   "classification": "C. REPO-LOCAL",
+   "source_present_in_canonical": true,
+   "targets": [
+    "claude",
+    "codex"
+   ],
+   "mode": "IDENTICAL",
+   "status": "active",
+   "classification": "A. GLOBAL-CANONICAL",
    "family": null,
    "canonical_owner": "PENDING IMPORT",
    "origin": null,
    "adapter": null,
-   "expected_sha256": null,
+   "expected_sha256": "2e7508294ce24bc3db048ccd9655697d32312a1301a27132d97455525914cbd2",
    "divergence_decision": "claude",
    "divergence_reason": "Claude side: 0 structural defects vs Codex side carrying blind Claude->Codex substitution (broken paths / mangled frontmatter)",
    "usage": 0,
-   "notes": "belongs to a product repo"
+   "notes": "belongs to a product repo",
+   "ownership_class": "AGENT-SUPPORTING-GLOBAL",
+   "owner_repo": null,
+   "owner_path": null,
+   "consumer_agents": [
+    "ads (orchestrator)"
+   ],
+   "runtime_exposure": "ACTIVE",
+   "ownership_reason": "Deep-dive layer of the ads capability; referenced by name from `ads/SKILL.md`. The audit-* agents are self-contained and do NOT consume it, so the dependency runs skill -> agent, not agent -> skill. Proposed for ON_DEMAND in orphan-runtime-exposure-plan.md, deferred because it is unproven that a skill disabled via skillOverrides is still reachable when named by another skill."
   },
   {
    "skill": "ads-landing",
    "source": null,
-   "source_present_in_canonical": false,
-   "targets": [],
-   "mode": "REPO_LOCAL",
-   "status": "repo-local",
-   "classification": "C. REPO-LOCAL",
+   "source_present_in_canonical": true,
+   "targets": [
+    "claude",
+    "codex"
+   ],
+   "mode": "IDENTICAL",
+   "status": "active",
+   "classification": "A. GLOBAL-CANONICAL",
    "family": null,
    "canonical_owner": "PENDING IMPORT",
    "origin": null,
    "adapter": null,
-   "expected_sha256": null,
+   "expected_sha256": "11309cdb76dc58647a646690791a76e4fe558c4e52eb0e491837d45a90c1da01",
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,
-   "notes": "belongs to a product repo"
+   "notes": "belongs to a product repo",
+   "ownership_class": "AGENT-SUPPORTING-GLOBAL",
+   "owner_repo": null,
+   "owner_path": null,
+   "consumer_agents": [
+    "ads (orchestrator)"
+   ],
+   "runtime_exposure": "ACTIVE",
+   "ownership_reason": "Deep-dive layer of the ads capability; referenced by name from `ads/SKILL.md`. The audit-* agents are self-contained and do NOT consume it, so the dependency runs skill -> agent, not agent -> skill. Proposed for ON_DEMAND in orphan-runtime-exposure-plan.md, deferred because it is unproven that a skill disabled via skillOverrides is still reachable when named by another skill."
   },
   {
    "skill": "ads-linkedin",
    "source": null,
-   "source_present_in_canonical": false,
-   "targets": [],
-   "mode": "REPO_LOCAL",
-   "status": "repo-local",
-   "classification": "C. REPO-LOCAL",
+   "source_present_in_canonical": true,
+   "targets": [
+    "claude",
+    "codex"
+   ],
+   "mode": "IDENTICAL",
+   "status": "active",
+   "classification": "A. GLOBAL-CANONICAL",
    "family": null,
    "canonical_owner": "PENDING IMPORT",
    "origin": null,
    "adapter": null,
-   "expected_sha256": null,
+   "expected_sha256": "b0f0269f28e000368470c0c6bc870467d311f7f81148771975524dd96ec6367c",
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,
-   "notes": "belongs to a product repo"
+   "notes": "belongs to a product repo",
+   "ownership_class": "AGENT-SUPPORTING-GLOBAL",
+   "owner_repo": null,
+   "owner_path": null,
+   "consumer_agents": [
+    "ads (orchestrator)"
+   ],
+   "runtime_exposure": "ACTIVE",
+   "ownership_reason": "Deep-dive layer of the ads capability; referenced by name from `ads/SKILL.md`. The audit-* agents are self-contained and do NOT consume it, so the dependency runs skill -> agent, not agent -> skill. Proposed for ON_DEMAND in orphan-runtime-exposure-plan.md, deferred because it is unproven that a skill disabled via skillOverrides is still reachable when named by another skill."
   },
   {
    "skill": "ads-meta",
    "source": null,
-   "source_present_in_canonical": false,
-   "targets": [],
-   "mode": "REPO_LOCAL",
-   "status": "repo-local",
-   "classification": "C. REPO-LOCAL",
+   "source_present_in_canonical": true,
+   "targets": [
+    "claude",
+    "codex"
+   ],
+   "mode": "IDENTICAL",
+   "status": "active",
+   "classification": "A. GLOBAL-CANONICAL",
    "family": null,
    "canonical_owner": "PENDING IMPORT",
    "origin": null,
    "adapter": null,
-   "expected_sha256": null,
+   "expected_sha256": "baeff12cfe38b6a1f468247b0438661df2257ecec7bb077306983d22f48e8acd",
    "divergence_decision": "claude",
    "divergence_reason": "Claude side: 0 structural defects vs Codex side carrying blind Claude->Codex substitution (broken paths / mangled frontmatter)",
    "usage": 0,
-   "notes": "belongs to a product repo"
+   "notes": "belongs to a product repo",
+   "ownership_class": "AGENT-SUPPORTING-GLOBAL",
+   "owner_repo": null,
+   "owner_path": null,
+   "consumer_agents": [
+    "ads (orchestrator)"
+   ],
+   "runtime_exposure": "ACTIVE",
+   "ownership_reason": "Deep-dive layer of the ads capability; referenced by name from `ads/SKILL.md`. The audit-* agents are self-contained and do NOT consume it, so the dependency runs skill -> agent, not agent -> skill. Proposed for ON_DEMAND in orphan-runtime-exposure-plan.md, deferred because it is unproven that a skill disabled via skillOverrides is still reachable when named by another skill."
   },
   {
    "skill": "ads-microsoft",
    "source": null,
-   "source_present_in_canonical": false,
-   "targets": [],
-   "mode": "REPO_LOCAL",
-   "status": "repo-local",
-   "classification": "C. REPO-LOCAL",
+   "source_present_in_canonical": true,
+   "targets": [
+    "claude",
+    "codex"
+   ],
+   "mode": "IDENTICAL",
+   "status": "active",
+   "classification": "A. GLOBAL-CANONICAL",
    "family": null,
    "canonical_owner": "PENDING IMPORT",
    "origin": null,
    "adapter": null,
-   "expected_sha256": null,
+   "expected_sha256": "4d241cf569a3ef5855a7485515f622409c31cbffae0107a91bd34f0a2475eacc",
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,
-   "notes": "belongs to a product repo"
+   "notes": "belongs to a product repo",
+   "ownership_class": "AGENT-SUPPORTING-GLOBAL",
+   "owner_repo": null,
+   "owner_path": null,
+   "consumer_agents": [
+    "ads (orchestrator)"
+   ],
+   "runtime_exposure": "ACTIVE",
+   "ownership_reason": "Deep-dive layer of the ads capability; referenced by name from `ads/SKILL.md`. The audit-* agents are self-contained and do NOT consume it, so the dependency runs skill -> agent, not agent -> skill. Proposed for ON_DEMAND in orphan-runtime-exposure-plan.md, deferred because it is unproven that a skill disabled via skillOverrides is still reachable when named by another skill."
   },
   {
    "skill": "ads-plan",
    "source": null,
-   "source_present_in_canonical": false,
-   "targets": [],
-   "mode": "REPO_LOCAL",
-   "status": "repo-local",
-   "classification": "C. REPO-LOCAL",
+   "source_present_in_canonical": true,
+   "targets": [
+    "claude",
+    "codex"
+   ],
+   "mode": "IDENTICAL",
+   "status": "active",
+   "classification": "A. GLOBAL-CANONICAL",
    "family": null,
    "canonical_owner": "PENDING IMPORT",
    "origin": null,
    "adapter": null,
-   "expected_sha256": null,
+   "expected_sha256": "7e5a5ed8f091b16d0fb481915a648139ea52837533067f2a57f329ca0319bd64",
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,
-   "notes": "belongs to a product repo"
+   "notes": "belongs to a product repo",
+   "ownership_class": "AGENT-SUPPORTING-GLOBAL",
+   "owner_repo": null,
+   "owner_path": null,
+   "consumer_agents": [
+    "ads (orchestrator)"
+   ],
+   "runtime_exposure": "ACTIVE",
+   "ownership_reason": "Deep-dive layer of the ads capability; referenced by name from `ads/SKILL.md`. The audit-* agents are self-contained and do NOT consume it, so the dependency runs skill -> agent, not agent -> skill. Proposed for ON_DEMAND in orphan-runtime-exposure-plan.md, deferred because it is unproven that a skill disabled via skillOverrides is still reachable when named by another skill."
   },
   {
    "skill": "ads-tiktok",
    "source": null,
-   "source_present_in_canonical": false,
-   "targets": [],
-   "mode": "REPO_LOCAL",
-   "status": "repo-local",
-   "classification": "C. REPO-LOCAL",
+   "source_present_in_canonical": true,
+   "targets": [
+    "claude",
+    "codex"
+   ],
+   "mode": "IDENTICAL",
+   "status": "active",
+   "classification": "A. GLOBAL-CANONICAL",
    "family": null,
    "canonical_owner": "PENDING IMPORT",
    "origin": null,
    "adapter": null,
-   "expected_sha256": null,
+   "expected_sha256": "443e8691c5366d868ba79811ca1a267311b5945b9304d90070302dd191323342",
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,
-   "notes": "belongs to a product repo"
+   "notes": "belongs to a product repo",
+   "ownership_class": "AGENT-SUPPORTING-GLOBAL",
+   "owner_repo": null,
+   "owner_path": null,
+   "consumer_agents": [
+    "ads (orchestrator)"
+   ],
+   "runtime_exposure": "ACTIVE",
+   "ownership_reason": "Deep-dive layer of the ads capability; referenced by name from `ads/SKILL.md`. The audit-* agents are self-contained and do NOT consume it, so the dependency runs skill -> agent, not agent -> skill. Proposed for ON_DEMAND in orphan-runtime-exposure-plan.md, deferred because it is unproven that a skill disabled via skillOverrides is still reachable when named by another skill."
   },
   {
    "skill": "ads-youtube",
    "source": null,
-   "source_present_in_canonical": false,
-   "targets": [],
-   "mode": "REPO_LOCAL",
-   "status": "repo-local",
-   "classification": "C. REPO-LOCAL",
+   "source_present_in_canonical": true,
+   "targets": [
+    "claude",
+    "codex"
+   ],
+   "mode": "IDENTICAL",
+   "status": "active",
+   "classification": "A. GLOBAL-CANONICAL",
    "family": null,
    "canonical_owner": "PENDING IMPORT",
    "origin": null,
    "adapter": null,
-   "expected_sha256": null,
+   "expected_sha256": "bcdc82fa5009698dac6b7d063b3af8cb28f3923ea7cd30813611f0ca582c77b9",
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,
-   "notes": "belongs to a product repo"
+   "notes": "belongs to a product repo",
+   "ownership_class": "AGENT-SUPPORTING-GLOBAL",
+   "owner_repo": null,
+   "owner_path": null,
+   "consumer_agents": [
+    "ads (orchestrator)"
+   ],
+   "runtime_exposure": "ACTIVE",
+   "ownership_reason": "Deep-dive layer of the ads capability; referenced by name from `ads/SKILL.md`. The audit-* agents are self-contained and do NOT consume it, so the dependency runs skill -> agent, not agent -> skill. Proposed for ON_DEMAND in orphan-runtime-exposure-plan.md, deferred because it is unproven that a skill disabled via skillOverrides is still reachable when named by another skill."
   },
   {
    "skill": "agent-eval",
@@ -871,7 +1031,14 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,
-   "notes": "belongs to a product repo"
+   "notes": "belongs to a product repo",
+   "ownership_class": "REPO-LOCAL",
+   "owner_repo": "maxx-sales-genius",
+   "owner_path": "maxx-sales-genius/.claude/skills/branch-protection-override",
+   "consumer_agents": [],
+   "runtime_exposure": "repo-local",
+   "move_status": "ALREADY_IN_REPO",
+   "ownership_reason": "Verified present on disk at maxx-sales-genius/.claude/skills/branch-protection-override. The repository already owns and maintains this skill; canonical does not need to."
   },
   {
    "skill": "brand-voice",
@@ -1195,10 +1362,13 @@
    "skill": "cold-outreach-pipeline",
    "source": "cold-outreach-pipeline",
    "source_present_in_canonical": true,
-   "targets": [],
-   "mode": "REPO_LOCAL",
-   "status": "repo-local",
-   "classification": "C. REPO-LOCAL",
+   "targets": [
+    "claude",
+    "codex"
+   ],
+   "mode": "IDENTICAL",
+   "status": "on-demand",
+   "classification": "A. GLOBAL-CANONICAL",
    "family": null,
    "canonical_owner": "claude-skills repo",
    "origin": null,
@@ -1207,7 +1377,13 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,
-   "notes": "belongs to a product repo"
+   "notes": "belongs to a product repo",
+   "ownership_class": "SHARED-DOMAIN",
+   "owner_repo": null,
+   "owner_path": null,
+   "consumer_agents": [],
+   "runtime_exposure": "ON_DEMAND",
+   "ownership_reason": "Its own description scopes it to \"ConstructIntel.ai and SiteIntel sales\" - two products, so no single repo can own it. Not currently present in either runtime; stays off."
   },
   {
    "skill": "compose-multiplatform-patterns",
@@ -1282,25 +1458,41 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,
-   "notes": "belongs to a product repo"
+   "notes": "belongs to a product repo",
+   "ownership_class": "REPO-LOCAL",
+   "owner_repo": "constructintel.ai",
+   "owner_path": "constructintel.ai/.claude/skills/constructintel-extraction",
+   "consumer_agents": [],
+   "runtime_exposure": "ON_DEMAND",
+   "move_status": "DEFER_MOVE",
+   "ownership_reason": "Description scopes it unambiguously to \"ConstructIntel.ai's AI-powered document extraction pipeline\" (PDF processing, CSI classification, bid line-item parsing). MOVE DEFERRED: the constructintel.ai repo last committed 4 months ago and has no .claude/skills or .agents/skills directory, so it is not a healthy adoption target yet."
   },
   {
    "skill": "construction-industry",
    "source": null,
-   "source_present_in_canonical": false,
-   "targets": [],
-   "mode": "REPO_LOCAL",
-   "status": "repo-local",
-   "classification": "C. REPO-LOCAL",
+   "source_present_in_canonical": true,
+   "targets": [
+    "claude",
+    "codex"
+   ],
+   "mode": "IDENTICAL",
+   "status": "active",
+   "classification": "A. GLOBAL-CANONICAL",
    "family": null,
    "canonical_owner": "PENDING IMPORT",
    "origin": null,
    "adapter": null,
-   "expected_sha256": null,
+   "expected_sha256": "2a89154d2930af8a158c166a05e1d4e151afd35fd1ac2889c150c76817524cb6",
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 1,
-   "notes": "belongs to a product repo"
+   "notes": "belongs to a product repo",
+   "ownership_class": "SHARED-DOMAIN",
+   "owner_repo": null,
+   "owner_path": null,
+   "consumer_agents": [],
+   "runtime_exposure": "ACTIVE",
+   "ownership_reason": "Generic construction domain knowledge - CSI MasterFormat divisions, estimating workflow, bid formats, scope-gap risk, Texas context - with only two product-name mentions in 6.4KB. Applies across maxx-sales-genius (TDLR/TABC construction leads), preconintel (preconstruction), constructintel.ai (bid extraction) and siteintelai (site feasibility). Forcing it into one repo would duplicate it into four."
   },
   {
    "skill": "content-engine",
@@ -1687,7 +1879,14 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 50,
-   "notes": "belongs to a product repo"
+   "notes": "belongs to a product repo",
+   "ownership_class": "REPO-LOCAL",
+   "owner_repo": "maxx-brace-fix-wt",
+   "owner_path": "maxx-brace-fix-wt/.claude/skills/deploy",
+   "consumer_agents": [],
+   "runtime_exposure": "repo-local",
+   "move_status": "ALREADY_IN_REPO",
+   "ownership_reason": "Verified present on disk at maxx-brace-fix-wt/.claude/skills/deploy. The repository already owns and maintains this skill; canonical does not need to."
   },
   {
    "skill": "deployment-patterns",
@@ -1987,7 +2186,14 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,
-   "notes": "belongs to a product repo"
+   "notes": "belongs to a product repo",
+   "ownership_class": "REPO-LOCAL",
+   "owner_repo": "siteintelai",
+   "owner_path": "siteintelai/.claude/skills/edge-drift-check",
+   "consumer_agents": [],
+   "runtime_exposure": "repo-local",
+   "move_status": "ALREADY_IN_REPO",
+   "ownership_reason": "Verified present on disk at siteintelai/.claude/skills/edge-drift-check. The repository already owns and maintains this skill; canonical does not need to."
   },
   {
    "skill": "edge-function-deploy",
@@ -2005,7 +2211,14 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,
-   "notes": "belongs to a product repo"
+   "notes": "belongs to a product repo",
+   "ownership_class": "REPO-LOCAL",
+   "owner_repo": "siteintelai",
+   "owner_path": "siteintelai/.claude/skills/edge-function-deploy",
+   "consumer_agents": [],
+   "runtime_exposure": "repo-local",
+   "move_status": "ALREADY_IN_REPO",
+   "ownership_reason": "Verified present on disk at siteintelai/.claude/skills/edge-function-deploy. The repository already owns and maintains this skill; canonical does not need to."
   },
   {
    "skill": "edit-article",
@@ -2633,7 +2846,14 @@
    "divergence_reason": "Canonical carries origin \"ECC (customized for BuildSmarter stack)\" and a BuildSmarter Portfolio Context section the runtime lacks.",
    "usage": 0,
    "notes": "belongs to a product repo",
-   "d3_classification": "B. CANONICAL_NEWER_SAME_CAPABILITY"
+   "d3_classification": "B. CANONICAL_NEWER_SAME_CAPABILITY",
+   "ownership_class": "REPO-LOCAL",
+   "owner_repo": "siteintelai",
+   "owner_path": "siteintelai/.agents/skills/investor-materials",
+   "consumer_agents": [],
+   "runtime_exposure": "repo-local",
+   "move_status": "ALREADY_IN_REPO",
+   "ownership_reason": "Verified present on disk at siteintelai/.agents/skills/investor-materials. The repository already owns and maintains this skill; canonical does not need to."
   },
   {
    "skill": "investor-outreach",
@@ -2652,7 +2872,14 @@
    "divergence_reason": "Canonical carries BuildSmarter customization (Investor Targeting Segments) absent from the generic runtime copy.",
    "usage": 0,
    "notes": "belongs to a product repo",
-   "d3_classification": "B. CANONICAL_NEWER_SAME_CAPABILITY"
+   "d3_classification": "B. CANONICAL_NEWER_SAME_CAPABILITY",
+   "ownership_class": "REPO-LOCAL",
+   "owner_repo": "siteintelai",
+   "owner_path": "siteintelai/.agents/skills/investor-outreach",
+   "consumer_agents": [],
+   "runtime_exposure": "repo-local",
+   "move_status": "ALREADY_IN_REPO",
+   "ownership_reason": "Verified present on disk at siteintelai/.agents/skills/investor-outreach. The repository already owns and maintains this skill; canonical does not need to."
   },
   {
    "skill": "iterative-retrieval",
@@ -2916,9 +3143,9 @@
    "source": "lead-intelligence",
    "source_present_in_canonical": true,
    "targets": [],
-   "mode": "REPO_LOCAL",
-   "status": "repo-local",
-   "classification": "C. REPO-LOCAL",
+   "mode": "DISABLED",
+   "status": "on-demand",
+   "classification": "A. GLOBAL-CANONICAL",
    "family": null,
    "canonical_owner": "claude-skills repo",
    "origin": null,
@@ -2927,7 +3154,13 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,
-   "notes": "belongs to a product repo"
+   "notes": "belongs to a product repo",
+   "ownership_class": "GLOBAL-ON-DEMAND",
+   "owner_repo": null,
+   "owner_path": null,
+   "consumer_agents": [],
+   "runtime_exposure": "ON_DEMAND",
+   "ownership_reason": "Generic AI-native lead intelligence and outreach scoring (origin ECC). Names no product and is not construction-specific; the same capability serves any outbound motion."
   },
   {
    "skill": "liquid-glass-design",
@@ -2963,7 +3196,14 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,
-   "notes": "belongs to a product repo"
+   "notes": "belongs to a product repo",
+   "ownership_class": "REPO-LOCAL",
+   "owner_repo": "maxx-sales-genius",
+   "owner_path": "maxx-sales-genius/.claude/skills/live-outreach-safety",
+   "consumer_agents": [],
+   "runtime_exposure": "repo-local",
+   "move_status": "ALREADY_IN_REPO",
+   "ownership_reason": "Verified present on disk at maxx-sales-genius/.claude/skills/live-outreach-safety. The repository already owns and maintains this skill; canonical does not need to."
   },
   {
    "skill": "logistics-exception-management",
@@ -3121,7 +3361,14 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,
-   "notes": "belongs to a product repo"
+   "notes": "belongs to a product repo",
+   "ownership_class": "REPO-LOCAL",
+   "owner_repo": "siteintelai",
+   "owner_path": "siteintelai/.claude/skills/migration-apply-verify",
+   "consumer_agents": [],
+   "runtime_exposure": "repo-local",
+   "move_status": "ALREADY_IN_REPO",
+   "ownership_reason": "Verified present on disk at siteintelai/.claude/skills/migration-apply-verify. The repository already owns and maintains this skill; canonical does not need to."
   },
   {
    "skill": "mutation-battery",
@@ -3139,7 +3386,14 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 18,
-   "notes": "belongs to a product repo"
+   "notes": "belongs to a product repo",
+   "ownership_class": "REPO-LOCAL",
+   "owner_repo": "maxx-sales-genius",
+   "owner_path": "maxx-sales-genius/.claude/skills/mutation-battery",
+   "consumer_agents": [],
+   "runtime_exposure": "repo-local",
+   "move_status": "ALREADY_IN_REPO",
+   "ownership_reason": "Verified present on disk at maxx-sales-genius/.claude/skills/mutation-battery. The repository already owns and maintains this skill; canonical does not need to."
   },
   {
    "skill": "nanoclaw-repl",
@@ -3370,7 +3624,14 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 25,
-   "notes": "belongs to a product repo"
+   "notes": "belongs to a product repo",
+   "ownership_class": "REPO-LOCAL",
+   "owner_repo": "maxx-sales-genius",
+   "owner_path": "maxx-sales-genius/.claude/skills/pr-gate",
+   "consumer_agents": [],
+   "runtime_exposure": "repo-local",
+   "move_status": "ALREADY_IN_REPO",
+   "ownership_reason": "Verified present on disk at maxx-sales-genius/.claude/skills/pr-gate. The repository already owns and maintains this skill; canonical does not need to."
   },
   {
    "skill": "preconintel",
@@ -3388,7 +3649,14 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 47,
-   "notes": "belongs to a product repo"
+   "notes": "belongs to a product repo",
+   "ownership_class": "REPO-LOCAL",
+   "owner_repo": "preconintel",
+   "owner_path": "preconintel/.agents/skills/preconintel",
+   "consumer_agents": [],
+   "runtime_exposure": "repo-local",
+   "move_status": "ALREADY_IN_REPO",
+   "ownership_reason": "Verified present on disk at preconintel/.agents/skills/preconintel. The repository already owns and maintains this skill; canonical does not need to."
   },
   {
    "skill": "product-capability",
@@ -4069,9 +4337,9 @@
    "source": "seo",
    "source_present_in_canonical": true,
    "targets": [],
-   "mode": "REPO_LOCAL",
-   "status": "repo-local",
-   "classification": "C. REPO-LOCAL",
+   "mode": "DISABLED",
+   "status": "on-demand",
+   "classification": "A. GLOBAL-CANONICAL",
    "family": null,
    "canonical_owner": "claude-skills repo",
    "origin": null,
@@ -4080,7 +4348,13 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,
-   "notes": "belongs to a product repo"
+   "notes": "belongs to a product repo",
+   "ownership_class": "GLOBAL-ON-DEMAND",
+   "owner_repo": null,
+   "owner_path": null,
+   "consumer_agents": [],
+   "runtime_exposure": "ON_DEMAND",
+   "ownership_reason": "Generic SEO auditing and implementation (origin ECC) - technical SEO, structured data, Core Web Vitals. No product coupling of any kind."
   },
   {
    "skill": "setup-matt-pocock-skills",
@@ -4140,7 +4414,14 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,
-   "notes": "belongs to a product repo"
+   "notes": "belongs to a product repo",
+   "ownership_class": "REPO-LOCAL",
+   "owner_repo": "siteintelai",
+   "owner_path": "siteintelai/.claude/skills/siteintel-gis-pipeline",
+   "consumer_agents": [],
+   "runtime_exposure": "ON_DEMAND",
+   "move_status": "DEFER_MOVE",
+   "ownership_reason": "Description scopes it unambiguously to \"SiteIntel's GIS data pipeline and feasibility scoring engine\" (PostGIS, county CAD schemas, Texas spatial sources). MOVE DEFERRED: the siteintelai primary checkout is on branch chore/parked-primary and is 16 commits behind origin/main, so it is not a safe adoption target in this session."
   },
   {
    "skill": "skill-comply",
@@ -4346,7 +4627,14 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,
-   "notes": "belongs to a product repo"
+   "notes": "belongs to a product repo",
+   "ownership_class": "REPO-LOCAL",
+   "owner_repo": "preconintel",
+   "owner_path": "preconintel/.agents/skills/source-command-done",
+   "consumer_agents": [],
+   "runtime_exposure": "repo-local",
+   "move_status": "ALREADY_IN_REPO",
+   "ownership_reason": "Verified present on disk at preconintel/.agents/skills/source-command-done. The repository already owns and maintains this skill; canonical does not need to."
   },
   {
    "skill": "source-command-e2e",
@@ -4661,7 +4949,14 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,
-   "notes": "belongs to a product repo"
+   "notes": "belongs to a product repo",
+   "ownership_class": "REPO-LOCAL",
+   "owner_repo": "preconintel",
+   "owner_path": "preconintel/.agents/skills/source-command-regen-types",
+   "consumer_agents": [],
+   "runtime_exposure": "repo-local",
+   "move_status": "ALREADY_IN_REPO",
+   "ownership_reason": "Verified present on disk at preconintel/.agents/skills/source-command-regen-types. The repository already owns and maintains this skill; canonical does not need to."
   },
   {
    "skill": "source-command-resume-session",
@@ -5587,7 +5882,14 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 38,
-   "notes": "belongs to a product repo"
+   "notes": "belongs to a product repo",
+   "ownership_class": "REPO-LOCAL",
+   "owner_repo": "maxx-sales-genius",
+   "owner_path": "maxx-sales-genius/.claude/skills/wt-bootstrap",
+   "consumer_agents": [],
+   "runtime_exposure": "repo-local",
+   "move_status": "ALREADY_IN_REPO",
+   "ownership_reason": "Verified present on disk at maxx-sales-genius/.claude/skills/wt-bootstrap. The repository already owns and maintains this skill; canonical does not need to."
   },
   {
    "skill": "wt-teardown",
@@ -5605,7 +5907,14 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 2,
-   "notes": "belongs to a product repo"
+   "notes": "belongs to a product repo",
+   "ownership_class": "REPO-LOCAL",
+   "owner_repo": "maxx-sales-genius",
+   "owner_path": "maxx-sales-genius/.claude/skills/wt-teardown",
+   "consumer_agents": [],
+   "runtime_exposure": "repo-local",
+   "move_status": "ALREADY_IN_REPO",
+   "ownership_reason": "Verified present on disk at maxx-sales-genius/.claude/skills/wt-teardown. The repository already owns and maintains this skill; canonical does not need to."
   },
   {
    "skill": "x-api",
@@ -5704,5 +6013,11 @@
    "x-api"
   ],
   "policy": "D3.5 classified all 8 as \"genuine merge owed\" from a line-count rule. Individual inspection showed 3 were runtime-corruption cases, 1 a platform adapter, 2 grafts, 1 an off-stack curation and only 1 a true merge."
+ },
+ "d42": {
+  "orphan_set_recomputed": 20,
+  "prior_reported": 15,
+  "note": "The earlier figure of 15 counted orphans only within the live Claude drop list; across the whole manifest there are 20.",
+  "invariant": "REPO_LOCAL requires a named owner_repo and owner_path."
  }
 }
