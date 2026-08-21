@@ -64,3 +64,51 @@ been reviewed against its canonical counterpart. The deployment system is built 
 4. Deploy, then verify hashes.
 5. Only after that, consider the runtime active-set reduction.
 
+
+
+---
+
+# D3 OUTCOME — reconciled and deployed
+
+Recomputed from scratch: **160 conflict rows across 92 distinct skills** (D2's "22" counted the
+Claude side only). 111 rows / 78 skills were substantive; 49 rows were line-endings alone.
+
+| Classification | Rows |
+|---|---:|
+| G. TRIVIAL_NORMALIZATION | 49 |
+| A. RUNTIME_NEWER_SAME_CAPABILITY | 34 |
+| F. CORRUPTION (all Codex; canonical clean in every case) | 33 |
+| B. CANONICAL_NEWER_SAME_CAPABILITY | 27 |
+| D. TWO_DIFFERENT_SKILLS_SAME_NAME | 13 |
+| H. HUMAN_DECISION_REQUIRED | 4 |
+
+## Same-name / different-capability splits
+
+| Skill | Classification | Canonical before | Runtime before | Decision | Canonical after | Why | Risk | Verification |
+|---|---|---|---|---|---|---|---|---|
+| `code-review` | D (ratio **0.019**) | engineering-quality checklist | Codex: dual-axis Standards+Spec reviewer | **SPLIT** | `code-review` = dual-axis reviewer; `code-review-patterns` = checklist | Only 2 shared lines. The dual-axis reviewer is the capability the audit called "truly missing"; it existed Codex-only. | Rename affects a 20-use skill. Mitigated: the 350-invocation `code-reviewer` **agent is independent** (0 skill references), no rule/repo file dispatches the name. | Both held out of deploy; runtime dispatch unchanged pending confirmation |
+| `git-workflow` | D (ratio **0.13**, **4.85x** size) | generic ECC branching-strategy encyclopedia (15,057 b) | BuildSmarter commit/branch **conventions** (3,102 b, 25 uses) | **SPLIT** | `git-workflow` = live conventions; `git-workflow-patterns` = ECC reference | One is a strategy encyclopedia, the other is this org's actual conventions. | Low — conventions keep the used name | Deployed; all three hashes `26aaab53` |
+
+## Same-capability adjudications
+
+| Skill | Classification | Decision | Why | Verification |
+|---|---|---|---|---|
+| `crosspost` | A | canonical corrected **from** runtime | runtime is a superset (adds Platform Specifications) | canonical == runtime, deploy is a no-op |
+| `market-research` | B | **canonical wins**, deployed | canonical carries `origin: ECC (customized for BuildSmarter stack)` and CRE/PropTech targeting the generic runtime copy lost | deployed; description now shows the BuildSmarter customization |
+| `investor-materials`, `investor-outreach` | B | canonical wins | canonical holds BuildSmarter Portfolio Context / Investor Targeting Segments | canonical only (classified REPO_LOCAL, not globally deployed) |
+| 33 Codex skills | F | **canonical wins** | runtime carries the blind `Claude`->`Codex` substitution; canonical clean in every case | 6 deployed this round; the rest are on-demand and stay held |
+| 49 rows | G | canonical wins | line endings only | deployed where active |
+
+## Held for human decision
+
+| Skill | Why |
+|---|---|
+| `python-patterns` | Canonical is sharper (EAFP vs LBYL, decision matrices); runtime is broader. Needs a merge, not a winner. |
+| `python-testing` | Canonical holds institutional knowledge (the patch-vs-autospec binding trap); runtime is generic TDD boilerplate. Needs a merge. |
+| `deep-research` | Two different designs (canonical = firecrawl/exa MCP workflow; runtime = citation tracking + evidence persistence + output contract). Ratio 0.029. |
+| 47 A/B skills | Same capability, drift not individually adjudicated. Set `status: hold` so `--deploy` cannot touch them. |
+
+## Deployment executed
+
+57 file operations, **0 deletions**. Claude +1 create / 27 updates; Codex +1 create / 28 updates.
+Post-deploy `--check`: **CLEAN**. `risk-based-tdd` byte-identical across canonical, Claude and Codex.
