@@ -1,0 +1,37 @@
+name: Skill consistency
+
+# Enforces canonical repository integrity on every PR and every push to main.
+#
+# This gate answers ONE question: is the canonical repository internally correct?
+# It deliberately does NOT run `deploy-skills.py --check`, which compares canonical
+# against the live ~/.claude/skills and ~/.agents/skills stores. A CI runner has
+# neither, so that command reports every declared skill as a false CREATE
+# (measured: 246 on an empty runner). Runtime parity is a local question.
+# See docs/consolidation/README.md.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+# Read-only. This workflow needs no secrets, writes nothing, and deploys nothing.
+permissions:
+  contents: read
+
+jobs:
+  consistency:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Checker self-tests
+        # The gate is only worth as much as its own tests: a checker that passes
+        # vacuously would report success on a broken repository.
+        run: python -m unittest discover -s tests -v
+
+      - name: Canonical skill consistency
+        run: python scripts/check-skill-consistency.py

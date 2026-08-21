@@ -79,7 +79,9 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 1,
-   "notes": "used (1)"
+   "notes": "used (1)",
+   "intentional_divergence": "Present only in the Claude store at consolidation import; no Claude-specific or Codex-specific requirement was found in the content (it drives the runtime-neutral @21st-dev/cli). This is PROVENANCE, not capability - the same shape as tdd-workflow before D4.1 reclassified it to IDENTICAL. Recorded here so the divergence is explicit rather than silent; REVIEW CANDIDATE for tool-neutral reclassification, which needs its own verification pass and is out of scope for the D4.3 CI session.",
+   "divergence_review_candidate": true
   },
   {
    "skill": "21st-design-sync",
@@ -99,7 +101,9 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 1,
-   "notes": "used (1)"
+   "notes": "used (1)",
+   "intentional_divergence": "Present only in the Claude store at consolidation import; no Claude-specific or Codex-specific requirement was found in the content (it drives the runtime-neutral @21st-dev/cli). This is PROVENANCE, not capability - the same shape as tdd-workflow before D4.1 reclassified it to IDENTICAL. Recorded here so the divergence is explicit rather than silent; REVIEW CANDIDATE for tool-neutral reclassification, which needs its own verification pass and is out of scope for the D4.3 CI session.",
+   "divergence_review_candidate": true
   },
   {
    "skill": "21st-registry",
@@ -173,7 +177,9 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 1,
-   "notes": "used (1)"
+   "notes": "used (1)",
+   "intentional_divergence": "Present only in the Claude store at consolidation import; no Claude-specific or Codex-specific requirement was found in the content (it drives the runtime-neutral @21st-dev/cli). This is PROVENANCE, not capability - the same shape as tdd-workflow before D4.1 reclassified it to IDENTICAL. Recorded here so the divergence is explicit rather than silent; REVIEW CANDIDATE for tool-neutral reclassification, which needs its own verification pass and is out of scope for the D4.3 CI session.",
+   "divergence_review_candidate": true
   },
   {
    "skill": "ads",

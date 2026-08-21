@@ -96,3 +96,38 @@ without a real, documented customization.**
   declared third-party, deliberately repo-local, deliberately on-demand, or explicitly pending human
   adjudication.
 - No runtime skill was deleted or disabled in D2.
+
+## Two checks, two different questions
+
+Both are necessary. Neither substitutes for the other.
+
+| | `check-skill-consistency.py` | `deploy-skills.py --check` |
+|---|---|---|
+| Question | Is the canonical repository internally correct? | Is **this machine's** runtime in parity with canonical? |
+| Reads | repo files only | repo **and** `~/.claude/skills`, `~/.agents/skills` |
+| Runs in CI | **yes** — the PR gate | **no** |
+| Runs locally | yes | yes — before and after every deploy |
+
+`deploy-skills.py --check` must never run in GitHub Actions. A clean runner has no
+runtime stores, so it reports every declared skill as a CREATE — measured at **246**
+on an empty runner — and the failure looks like catastrophic drift rather than a
+missing precondition. Faking those directories to make CI green would make the
+check assert nothing at all.
+
+Conversely `check-skill-consistency.py` can never tell you whether your machine is
+deployed correctly. It does not look at a runtime store.
+
+### What CI enforces
+
+Manifest validity (unique ids, required fields, mode/status/target enums) · canonical
+hash integrity over raw bytes · frontmatter validity and name/directory agreement ·
+`REPO_LOCAL` ownership (a named `owner_repo` **and** `owner_path`, placeholder phrasing
+rejected) · state contradictions (`active` + `DISABLED`) · holds carrying a
+`hold_reason` · documented `intentional_divergence` for `CLAUDE_ONLY` / `CODEX_ONLY` /
+`ADAPTER` · skills present on disk but undeclared.
+
+The 1,214-file `pre-consolidation/` archive is rollback evidence, not deploy input, and
+is deliberately excluded from validation and hashing.
+
+> **If correctness depends on someone remembering to run a local command, it is not yet
+> an invariant.** That is why these moved into CI.
