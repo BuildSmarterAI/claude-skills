@@ -66,44 +66,50 @@
    "source": null,
    "source_present_in_canonical": false,
    "targets": [
-    "claude"
+    "claude",
+    "codex"
    ],
-   "mode": "CLAUDE_ONLY",
+   "mode": "IDENTICAL",
    "status": "active",
-   "classification": "B. GLOBAL-TOOL-SPECIFIC",
+   "classification": "A. GLOBAL-CANONICAL",
    "family": null,
    "canonical_owner": "PENDING IMPORT",
    "origin": null,
    "adapter": null,
    "expected_sha256": "1a98cc4d04b08570b9672c5170145a6ba0245c7c876e6f9d18321e7dc5a8d68b",
-   "divergence_decision": null,
+   "divergence_decision": "resolved (D4.5)",
    "divergence_reason": null,
    "usage": 1,
    "notes": "used (1)",
-   "intentional_divergence": "Present only in the Claude store at consolidation import; no Claude-specific or Codex-specific requirement was found in the content (it drives the runtime-neutral @21st-dev/cli). This is PROVENANCE, not capability - the same shape as tdd-workflow before D4.1 reclassified it to IDENTICAL. Recorded here so the divergence is explicit rather than silent; REVIEW CANDIDATE for tool-neutral reclassification, which needs its own verification pass and is out of scope for the D4.3 CI session.",
-   "divergence_review_candidate": true
+   "ownership_class": "GLOBAL-CANONICAL",
+   "runtime_exposure": "ACTIVE",
+   "d45_decision": "TOOL_NEUTRAL",
+   "d45_reason": "D4.5: verified tool-neutral from current main by reading each file in full. Zero Claude-specific dependencies (no Agent-tool dispatch, no ~/.claude path, no Claude Desktop, no Claude-only invocation syntax) and zero Codex-specific ones. Every assumption is the runtime-neutral @21st-dev/cli. Affirmative evidence, not merely absence of Claude markers: 21st-cli-use documents \"21st init --client cursor|claude|codex|vscode|windsurf\", so the CLI itself treats Codex as a first-class client. CLAUDE_ONLY was historical provenance - only the Claude store held a copy at consolidation import."
   },
   {
    "skill": "21st-design-sync",
    "source": null,
    "source_present_in_canonical": false,
    "targets": [
-    "claude"
+    "claude",
+    "codex"
    ],
-   "mode": "CLAUDE_ONLY",
+   "mode": "IDENTICAL",
    "status": "active",
-   "classification": "B. GLOBAL-TOOL-SPECIFIC",
+   "classification": "A. GLOBAL-CANONICAL",
    "family": null,
    "canonical_owner": "PENDING IMPORT",
    "origin": null,
    "adapter": null,
-   "expected_sha256": "65cc94c842e066f69d8914af3dd94923545418b28e1fb23059473bff52bd0fe4",
-   "divergence_decision": null,
+   "expected_sha256": "f979f6490de30f823513518f06b1490d2aef0baca9352cc50c6ff82c09aaa8a7",
+   "divergence_decision": "resolved (D4.5)",
    "divergence_reason": null,
    "usage": 1,
    "notes": "used (1)",
-   "intentional_divergence": "Present only in the Claude store at consolidation import; no Claude-specific or Codex-specific requirement was found in the content (it drives the runtime-neutral @21st-dev/cli). This is PROVENANCE, not capability - the same shape as tdd-workflow before D4.1 reclassified it to IDENTICAL. Recorded here so the divergence is explicit rather than silent; REVIEW CANDIDATE for tool-neutral reclassification, which needs its own verification pass and is out of scope for the D4.3 CI session.",
-   "divergence_review_candidate": true
+   "ownership_class": "GLOBAL-CANONICAL",
+   "runtime_exposure": "ACTIVE",
+   "d45_decision": "TOOL_NEUTRAL",
+   "d45_reason": "D4.5: verified tool-neutral from current main by reading each file in full. Zero Claude-specific dependencies (no Agent-tool dispatch, no ~/.claude path, no Claude Desktop, no Claude-only invocation syntax) and zero Codex-specific ones. Every assumption is the runtime-neutral @21st-dev/cli. Affirmative evidence, not merely absence of Claude markers: 21st-cli-use documents \"21st init --client cursor|claude|codex|vscode|windsurf\", so the CLI itself treats Codex as a first-class client. CLAUDE_ONLY was historical provenance - only the Claude store held a copy at consolidation import."
   },
   {
    "skill": "21st-registry",
@@ -164,22 +170,25 @@
    "source": null,
    "source_present_in_canonical": false,
    "targets": [
-    "claude"
+    "claude",
+    "codex"
    ],
-   "mode": "CLAUDE_ONLY",
+   "mode": "IDENTICAL",
    "status": "active",
-   "classification": "B. GLOBAL-TOOL-SPECIFIC",
+   "classification": "A. GLOBAL-CANONICAL",
    "family": null,
    "canonical_owner": "PENDING IMPORT",
    "origin": null,
    "adapter": null,
    "expected_sha256": "78939e830bceb64b8e2d32f831b80472008d5d2e50b31c8a8f38af5e5a015088",
-   "divergence_decision": null,
+   "divergence_decision": "resolved (D4.5)",
    "divergence_reason": null,
    "usage": 1,
    "notes": "used (1)",
-   "intentional_divergence": "Present only in the Claude store at consolidation import; no Claude-specific or Codex-specific requirement was found in the content (it drives the runtime-neutral @21st-dev/cli). This is PROVENANCE, not capability - the same shape as tdd-workflow before D4.1 reclassified it to IDENTICAL. Recorded here so the divergence is explicit rather than silent; REVIEW CANDIDATE for tool-neutral reclassification, which needs its own verification pass and is out of scope for the D4.3 CI session.",
-   "divergence_review_candidate": true
+   "ownership_class": "GLOBAL-CANONICAL",
+   "runtime_exposure": "ACTIVE",
+   "d45_decision": "TOOL_NEUTRAL",
+   "d45_reason": "D4.5: verified tool-neutral from current main by reading each file in full. Zero Claude-specific dependencies (no Agent-tool dispatch, no ~/.claude path, no Claude Desktop, no Claude-only invocation syntax) and zero Codex-specific ones. Every assumption is the runtime-neutral @21st-dev/cli. Affirmative evidence, not merely absence of Claude markers: 21st-cli-use documents \"21st init --client cursor|claude|codex|vscode|windsurf\", so the CLI itself treats Codex as a first-class client. CLAUDE_ONLY was historical provenance - only the Claude store held a copy at consolidation import."
   },
   {
    "skill": "ads",

@@ -115,6 +115,7 @@ Share it with the user.
 
 ## When NOT to use this
 
-- Syncing a component **library** to a Claude Design project → that's the
-  built-in `/design-sync` skill, a different destination.
+- Syncing a component **library** to a Claude Design project → that's Claude
+  Code's built-in `/design-sync`, a different destination (Claude only; there is
+  no Codex equivalent, so on Codex this skill is the only design-sync path).
 - Publishing a **component** (not a color theme) → use `21st-registry`.
