@@ -1,6 +1,6 @@
 ---
 name: tdd-workflow
-description: Use when writing or fixing TypeScript/Vitest/Playwright tests and you need the stack-specific patterns — unit vs integration vs E2E layout, Vitest ESM mocking, Testing Library queries, Playwright flake avoidance, coverage commands. Covers HOW to write the tests, not WHEN they must be written.
+description: Use when writing or fixing TypeScript/Vitest/Playwright tests and you need the stack-specific patterns — unit vs integration vs E2E layout, Vitest ESM mocking, Testing Library queries, Playwright flake avoidance, coverage commands. Covers HOW to write the tests; testing ORDER is governed by `risk-based-tdd`, and the generic RED-GREEN-REFACTOR loop by `superpowers:test-driven-development`.
 origin: ECC
 ---
 # Test-Driven Development Workflow (TypeScript / Vitest / Playwright)

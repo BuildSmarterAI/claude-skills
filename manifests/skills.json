@@ -5065,22 +5065,25 @@
    "source": "tdd-workflow",
    "source_present_in_canonical": true,
    "targets": [
+    "claude",
     "codex"
    ],
-   "mode": "CODEX_ONLY",
+   "mode": "IDENTICAL",
    "status": "active",
-   "classification": "B. GLOBAL-TOOL-SPECIFIC",
+   "classification": "A. GLOBAL-CANONICAL",
    "family": "tdd",
    "canonical_owner": "claude-skills repo",
    "origin": null,
    "adapter": null,
-   "expected_sha256": "84a9bc96789a3bd9236c41a4a984a9971a887f099909882b873156b56363272b",
+   "expected_sha256": "13ec208d6bc1bab740c958c2741f5913a031a53ea4a2b40fb2b757f700de03e1",
    "divergence_decision": "adjudicated (D3.6)",
    "divergence_reason": "canonical stack HOW + 4 runtime sections; dropped doctrine-duplicating ['TDD Workflow Steps', 'Success Metrics'] and superseded ['Testing Patterns', 'Test File Organization', 'Test Coverage Verification']; repaired the \"Always TDD\" line",
    "usage": 1,
    "notes": "core methodology family: tdd",
    "d35_decision": "MERGE",
-   "d35_reason": "both sides hold unique material (35/152 lines) - needs a merge"
+   "d35_reason": "both sides hold unique material (35/152 lines) - needs a merge",
+   "d41_decision": "TOOL-NEUTRAL",
+   "d41_reason": "Scanned for runtime-specific content: zero Codex markers (~/.codex, .agents, AGENTS.md, \"Codex\") and zero Claude markers (~/.claude, CLAUDE.md, subagent/Agent tool dispatch). Every assumption is STACK tooling (Vitest, Playwright, npm), not agent-runtime tooling. CODEX_ONLY was historical provenance - only Codex happened to hold a copy - not a capability requirement. The primary stack uses vitest 3.2.4, @playwright/test 1.44.0 and typescript 5.8.3, so Claude-driven work needs it too."
   },
   {
    "skill": "teach",
