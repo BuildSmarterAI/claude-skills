@@ -26,7 +26,7 @@ For the portfolio context, stack overview, and install commands, see `README.md`
   tests/      config.json
 ```
 
-There are ~129 skill folders. All folder names are **kebab-case** and match the `name` field in their frontmatter.
+There are ~288 catalogued skills, governed by `manifests/skills.json`. All folder names are **kebab-case** and match the `name` field in their frontmatter -- CI enforces that agreement.
 
 ### Standard skills
 
@@ -122,7 +122,7 @@ When you write or edit code samples inside a skill, default to this stack so exa
 5. **Prefer markdown.** Add a sub-directory (`scripts/`, `agents/`, `hooks/`, etc.) only when a single `SKILL.md` cannot express the skill.
 6. **Preserve aggregator pattern.** Team folders use `CLAUDE.md` and list sub-skills + tools; do not convert them to `SKILL.md`.
 7. **Update `README.md`** when adding a skill that fits one of the existing category tables.
-8. **Don't add tooling at the root.** No `package.json`, no CI, no schema validators unless explicitly requested.
+8. **Don't add application tooling at the root.** No `package.json`, no lockfiles, no framework code. The repo does carry deliberate governance tooling -- `scripts/`, `tests/`, and the `Skill consistency` workflow -- which is load-bearing; do not remove or bypass it.
 
 ## Git workflow
 
@@ -130,7 +130,9 @@ When you write or edit code samples inside a skill, default to this stack so exa
 - Develop on the feature branch the harness specifies (e.g. `claude/add-claude-documentation-IaLZN`).
 - Commit subject style follows the repo's existing pattern: short imperative — `Add: …`, `Update: …`, `Fix: …` (see install/update notes in `README.md`).
 - Push with `git push -u origin <branch>`. Retry transient network failures with exponential backoff; do not force-push.
-- There is no CI to wait on.
+- CI **does** run: `.github/workflows/skill-consistency.yml` gates every PR and every push to `main`. Wait for the `Skill consistency` check. Before pushing, run
+  `python scripts/check-skill-consistency.py` and `python -m unittest discover -s tests`.
+- Releasing the catalog: see `docs/consolidation/RELEASING.md`.
 
 ## Anti-patterns
 

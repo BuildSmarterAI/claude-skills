@@ -61,6 +61,15 @@ PLACEHOLDER = re.compile(r'belongs to|product repo|a repo|tbd|unknown|todo|n/?a'
 FRONTMATTER_NAME = re.compile(r'''(?m)^name:\s*(?:"([^"]+)"|'([^']+)'|(\S+))\s*$''')
 FRONTMATTER_DESC = re.compile(r'(?m)^description:\s*(\S)')
 
+# Catalog release identity. Three versions that must not be conflated:
+#   catalog_version                  - this catalog release (semver)
+#   manifest_schema_version          - shape of manifests/skills.json
+#   deployment_state_schema_version  - shape of runtime .deployment-state.json
+CATALOG_VERSION_FILE = 'catalog-version.json'
+REQUIRED_VERSION_KEYS = ('catalog_version', 'manifest_schema_version',
+                         'deployment_state_schema_version')
+SEMVER = re.compile(r'^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$')
+
 
 class Report:
     def __init__(self):
@@ -224,6 +233,43 @@ def check_repo(root):
         if name not in declared:
             rep.add('undeclared_canonical_skill', name)
 
+    # --- I. catalog release identity -----------------------------------------
+    # Absence is tolerated: this checker predates versioning, and fixture trees
+    # legitimately have no release identity. What is NOT tolerated is a version
+    # file that is present and wrong - that would attribute a runtime to a
+    # release it was never deployed from.
+    vpath = os.path.join(root, CATALOG_VERSION_FILE)
+    if os.path.isfile(vpath):
+        try:
+            with open(vpath, encoding='utf-8') as fh:
+                ver = json.load(fh)
+        except (OSError, ValueError) as exc:
+            rep.add('catalog_version_invalid', f'{CATALOG_VERSION_FILE}: {exc}')
+        else:
+            rep.counts['catalog_version_checked'] += 1
+            for key in REQUIRED_VERSION_KEYS:
+                if key not in ver:
+                    rep.add('catalog_version_invalid',
+                            f'{CATALOG_VERSION_FILE}: missing {key}')
+            cv = ver.get('catalog_version')
+            if cv is not None and not SEMVER.match(str(cv)):
+                rep.add('catalog_version_invalid',
+                        f'{CATALOG_VERSION_FILE}: catalog_version {cv!r} is not semver')
+            for key in ('manifest_schema_version', 'deployment_state_schema_version'):
+                v = ver.get(key)
+                if v is not None and not (isinstance(v, int) and v >= 1):
+                    rep.add('catalog_version_invalid',
+                            f'{CATALOG_VERSION_FILE}: {key} must be a positive integer')
+            # The cross-check that makes the file meaningful rather than a
+            # second, unverified place to write a number.
+            declared_schema = ver.get('manifest_schema_version')
+            actual_schema = manifest.get('schema')
+            if declared_schema is not None and actual_schema is not None \
+                    and declared_schema != actual_schema:
+                rep.add('manifest_schema_mismatch',
+                        f'{CATALOG_VERSION_FILE} declares {declared_schema}, '
+                        f'manifests/skills.json declares {actual_schema}')
+
     return rep
 
 
@@ -245,6 +291,8 @@ def main(argv=None):
         print(f'  frontmatter checked    : {rep.counts["frontmatter_checked"]}')
         print(f'  ownership verified     : {rep.counts["ownership_verified"]}')
         print(f'  divergences documented : {rep.counts["divergences_documented"]}')
+        print(f'  catalog version        : '
+              f'{"checked" if rep.counts["catalog_version_checked"] else "absent (tolerated)"}')
         print('  ownership violations   : 0')
         print('  state violations       : 0')
         print('  undocumented divergences: 0')
