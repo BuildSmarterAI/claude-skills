@@ -24,23 +24,21 @@
  },
  "contains_secrets": false,
  "summary": {
-  "total": 286,
+  "total": 293,
   "by_mode": {
    "DISABLED": 165,
-   "CLAUDE_ONLY": 3,
-   "REPO_LOCAL": 35,
-   "IDENTICAL": 40,
-   "VENDORED": 41,
-   "HOLD": 1,
-   "CODEX_ONLY": 1
+   "CLAUDE_ONLY": 1,
+   "REPO_LOCAL": 17,
+   "IDENTICAL": 63,
+   "VENDORED": 46,
+   "ADAPTER": 1
   },
   "by_status": {
-   "on-demand": 178,
-   "active": 72,
-   "repo-local": 35,
-   "hold": 1
+   "on-demand": 184,
+   "active": 92,
+   "repo-local": 17
   },
-  "missing_from_canonical": 171
+  "missing_from_canonical": 161
  },
  "skills": [
   {
