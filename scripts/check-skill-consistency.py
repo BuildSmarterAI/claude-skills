@@ -270,6 +270,41 @@ def check_repo(root):
                         f'{CATALOG_VERSION_FILE} declares {declared_schema}, '
                         f'manifests/skills.json declares {actual_schema}')
 
+    # --- J. summary integrity -------------------------------------------------
+    # `summary` is a denormalised cache of `skills[]`, and nothing recomputes it
+    # on write. Same tolerance as section I: an absent summary is a claim nobody
+    # made, so it passes; a present one is a claim, so it must agree with the
+    # rows it summarises. Field-by-field, because a correct `total` sitting over
+    # a wrong `by_mode` is exactly the shape that survived undetected.
+    #
+    # Measured drift before this gate existed (2026-08-22): total 286 against
+    # 288 rows, IDENTICAL 40 against 63, REPO_LOCAL 35 against 17, active 72
+    # against 91, missing_from_canonical 171 against 156 - plus two modes no
+    # entry used (HOLD, CODEX_ONLY) while omitting ADAPTER, which one did.
+    summary = manifest.get('summary')
+    if isinstance(summary, dict):
+        actual_mode, actual_status = defaultdict(int), defaultdict(int)
+        for e in entries:
+            if e.get('mode'):
+                actual_mode[e['mode']] += 1
+            if e.get('status'):
+                actual_status[e['status']] += 1
+
+        expectations = (
+            ('total', 'summary_total_mismatch', len(entries)),
+            ('by_mode', 'summary_by_mode_mismatch', dict(actual_mode)),
+            ('by_status', 'summary_by_status_mismatch', dict(actual_status)),
+            ('missing_from_canonical', 'summary_missing_from_canonical_mismatch',
+             sum(1 for e in entries if not e.get('source_present_in_canonical'))),
+        )
+        for field, kind, actual in expectations:
+            if field not in summary:
+                continue
+            rep.counts['summary_fields_checked'] += 1
+            if summary[field] != actual:
+                rep.add(kind,
+                        f'{field}: declares {summary[field]!r}, rows say {actual!r}')
+
     return rep
 
 
@@ -293,6 +328,9 @@ def main(argv=None):
         print(f'  divergences documented : {rep.counts["divergences_documented"]}')
         print(f'  catalog version        : '
               f'{"checked" if rep.counts["catalog_version_checked"] else "absent (tolerated)"}')
+        n_summary = rep.counts['summary_fields_checked']
+        print(f'  summary fields         : '
+              f'{f"{n_summary} checked" if n_summary else "absent (tolerated)"}')
         print('  ownership violations   : 0')
         print('  state violations       : 0')
         print('  undocumented divergences: 0')

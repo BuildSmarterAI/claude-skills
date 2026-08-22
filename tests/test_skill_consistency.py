@@ -52,6 +52,7 @@ class RepoBuilder:
         self.root = tempfile.mkdtemp(prefix='skillci-')
         os.makedirs(os.path.join(self.root, 'manifests'))
         self.skills = []
+        self.summary = None
 
     def add_skill(self, name, *, body=None, entry=None, write_file=True):
         if write_file:
@@ -78,10 +79,27 @@ class RepoBuilder:
         return e
 
     def write(self):
+        doc = {'skills': self.skills}
+        if self.summary is not None:
+            doc['summary'] = self.summary
         with open(os.path.join(self.root, 'manifests', 'skills.json'), 'w',
                   encoding='utf-8') as fh:
-            json.dump({'skills': self.skills}, fh, indent=1)
+            json.dump(doc, fh, indent=1)
         return self.root
+
+    def true_summary(self):
+        """The summary these skills actually imply. Tests corrupt one field of it."""
+        by_mode, by_status = {}, {}
+        for e in self.skills:
+            by_mode[e['mode']] = by_mode.get(e['mode'], 0) + 1
+            by_status[e['status']] = by_status.get(e['status'], 0) + 1
+        return {
+            'total': len(self.skills),
+            'by_mode': by_mode,
+            'by_status': by_status,
+            'missing_from_canonical': sum(
+                1 for e in self.skills if not e.get('source_present_in_canonical')),
+        }
 
     def destroy(self):
         shutil.rmtree(self.root, ignore_errors=True)
@@ -419,6 +437,95 @@ class TestCatalogVersion(ConsistencyTestCase):
             json.dump(m, fh, indent=1)
         self.write_version(self.VALID)
         self.assertTrue(csc.check_repo(self.b.root).ok)
+
+
+class TestSummaryIntegrity(ConsistencyTestCase):
+    """`summary` is a denormalised cache of `skills[]` that nothing recomputes.
+
+    Measured drift in the real manifest (2026-08-22): it claimed total 286
+    against 288 rows, IDENTICAL 40 against 63, REPO_LOCAL 35 against 17, and
+    active 72 against 91. It also listed two modes no entry used (HOLD,
+    CODEX_ONLY) while omitting ADAPTER, which one did. Every count quoted from
+    it was wrong, and no invariant here noticed for as long as it existed.
+
+    The rule is asymmetric on purpose: an ABSENT summary makes no claim and
+    stays legal, so manifests that simply do not carry one are unaffected. A
+    PRESENT summary is a claim, and must agree with the rows it summarises.
+    """
+
+    def _two_clean_skills(self):
+        self.b.add_skill('alpha')
+        self.b.add_skill('beta')
+
+    def test_correct_summary_passes_and_is_not_vacuous(self):
+        """Anti-vacuity pin: a pass must prove the fields were actually compared."""
+        self._two_clean_skills()
+        self.b.summary = self.b.true_summary()
+        r = self.run_check()
+        self.assertTrue(r.ok, f'expected correct summary to pass; got {dict(r.violations)}')
+        self.assertEqual(r.counts['summary_fields_checked'], 4)
+
+    def test_absent_summary_makes_no_claim(self):
+        """No summary is legal - and provably SKIPPED, not vacuously passed.
+
+        Without the counter assertion this test would pass identically if the
+        check were deleted outright.
+        """
+        self._two_clean_skills()
+        self.b.summary = None
+        r = self.run_check()
+        self.assertTrue(r.ok, f'absent summary must not fail; got {dict(r.violations)}')
+        self.assertEqual(r.counts['summary_fields_checked'], 0)
+
+    def test_total_mismatch_is_detected(self):
+        self._two_clean_skills()
+        s = self.b.true_summary()
+        s['total'] = 3
+        self.b.summary = s
+        self.assertViolation(self.run_check(), 'summary_total_mismatch', 'total')
+
+    def test_by_mode_undercount_is_detected(self):
+        self._two_clean_skills()
+        s = self.b.true_summary()
+        s['by_mode']['IDENTICAL'] = 1
+        self.b.summary = s
+        self.assertViolation(self.run_check(), 'summary_by_mode_mismatch', 'by_mode')
+
+    def test_by_mode_phantom_key_is_detected(self):
+        """The exact real-world shape: a mode counted that no entry actually uses.
+
+        A totals-only check would pass this - 2 + a phantom is still wrong even
+        when the surviving keys are individually right.
+        """
+        self._two_clean_skills()
+        s = self.b.true_summary()
+        s['by_mode']['HOLD'] = 1
+        self.b.summary = s
+        self.assertViolation(self.run_check(), 'summary_by_mode_mismatch', 'by_mode')
+
+    def test_by_status_mismatch_is_detected(self):
+        self._two_clean_skills()
+        s = self.b.true_summary()
+        s['by_status']['active'] = 99
+        self.b.summary = s
+        self.assertViolation(self.run_check(), 'summary_by_status_mismatch', 'by_status')
+
+    def test_missing_from_canonical_mismatch_is_detected(self):
+        self._two_clean_skills()
+        s = self.b.true_summary()
+        s['missing_from_canonical'] = 1
+        self.b.summary = s
+        self.assertViolation(
+            self.run_check(), 'summary_missing_from_canonical_mismatch',
+            'missing_from_canonical')
+
+    def test_partial_summary_checks_only_the_fields_it_declares(self):
+        """A summary carrying one field is a claim about that field alone."""
+        self._two_clean_skills()
+        self.b.summary = {'total': 2}
+        r = self.run_check()
+        self.assertTrue(r.ok, f'partial-but-correct summary must pass; got {dict(r.violations)}')
+        self.assertEqual(r.counts['summary_fields_checked'], 1)
 
 
 if __name__ == '__main__':
