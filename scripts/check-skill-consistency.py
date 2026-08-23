@@ -272,38 +272,55 @@ def check_repo(root):
 
     # --- J. summary integrity -------------------------------------------------
     # `summary` is a denormalised cache of `skills[]`, and nothing recomputes it
-    # on write. Same tolerance as section I: an absent summary is a claim nobody
-    # made, so it passes; a present one is a claim, so it must agree with the
-    # rows it summarises. Field-by-field, because a correct `total` sitting over
-    # a wrong `by_mode` is exactly the shape that survived undetected.
+    # on write. Tolerance follows section I: an ABSENT summary is a claim nobody
+    # made, so it passes. Anything else is a claim and must hold up:
+    #   not an object   -> summary_invalid. null / [] / a string is NOT absence;
+    #       a generator emitting null would otherwise silence this gate while
+    #       the CLI cheerfully printed "absent (tolerated)" for a present key.
+    #   missing a field -> summary_incomplete. A per-field exemption would let
+    #       anyone mute a drifting field by deleting it - reproducing the very
+    #       shape this targets, a right `total` over an absent `by_mode`.
+    # Then field by field, because a correct `total` sitting over a wrong
+    # `by_mode` is exactly the drift that survived undetected.
+    #
+    # by_mode/by_status count only entries that HAVE a mode/status, so they sum
+    # to `total` for any manifest passing section A - an entry missing either
+    # field already fails there, so no separate sum check is needed.
     #
     # Measured drift before this gate existed (2026-08-22): total 286 against
     # 288 rows, IDENTICAL 40 against 63, REPO_LOCAL 35 against 17, active 72
     # against 91, missing_from_canonical 171 against 156 - plus two modes no
     # entry used (HOLD, CODEX_ONLY) while omitting ADAPTER, which one did.
-    summary = manifest.get('summary')
-    if isinstance(summary, dict):
-        actual_mode, actual_status = defaultdict(int), defaultdict(int)
-        for e in entries:
-            if e.get('mode'):
-                actual_mode[e['mode']] += 1
-            if e.get('status'):
-                actual_status[e['status']] += 1
+    if 'summary' in manifest:
+        summary = manifest['summary']
+        if not isinstance(summary, dict):
+            rep.add('summary_invalid',
+                    f'summary: expected an object, got {type(summary).__name__}')
+        else:
+            mode_counts, status_counts = defaultdict(int), defaultdict(int)
+            for e in entries:
+                if e.get('mode'):
+                    mode_counts[e['mode']] += 1
+                if e.get('status'):
+                    status_counts[e['status']] += 1
 
-        expectations = (
-            ('total', 'summary_total_mismatch', len(entries)),
-            ('by_mode', 'summary_by_mode_mismatch', dict(actual_mode)),
-            ('by_status', 'summary_by_status_mismatch', dict(actual_status)),
-            ('missing_from_canonical', 'summary_missing_from_canonical_mismatch',
-             sum(1 for e in entries if not e.get('source_present_in_canonical'))),
-        )
-        for field, kind, actual in expectations:
-            if field not in summary:
-                continue
-            rep.counts['summary_fields_checked'] += 1
-            if summary[field] != actual:
-                rep.add(kind,
-                        f'{field}: declares {summary[field]!r}, rows say {actual!r}')
+            expectations = (
+                ('total', 'summary_total_mismatch', len(entries)),
+                ('by_mode', 'summary_by_mode_mismatch', dict(mode_counts)),
+                ('by_status', 'summary_by_status_mismatch', dict(status_counts)),
+                ('missing_from_canonical', 'summary_missing_from_canonical_mismatch',
+                 sum(1 for e in entries if not e.get('source_present_in_canonical'))),
+            )
+            absent = [f for f, _, _ in expectations if f not in summary]
+            if absent:
+                rep.add('summary_incomplete', 'summary: missing ' + ', '.join(absent))
+            for field, kind, actual in expectations:
+                if field not in summary:
+                    continue
+                rep.counts['summary_fields_checked'] += 1
+                if summary[field] != actual:
+                    rep.add(kind,
+                            f'{field}: declares {summary[field]!r}, rows say {actual!r}')
 
     return rep
 
