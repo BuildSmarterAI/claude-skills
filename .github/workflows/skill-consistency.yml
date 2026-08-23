@@ -23,6 +23,19 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Branch containment is measured across full history, and the health
+          # audit compares the retention record against the branches that
+          # actually exist on origin. A shallow, single-ref checkout would make
+          # every recorded branch look absent - which fires the preservation
+          # alarm on nothing at all.
+          fetch-depth: 0
+
+      - name: Fetch remote branch refs
+        # `actions/checkout` leaves no refs/remotes/origin/* entries behind. The
+        # audit treats an unenumerable remote as UNKNOWN rather than empty, so
+        # without this the branch checks would skip rather than run.
+        run: git fetch --no-tags --prune origin '+refs/heads/*:refs/remotes/origin/*'
 
       - uses: actions/setup-python@v5
         with:
@@ -35,3 +48,22 @@ jobs:
 
       - name: Canonical skill consistency
         run: python scripts/check-skill-consistency.py
+
+      - name: Catalog health audit
+        # The complement to the checker: the checker proves the record is
+        # internally valid, this proves the record still matches reality.
+        # --no-runtime because a runner has no ~/.claude or ~/.agents; that
+        # section reports itself as SKIPPED rather than passing silently.
+        run: python scripts/audit-catalog-health.py --no-runtime
+
+      - name: Branch containment
+        # Guarded because the verifier REFUSES (exit 2) when it has nothing to
+        # check, and manifests/retention.json only lands with the retention
+        # policy PR. The guard is explicit and printed: an invisible skip is the
+        # failure mode this whole workflow exists to prevent.
+        run: |
+          if [ -f manifests/retention.json ]; then
+            python scripts/verify-branch-containment.py
+          else
+            echo "::notice title=Branch containment skipped::manifests/retention.json is not present on this ref, so no branch is marked deletable and there is nothing to verify. This step activates automatically when the retention policy merges."
+          fi
