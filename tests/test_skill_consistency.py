@@ -41,6 +41,12 @@ Body content.
 """
 
 
+# Distinguishes "no summary key at all" from an explicit `"summary": null`.
+# Using None as the omit-marker made the null case unreachable from tests, which
+# is exactly the case the checker most needs pinned.
+UNSET = object()
+
+
 def sha_bytes(b: bytes) -> str:
     return hashlib.sha256(b).hexdigest()
 
@@ -52,7 +58,7 @@ class RepoBuilder:
         self.root = tempfile.mkdtemp(prefix='skillci-')
         os.makedirs(os.path.join(self.root, 'manifests'))
         self.skills = []
-        self.summary = None
+        self.summary = UNSET
 
     def add_skill(self, name, *, body=None, entry=None, write_file=True):
         if write_file:
@@ -80,7 +86,7 @@ class RepoBuilder:
 
     def write(self):
         doc = {'skills': self.skills}
-        if self.summary is not None:
+        if self.summary is not UNSET:
             doc['summary'] = self.summary
         with open(os.path.join(self.root, 'manifests', 'skills.json'), 'w',
                   encoding='utf-8') as fh:
@@ -91,8 +97,8 @@ class RepoBuilder:
         """The summary these skills actually imply. Tests corrupt one field of it."""
         by_mode, by_status = {}, {}
         for e in self.skills:
-            by_mode[e['mode']] = by_mode.get(e['mode'], 0) + 1
-            by_status[e['status']] = by_status.get(e['status'], 0) + 1
+            by_mode[e.get('mode')] = by_mode.get(e.get('mode'), 0) + 1
+            by_status[e.get('status')] = by_status.get(e.get('status'), 0) + 1
         return {
             'total': len(self.skills),
             'by_mode': by_mode,
@@ -472,7 +478,7 @@ class TestSummaryIntegrity(ConsistencyTestCase):
         check were deleted outright.
         """
         self._two_clean_skills()
-        self.b.summary = None
+        self.b.summary = UNSET
         r = self.run_check()
         self.assertTrue(r.ok, f'absent summary must not fail; got {dict(r.violations)}')
         self.assertEqual(r.counts['summary_fields_checked'], 0)
@@ -519,13 +525,33 @@ class TestSummaryIntegrity(ConsistencyTestCase):
             self.run_check(), 'summary_missing_from_canonical_mismatch',
             'missing_from_canonical')
 
-    def test_partial_summary_checks_only_the_fields_it_declares(self):
-        """A summary carrying one field is a claim about that field alone."""
+    def test_partial_summary_is_rejected_as_incomplete(self):
+        """Omitting a field must not be a way to escape the check.
+
+        A per-field exemption lets anyone silence a drifting field by deleting
+        it - reproducing the exact shape this gate exists to catch, a correct
+        `total` sitting over an absent-because-inconvenient `by_mode`.
+        """
         self._two_clean_skills()
         self.b.summary = {'total': 2}
-        r = self.run_check()
-        self.assertTrue(r.ok, f'partial-but-correct summary must pass; got {dict(r.violations)}')
-        self.assertEqual(r.counts['summary_fields_checked'], 1)
+        self.assertViolation(self.run_check(), 'summary_incomplete', 'summary')
+
+    def test_non_dict_summary_is_rejected(self):
+        """Present-but-malformed is NOT the same as absent.
+
+        `isinstance(summary, dict)` alone silently skips null / [] / a string,
+        and the CLI then prints "absent (tolerated)" for a key that is present -
+        a generator emitting null would disable this gate with CI still green.
+        """
+        for bad in (None, [], 'garbage', 42):
+            with self.subTest(value=bad):
+                self.b.skills = []
+                self._two_clean_skills()
+                self.b.summary = bad
+                r = self.run_check()
+                self.assertIn('summary_invalid', r.violations,
+                              f'summary={bad!r} must be rejected, not skipped')
+                self.assertEqual(r.counts['summary_fields_checked'], 0)
 
 
 if __name__ == '__main__':
