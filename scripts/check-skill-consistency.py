@@ -70,6 +70,15 @@ REQUIRED_VERSION_KEYS = ('catalog_version', 'manifest_schema_version',
                          'deployment_state_schema_version')
 SEMVER = re.compile(r'^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$')
 
+# Branch retention (docs/consolidation/RETENTION.md). The invariant that matters:
+# a class that must never be auto-deleted may never be marked deletable, or a
+# future cleanup pass could destroy the only copy of the pre-consolidation
+# archive or the pinned runtime commit.
+RETENTION_FILE = os.path.join('manifests', 'retention.json')
+RETENTION_CLASSES = {'PERMANENT-PRESERVATION', 'RELEASE-CRITICAL', 'MERGED-IMPLEMENTATION',
+                     'TEMPORARY-ROLLBACK', 'ACTIVE', 'UNCERTAIN'}
+NEVER_DELETABLE = {'PERMANENT-PRESERVATION', 'ACTIVE', 'UNCERTAIN'}
+
 
 class Report:
     def __init__(self):
@@ -321,6 +330,35 @@ def check_repo(root):
                 if summary[field] != actual:
                     rep.add(kind,
                             f'{field}: declares {summary[field]!r}, rows say {actual!r}')
+    # --- K. branch retention metadata ----------------------------------------
+    # Offline and static by design: this validates the POLICY RECORD, never the
+    # actual existence of a branch. CI must not depend on the GitHub API.
+    rpath = os.path.join(root, RETENTION_FILE)
+    if os.path.isfile(rpath):
+        try:
+            with open(rpath, encoding='utf-8') as fh:
+                ret = json.load(fh)
+        except (OSError, ValueError) as exc:
+            rep.add('retention_invalid', f'{RETENTION_FILE}: {exc}')
+        else:
+            branches = ret.get('branches')
+            if not isinstance(branches, dict):
+                rep.add('retention_invalid', f'{RETENTION_FILE}: missing branches map')
+                branches = {}
+            for name, meta in branches.items():
+                rep.counts['retention_branches_checked'] += 1
+                if not isinstance(meta, dict):
+                    rep.add('retention_invalid', f'{name}: not an object')
+                    continue
+                cls = meta.get('class')
+                if cls not in RETENTION_CLASSES:
+                    rep.add('retention_invalid', f'{name}: unknown class {cls!r}')
+                if 'deletable' not in meta:
+                    rep.add('retention_invalid', f'{name}: missing deletable')
+                if not str(meta.get('retention') or '').strip():
+                    rep.add('retention_invalid', f'{name}: missing retention')
+                if cls in NEVER_DELETABLE and meta.get('deletable') is True:
+                    rep.add('preservation_marked_deletable', f'{name}: class {cls}')
 
     return rep
 

@@ -1,0 +1,62 @@
+{
+ "schema": 1,
+ "generated_against_main": "6470d65fdcbabf95a02099b4b99c0578f61f3291",
+ "catalog_version": "1.0.0",
+ "policy": "docs/consolidation/RETENTION.md",
+ "inventory": "docs/consolidation/branch-retention-inventory.md",
+ "classes": [
+  "PERMANENT-PRESERVATION",
+  "RELEASE-CRITICAL",
+  "MERGED-IMPLEMENTATION",
+  "TEMPORARY-ROLLBACK",
+  "ACTIVE",
+  "UNCERTAIN"
+ ],
+ "branches": {
+  "chore/pre-consolidation-skill-snapshot-2026-08-20": {
+   "class": "PERMANENT-PRESERVATION",
+   "tip": "8a756b95b122ffad19f22199679bc6536d0a94d6",
+   "deletable": false,
+   "retention": "indefinite",
+   "unique_tip_paths_absent_from_main": 913,
+   "pr": "(none)",
+   "reason": "Byte-exact archive of all four skill stores as they existed before D2 touched anything: 1,214 files under `pre-consolidation/`, plus canonical-repo tree and history listings."
+  },
+  "archive/runtime-pinned-f175f20": {
+   "class": "PERMANENT-PRESERVATION",
+   "tip": "f175f208c913b236866d11bd81bc09b96524f021",
+   "deletable": false,
+   "retention": "indefinite",
+   "unique_tip_paths_absent_from_main": 57,
+   "pr": "(none)",
+   "reason": "The commit both runtime `.git` directories were pinned to (`f175f208`), captured before those directories were retired in D4."
+  },
+  "chore/canonical-skill-source-consolidation": {
+   "class": "MERGED-IMPLEMENTATION",
+   "tip": "0e297f56ef3af0f32d10e63a0365fc23b2d76318",
+   "deletable": true,
+   "retention": "2026-09-20 (30 days after merge)",
+   "unique_tip_paths_absent_from_main": 0,
+   "pr": "#3 MERGED (squash `de06054`)",
+   "reason": "D1\u2013D4.3: the whole consolidation \u2014 canonical import, manifest, deploy tooling, ownership model, consistency CI."
+  },
+  "chore/canonical-risk-based-tdd": {
+   "class": "MERGED-IMPLEMENTATION",
+   "tip": "d63e89376a9064e9df2ff7a45e1638c4915df8b9",
+   "deletable": true,
+   "retention": "2026-09-20 (30 days after the merge that carried it)",
+   "unique_tip_paths_absent_from_main": 1,
+   "pr": "(none \u2014 content landed via #3)",
+   "reason": "D1: created the canonical risk-based TDD doctrine (`d63e893`)."
+  },
+  "claude/add-claude-documentation-IaLZN": {
+   "class": "MERGED-IMPLEMENTATION",
+   "tip": "9fc33a672688ccc308461cabc00dc3261282a023",
+   "deletable": true,
+   "retention": "expired (merged well over 30 days ago)",
+   "unique_tip_paths_absent_from_main": 0,
+   "pr": "#1 MERGED",
+   "reason": "Added the top-level CLAUDE.md repo guide."
+  }
+ }
+}
