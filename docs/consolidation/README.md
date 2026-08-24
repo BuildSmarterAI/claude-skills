@@ -57,6 +57,7 @@ runtime and still fully retained here. Reducing runtime noise must never reduce 
 
 ```bash
 python scripts/deploy-skills.py --check      # report drift; exit 1 if any
+python scripts/audit-catalog-health.py       # drift WITH the side attributed
 python scripts/deploy-skills.py --dry-run    # describe exactly what --deploy would do
 python scripts/deploy-skills.py --deploy     # copy/update runtimes
 ```
@@ -101,12 +102,36 @@ without a real, documented customization.**
 
 Both are necessary. Neither substitutes for the other.
 
-| | `check-skill-consistency.py` | `deploy-skills.py --check` |
-|---|---|---|
-| Question | Is the canonical repository internally correct? | Is **this machine's** runtime in parity with canonical? |
-| Reads | repo files only | repo **and** `~/.claude/skills`, `~/.agents/skills` |
-| Runs in CI | **yes** — the PR gate | **no** |
-| Runs locally | yes | yes — before and after every deploy |
+| | `check-skill-consistency.py` | `deploy-skills.py --check` | `audit-catalog-health.py` |
+|---|---|---|---|
+| Question | Is the canonical repository internally correct? | Is **this machine's** runtime in parity with canonical? | Does the record still describe the world? |
+| Reads | repo files only | repo **and** `~/.claude/skills`, `~/.agents/skills` | repo, runtime stores, and `origin` refs |
+| Runs in CI | **yes** — the PR gate | **no** | yes, but `--no-runtime` |
+| Runs locally | yes | yes — before and after every deploy | yes — this is the only place its drift section runs |
+
+### Why the third one matters
+
+`deploy-skills.py --check` reports *that* a runtime file differs. `audit-catalog-health.py`
+reports **which side changed**, and that distinction is the whole point. On 2026-08-21 a
+third-party installer overwrote `~/.claude/skills/code-review/SKILL.md`, and `--check`
+reported an UPDATE that no session had caused. Without attribution the reflex is to
+redeploy, which fixes the symptom until the installer runs again — so the identical
+finding reappears and looks new every time.
+
+```bash
+python scripts/audit-catalog-health.py              # drift + retention vs reality
+python scripts/audit-catalog-health.py --json       # machine-readable
+python scripts/audit-catalog-health.py --no-runtime # what CI runs
+```
+
+It reports and never repairs. Exit 0 healthy (advisory notices allowed), 1 violations,
+2 refused.
+
+**Known limitation.** CI runs it with `--no-runtime` because a runner has no runtime
+stores, and that section reports itself as `SKIPPED` rather than passing silently. So the
+drift check only ever runs when a human runs it here. Until something on this machine
+invokes it on a schedule, drift detection still depends on someone remembering — which by
+this repository's own standard is not yet an invariant.
 
 `deploy-skills.py --check` must never run in GitHub Actions. A clean runner has no
 runtime stores, so it reports every declared skill as a CREATE — measured at **246**
