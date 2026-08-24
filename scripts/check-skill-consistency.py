@@ -70,6 +70,17 @@ REQUIRED_VERSION_KEYS = ('catalog_version', 'manifest_schema_version',
                          'deployment_state_schema_version')
 SEMVER = re.compile(r'^\d+\.\d+\.\d+(?:-[0-9A-Za-z.-]+)?$')
 
+# The line-ending pin. `expected_sha256` is taken over RAW BYTES, and this repo
+# sets core.autocrlf=input, which rewrites CRLF to LF on commit. `* -text` in
+# .gitattributes is the only thing preventing that rewrite from silently
+# invalidating hashes. Measured on main: of 235 hashed SKILL.md files, 129 are
+# LF, 74 are CRLF and 32 are MIXED - so 106 would change bytes the moment the
+# pin disappeared. The file says "Do not remove it"; this makes that enforceable
+# rather than advisory. The glob must be `*`: a narrower pattern such as
+# `*.md -text` leaves everything else the manifest hashes unprotected.
+GITATTRIBUTES_FILE = '.gitattributes'
+EOL_PIN = re.compile(r'(?m)^\s*\*\s+(?:[^\s#]+\s+)*-text\b')
+
 # Branch retention (docs/consolidation/RETENTION.md). The invariant that matters:
 # a class that must never be auto-deleted may never be marked deletable, or a
 # future cleanup pass could destroy the only copy of the pre-consolidation
@@ -359,6 +370,29 @@ def check_repo(root):
                     rep.add('retention_invalid', f'{name}: missing retention')
                 if cls in NEVER_DELETABLE and meta.get('deletable') is True:
                     rep.add('preservation_marked_deletable', f'{name}: class {cls}')
+
+    # --- L. line-ending pin ---------------------------------------------------
+    # Absence is a violation, not a tolerated state. Tolerating it would make the
+    # check useless in the one scenario it exists for: the file being deleted,
+    # CI staying green, and every later commit quietly rewriting bytes the
+    # manifest has already hashed.
+    gpath = os.path.join(root, GITATTRIBUTES_FILE)
+    if not os.path.isfile(gpath):
+        rep.add('gitattributes_missing',
+                f'{GITATTRIBUTES_FILE}: absent, so core.autocrlf may rewrite line '
+                f'endings and invalidate expected_sha256')
+    else:
+        try:
+            with open(gpath, encoding='utf-8', errors='replace') as fh:
+                attrs = fh.read()
+        except OSError as exc:
+            rep.add('gitattributes_missing', f'{GITATTRIBUTES_FILE}: {exc}')
+        else:
+            rep.counts['gitattributes_checked'] += 1
+            if not EOL_PIN.search(attrs):
+                rep.add('gitattributes_not_pinned',
+                        f'{GITATTRIBUTES_FILE}: no repo-wide `* -text`, so '
+                        f'end-of-line conversion is not disabled')
 
     return rep
 
