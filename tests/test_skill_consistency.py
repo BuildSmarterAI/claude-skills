@@ -47,6 +47,14 @@ Body content.
 UNSET = object()
 
 
+# The line-ending pin every fixture repo must carry, so that a valid fixture
+# stays valid under section L. Written as a triple-quoted constant so the
+# newline is real rather than an escape - an earlier inline edit turned the
+# escape into an actual line break and broke this module's import.
+PINNED_ATTRS = """* -text
+"""
+
+
 def sha_bytes(b: bytes) -> str:
     return hashlib.sha256(b).hexdigest()
 
@@ -58,6 +66,7 @@ class RepoBuilder:
         self.root = tempfile.mkdtemp(prefix='skillci-')
         os.makedirs(os.path.join(self.root, 'manifests'))
         self.skills = []
+        self.gitattributes = PINNED_ATTRS
         self.summary = UNSET
 
     def add_skill(self, name, *, body=None, entry=None, write_file=True):
@@ -91,6 +100,13 @@ class RepoBuilder:
         with open(os.path.join(self.root, 'manifests', 'skills.json'), 'w',
                   encoding='utf-8') as fh:
             json.dump(doc, fh, indent=1)
+        # A fixture must represent a VALID repository. Section L requires the
+        # line-ending pin, so a builder that omitted it would make every test
+        # here fail for a reason none of them is about.
+        if self.gitattributes is not None:
+            with open(os.path.join(self.root, '.gitattributes'), 'w',
+                      encoding='utf-8') as fh:
+                fh.write(self.gitattributes)
         return self.root
 
     def true_summary(self):
