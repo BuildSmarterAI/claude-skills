@@ -2805,7 +2805,8 @@
    "source": null,
    "source_present_in_canonical": false,
    "targets": [
-    "claude"
+    "claude",
+    "codex"
    ],
    "mode": "VENDORED",
    "status": "on-demand",
@@ -4436,7 +4437,8 @@
    "source": null,
    "source_present_in_canonical": false,
    "targets": [
-    "claude"
+    "claude",
+    "codex"
    ],
    "mode": "VENDORED",
    "status": "on-demand",
@@ -5558,7 +5560,8 @@
    "source": null,
    "source_present_in_canonical": false,
    "targets": [
-    "claude"
+    "claude",
+    "codex"
    ],
    "mode": "VENDORED",
    "status": "on-demand",
@@ -5800,7 +5803,8 @@
    "source": null,
    "source_present_in_canonical": false,
    "targets": [
-    "claude"
+    "claude",
+    "codex"
    ],
    "mode": "VENDORED",
    "status": "on-demand",
@@ -5901,7 +5905,8 @@
    "source": null,
    "source_present_in_canonical": false,
    "targets": [
-    "claude"
+    "claude",
+    "codex"
    ],
    "mode": "VENDORED",
    "status": "active",
