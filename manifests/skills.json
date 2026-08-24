@@ -24,23 +24,21 @@
  },
  "contains_secrets": false,
  "summary": {
-  "total": 286,
+  "total": 293,
   "by_mode": {
    "DISABLED": 165,
-   "CLAUDE_ONLY": 3,
-   "REPO_LOCAL": 35,
-   "IDENTICAL": 40,
-   "VENDORED": 41,
-   "HOLD": 1,
-   "CODEX_ONLY": 1
+   "CLAUDE_ONLY": 1,
+   "REPO_LOCAL": 17,
+   "IDENTICAL": 63,
+   "VENDORED": 46,
+   "ADAPTER": 1
   },
   "by_status": {
-   "on-demand": 178,
-   "active": 72,
-   "repo-local": 35,
-   "hold": 1
+   "on-demand": 184,
+   "active": 92,
+   "repo-local": 17
   },
-  "missing_from_canonical": 171
+  "missing_from_canonical": 161
  },
  "skills": [
   {
@@ -2803,6 +2801,26 @@
    "notes": "core methodology family: specs-plans-tickets"
   },
   {
+   "skill": "implement-spec",
+   "source": null,
+   "source_present_in_canonical": false,
+   "targets": [
+    "claude"
+   ],
+   "mode": "VENDORED",
+   "status": "on-demand",
+   "classification": "D. THIRD-PARTY-VENDORED",
+   "family": "specs-plans-tickets",
+   "canonical_owner": "mattpocock/skills",
+   "origin": "mattpocock/skills",
+   "adapter": null,
+   "expected_sha256": null,
+   "divergence_decision": null,
+   "divergence_reason": null,
+   "usage": 0,
+   "notes": "installed 2026-08-22 from mattpocock/skills @5b15a47; claude runtime only; in-progress bucket upstream"
+  },
+  {
    "skill": "improve-codebase-architecture",
    "source": null,
    "source_present_in_canonical": false,
@@ -4414,6 +4432,26 @@
    "notes": "no recorded use and not a core methodology"
   },
   {
+   "skill": "setup-ts-deep-modules",
+   "source": null,
+   "source_present_in_canonical": false,
+   "targets": [
+    "claude"
+   ],
+   "mode": "VENDORED",
+   "status": "on-demand",
+   "classification": "D. THIRD-PARTY-VENDORED",
+   "family": "domain-modeling",
+   "canonical_owner": "mattpocock/skills",
+   "origin": "mattpocock/skills",
+   "adapter": null,
+   "expected_sha256": null,
+   "divergence_decision": null,
+   "divergence_reason": null,
+   "usage": 0,
+   "notes": "installed 2026-08-22 from mattpocock/skills @5b15a47; claude runtime only; in-progress bucket upstream"
+  },
+  {
    "skill": "siteintel-gis-pipeline",
    "source": "siteintel-gis-pipeline",
    "source_present_in_canonical": true,
@@ -5516,6 +5554,26 @@
    "notes": "core methodology family: specs-plans-tickets"
   },
   {
+   "skill": "to-questionnaire",
+   "source": null,
+   "source_present_in_canonical": false,
+   "targets": [
+    "claude"
+   ],
+   "mode": "VENDORED",
+   "status": "on-demand",
+   "classification": "D. THIRD-PARTY-VENDORED",
+   "family": "brainstorming",
+   "canonical_owner": "mattpocock/skills",
+   "origin": "mattpocock/skills",
+   "adapter": null,
+   "expected_sha256": null,
+   "divergence_decision": null,
+   "divergence_reason": null,
+   "usage": 0,
+   "notes": "installed 2026-08-22 from mattpocock/skills @5b15a47; claude runtime only"
+  },
+  {
    "skill": "to-spec",
    "source": null,
    "source_present_in_canonical": false,
@@ -5738,6 +5796,26 @@
    "notes": "already disabled / off-stack; source retained"
   },
   {
+   "skill": "wait-what",
+   "source": null,
+   "source_present_in_canonical": false,
+   "targets": [
+    "claude"
+   ],
+   "mode": "VENDORED",
+   "status": "on-demand",
+   "classification": "D. THIRD-PARTY-VENDORED",
+   "family": null,
+   "canonical_owner": "mattpocock/skills",
+   "origin": "mattpocock/skills",
+   "adapter": null,
+   "expected_sha256": null,
+   "divergence_decision": null,
+   "divergence_reason": null,
+   "usage": 0,
+   "notes": "installed 2026-08-22 from mattpocock/skills @5b15a47; claude runtime only"
+  },
+  {
    "skill": "wayfinder",
    "source": null,
    "source_present_in_canonical": false,
@@ -5817,6 +5895,26 @@
    "divergence_reason": null,
    "usage": 0,
    "notes": "no recorded use and not a core methodology"
+  },
+  {
+   "skill": "writing-for-agents",
+   "source": null,
+   "source_present_in_canonical": false,
+   "targets": [
+    "claude"
+   ],
+   "mode": "VENDORED",
+   "status": "active",
+   "classification": "D. THIRD-PARTY-VENDORED",
+   "family": null,
+   "canonical_owner": "mattpocock/skills",
+   "origin": "mattpocock/skills",
+   "adapter": null,
+   "expected_sha256": null,
+   "divergence_decision": null,
+   "divergence_reason": null,
+   "usage": 0,
+   "notes": "installed 2026-08-22 from mattpocock/skills @5b15a47; claude runtime only; model-invoked"
   },
   {
    "skill": "writing-fragments",
