@@ -224,22 +224,17 @@ def _audit_runtime(rep, root, entries, runtime_roots, canonical_mtimes):
                 continue
             rt_file = os.path.join(rt_root, name, 'SKILL.md')
             if not os.path.isfile(rt_file):
-                # Severity depends on how well-established the status is.
-                # `active` means exposed every turn, so absence is a defect
-                # (measured: all 63 deployable claude-targeted active entries
-                # are deployed). For `on-demand` the repository documents two
-                # conflicting readings - RELEASING.md says exposure changes
-                # what is *loaded* rather than what ships, while
-                # canonical-runtime-reconciliation.md says on-demand entries
-                # "stay held" - and there is exactly one such entry, so the
-                # catalog cannot break the tie. Report it, do not indict it.
-                where = f'[{target}] {name}: not deployed'
-                if e.get('status') == 'active':
-                    rep.add('runtime_missing', where)
-                else:
-                    rep.notice('runtime_missing',
-                               f'{where} (status={e.get("status")!r}; whether this '
-                               f'status implies deployment is undetermined)')
+                # Exposure and deployment are independent. `status` controls
+                # what a runtime LOADS; mode and targets control what it
+                # RECEIVES. A deployable entry targeting a runtime that is
+                # present on disk must therefore exist there whatever its
+                # status - `on-demand` means installed but not auto-loaded, not
+                # withheld. Settled 2026-08-24; previously split by severity
+                # because two documents disagreed and the catalog had a single
+                # on-demand entry to test them against.
+                rep.add('runtime_missing',
+                        f'[{target}] {name}: not deployed (status='
+                        f'{e.get("status")!r}; exposure does not affect delivery)')
                 continue
 
             rep.counts['runtime_files_compared'] += 1
