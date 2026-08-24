@@ -57,13 +57,20 @@ jobs:
         run: python scripts/audit-catalog-health.py --no-runtime
 
       - name: Branch containment
-        # Guarded because the verifier REFUSES (exit 2) when it has nothing to
-        # check, and manifests/retention.json only lands with the retention
-        # policy PR. The guard is explicit and printed: an invisible skip is the
-        # failure mode this whole workflow exists to prevent.
+        # --advisory because this is a REPORTING run: losing an older revision
+        # of a path main still carries is a judgement call, and CI must not fail
+        # on a condition no commit caused. Only-copy loss still blocks even here.
+        # The bare command, which is what an operator runs immediately before a
+        # deletion, blocks on ANY content loss.
+        #
+        # Guarded because the verifier REFUSES (exit 2) when it has no retention
+        # record at all, and manifests/retention.json only lands with the
+        # retention policy PR. A record listing zero deletable branches is a
+        # definite answer and passes. The guard is explicit and printed: an
+        # invisible skip is the failure mode this whole workflow exists to prevent.
         run: |
           if [ -f manifests/retention.json ]; then
-            python scripts/verify-branch-containment.py
+            python scripts/verify-branch-containment.py --advisory
           else
             echo "::notice title=Branch containment skipped::manifests/retention.json is not present on this ref, so no branch is marked deletable and there is nothing to verify. This step activates automatically when the retention policy merges."
           fi

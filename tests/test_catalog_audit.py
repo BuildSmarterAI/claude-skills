@@ -24,6 +24,7 @@ import importlib.util
 import json
 import os
 import shutil
+import subprocess
 import tempfile
 import unittest
 
@@ -307,8 +308,12 @@ class TestRetentionVersusReality(AuditTestCase):
 
 class TestAuditAntiVacuity(AuditTestCase):
     def test_audit_reports_what_it_inspected(self):
-        self.write_manifest([self.add_skill('alpha', 'B\n')])
+        # Both configured roots must exist, or the absent one is correctly
+        # disclosed as a skip and this run is not the fully-exercised case.
+        self.write_manifest([self.add_skill('alpha', 'B\n',
+                                            targets=('claude', 'codex'))])
         self.deploy(self.claude, 'alpha', 'B\n')
+        self.deploy(self.codex, 'alpha', 'B\n')
         self.write_retention({'chore/ok': {'class': 'MERGED-IMPLEMENTATION',
                                            'tip': 'a' * 40, 'deletable': True,
                                            'retention': '2026-09-20'}})
@@ -360,6 +365,117 @@ class TestTestFilesAreActuallyDiscovered(unittest.TestCase):
                          'test_catalog_audit'):
             self.assertIn(expected, found,
                           f'{expected} must be discovered by CI; found={sorted(found)}')
+
+
+class TestAttributionSnapshotConsistency(AuditTestCase):
+    """Attribution must compare like with like.
+
+    The content side reads `expected_sha256` out of the WORKING-TREE manifest.
+    The time side read `git log`, i.e. COMMITTED history. Those are two different
+    snapshots, and the gap between them is the normal state of a developer's
+    machine: edit canonical, update the manifest hash, and the last commit
+    touching that directory is still hours old. The runtime copy is then newer
+    than the recorded canonical time, so the audit blames an EXTERNAL writer for
+    the developer's own uncommitted change - the precise misdiagnosis this
+    attribution exists to prevent, inverted.
+    """
+
+    def _git(self, *args):
+        subprocess.run(('git',) + args, cwd=self.root, capture_output=True,
+                       text=True, check=False)
+
+    def _init_repo(self):
+        self._git('init', '-b', 'main')
+        self._git('config', 'core.autocrlf', 'false')
+        self._git('config', 'user.email', 'test@example.invalid')
+        self._git('config', 'user.name', 'Test')
+
+    def test_uncommitted_canonical_change_is_not_blamed_on_an_external_writer(self):
+        self._init_repo()
+        # Committed state: canonical and runtime both hold OLD.
+        e = self.add_skill('alpha', 'OLD\n')
+        self.write_manifest([e])
+        self._git('add', '-A')
+        self._git('commit', '-m', 'initial')
+        self.deploy(self.claude, 'alpha', 'OLD\n')
+
+        # Developer edits canonical and updates the manifest hash, uncommitted.
+        e2 = self.add_skill('alpha', 'NEW LOCAL EDIT\n')
+        self.write_manifest([e2])
+
+        rep = ach.audit(self.root, runtime_roots={'claude': self.claude})
+        found = [v for v in rep.violations.get('runtime_drift', []) if 'alpha' in v]
+        self.assertTrue(found, 'the hash difference is real drift and must report')
+        self.assertIn('undeployed', found[0].lower(),
+                      f'an uncommitted canonical edit is OUR change, not an '
+                      f'external writer; got {found[0]}')
+
+    def test_unknown_attribution_is_recorded_as_a_skip(self):
+        """The module doctrine is "skips are loud"; silent degradation broke it."""
+        self.write_manifest([self.add_skill('alpha', 'CANONICAL\n')])
+        self.deploy(self.claude, 'alpha', 'DIFFERENT\n')
+        rep = ach.audit(self.root, runtime_roots={'claude': self.claude},
+                        canonical_mtimes={})  # no timestamp for any skill
+        self.assertIn('attribution', rep.skipped,
+                      'losing the ability to attribute must announce itself')
+
+
+class TestPartialRuntimePresence(AuditTestCase):
+    def test_absent_target_root_is_recorded_when_another_root_is_present(self):
+        """One present root must not mask a wholly unchecked second runtime.
+
+        `present` is non-empty as soon as ONE root exists, so the section-level
+        skip never fires; every entry targeting the absent root then falls
+        through `if not rt_root: continue` with no skip, no notice and no count.
+        Half the catalog goes unverified while the output looks complete.
+        """
+        e = self.add_skill('alpha', 'BODY\n', targets=('claude', 'codex'))
+        self.write_manifest([e])
+        self.deploy(self.claude, 'alpha', 'BODY\n')  # codex root never created
+        rep = ach.audit(self.root, runtime_roots=self.roots())
+        self.assertIn('runtime:codex', rep.skipped,
+                      f'the absent codex root must be disclosed; got {rep.skipped}')
+        self.assertEqual(rep.counts['runtime_targets_unchecked'], 1)
+
+
+class TestRetentionRecordCompleteness(AuditTestCase):
+    def test_entry_without_tip_is_not_counted_as_fully_verified(self):
+        """The count is an anti-vacuity signal, so it must not overstate."""
+        self.write_manifest([self.add_skill('alpha', 'B\n')])
+        self.write_retention({'chore/notip': {
+            'class': 'MERGED-IMPLEMENTATION', 'deletable': True,
+            'retention': '2026-09-20'}})  # no 'tip'
+        rep = ach.audit(self.root, remote_refs={'chore/notip': 'a' * 40},
+                        today=AUG_22)
+        self.assertIn('retention_incomplete', rep.notices)
+        self.assertEqual(rep.counts['retention_tips_verified'], 0)
+
+    def test_unparseable_retention_string_is_reported_not_ignored(self):
+        """An unreadable expiry must not be indistinguishable from no expiry."""
+        self.write_manifest([self.add_skill('alpha', 'B\n')])
+        self.write_retention({'chore/odd': {
+            'class': 'MERGED-IMPLEMENTATION', 'tip': 'a' * 40,
+            'deletable': True, 'retention': 'sometime after the audit, probably'}})
+        rep = ach.audit(self.root, remote_refs={'chore/odd': 'a' * 40},
+                        today=AUG_22)
+        self.assertIn('retention_unparseable_expiry', rep.notices)
+
+    def test_recognised_expiry_forms_are_not_reported_as_unparseable(self):
+        """The real record uses '2026-09-20 (30 days after merge)' and
+        'indefinite'; neither may trip the new check."""
+        self.write_manifest([self.add_skill('alpha', 'B\n')])
+        self.write_retention({
+            'chore/dated': {'class': 'MERGED-IMPLEMENTATION', 'tip': 'a' * 40,
+                            'deletable': True,
+                            'retention': '2026-09-20 (30 days after merge)'},
+            'chore/forever': {'class': 'PERMANENT-PRESERVATION', 'tip': 'b' * 40,
+                              'deletable': False, 'retention': 'indefinite'},
+        })
+        rep = ach.audit(self.root,
+                        remote_refs={'chore/dated': 'a' * 40,
+                                     'chore/forever': 'b' * 40},
+                        today=AUG_22)
+        self.assertNotIn('retention_unparseable_expiry', rep.notices)
 
 
 if __name__ == '__main__':

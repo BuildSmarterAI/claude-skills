@@ -372,10 +372,12 @@ class TestVerifyReport(ContainmentTestCase):
         self.r.checkout('main')
         self.r.commit('newer revision', {'doc.md': 'NEW\n'})
 
-        rep = vbc.verify(self.r.path, branches=['feature'], base='main')
+        rep = vbc.verify(self.r.path, branches=['feature'], base='main',
+                         advisory=True)
         self.assertIn('would_lose_older_version', rep.notices)
         self.assertNotIn('would_orphan_content', rep.violations)
-        self.assertTrue(rep.ok, 'a divergent-only branch must not fail the run')
+        self.assertTrue(rep.ok, 'in ADVISORY mode a divergent-only branch reports '
+                                'without failing; by default it blocks')
 
     def test_orphan_wins_when_a_branch_has_both(self):
         """A branch with any orphaned path blocks, whatever else it also has."""
@@ -385,10 +387,11 @@ class TestVerifyReport(ContainmentTestCase):
         self.r.checkout('main')
         self.r.commit('newer doc only', {'doc.md': 'NEW\n'})
 
-        rep = vbc.verify(self.r.path, branches=['feature'], base='main')
+        rep = vbc.verify(self.r.path, branches=['feature'], base='main',
+                         advisory=True)
         self.assertIn('would_orphan_content', rep.violations)
         self.assertIn('would_lose_older_version', rep.notices)
-        self.assertFalse(rep.ok)
+        self.assertFalse(rep.ok, 'advisory never relaxes the only-copy invariant')
 
     def test_contained_branch_passes_with_non_zero_counts(self):
         self.r.commit('base', {'base.txt': 'base\n'})
@@ -400,6 +403,108 @@ class TestVerifyReport(ContainmentTestCase):
         self.assertTrue(rep.ok, f'got {dict(rep.violations)}')
         self.assertEqual(rep.counts['branches_checked'], 1)
         self.assertGreater(rep.counts['blobs_inspected'], 0)
+
+
+class TestContentLossBlocksByDefault(ContainmentTestCase):
+    """Path survival is not content survival.
+
+    An earlier revision of this gate treated a divergent tip path as a notice and
+    printed "PASS" with exit 0 - while the branch held a blob present in ZERO
+    commits of the base ref. An operator following the module docstring ("if this
+    branch were deleted right now, would any content be lost?") would delete the
+    branch and destroy those bytes permanently.
+
+    The correct default is therefore: ANY tip path holding bytes absent from base
+    blocks. `advisory=True` demotes divergent paths to notices and exists so CI
+    can report without failing on a condition no commit caused; the bare command
+    an operator runs before a deletion gets the safe answer.
+    """
+
+    def _divergent_branch(self):
+        self.r.commit('base', {'base.txt': 'base\n'})
+        self.r.checkout('feature', create=True)
+        self.r.commit('old revision', {'doc.md': 'OLD BYTES\n'})
+        self.r.checkout('main')
+        self.r.commit('newer revision', {'doc.md': 'NEW BYTES\n'})
+
+    def test_divergent_content_blocks_by_default(self):
+        self._divergent_branch()
+        rep = vbc.verify(self.r.path, branches=['feature'], base='main')
+        self.assertFalse(rep.ok, 'unique bytes would be lost; this must not pass')
+        self.assertIn('would_lose_content', rep.violations)
+
+    def test_advisory_mode_demotes_divergent_to_a_notice(self):
+        self._divergent_branch()
+        rep = vbc.verify(self.r.path, branches=['feature'], base='main',
+                         advisory=True)
+        self.assertTrue(rep.ok)
+        self.assertIn('would_lose_older_version', rep.notices)
+        self.assertNotIn('would_lose_content', rep.violations)
+
+    def test_orphaned_content_blocks_even_in_advisory_mode(self):
+        """Advisory relaxes the judgement call, never the only-copy invariant."""
+        self.r.commit('base', {'base.txt': 'base\n'})
+        self.r.checkout('feature', create=True)
+        self.r.commit('only copy', {'only-here.txt': 'IRREPLACEABLE\n'})
+        rep = vbc.verify(self.r.path, branches=['feature'], base='main',
+                         advisory=True)
+        self.assertFalse(rep.ok)
+        self.assertIn('would_orphan_content', rep.violations)
+
+    def test_headline_never_claims_pass_while_body_says_not_contained(self):
+        """A single run must not emit two contradictory verdicts."""
+        self._divergent_branch()
+        rep = vbc.verify(self.r.path, branches=['feature'], base='main',
+                         advisory=True)
+        headline = vbc.headline(rep)
+        self.assertNotEqual(headline, 'PASS',
+                            'bytes would be lost; the headline must not read PASS')
+        self.assertEqual(headline, 'REVIEW REQUIRED')
+
+    def test_fully_contained_branch_still_reads_pass(self):
+        self.r.commit('base', {'base.txt': 'base\n'})
+        self.r.checkout('feature', create=True)
+        self.r.commit('work', {'f.txt': 'X\n'})
+        self.r.checkout('main')
+        self.r.commit('squash', {'f.txt': 'X\n'})
+        rep = vbc.verify(self.r.path, branches=['feature'], base='main')
+        self.assertTrue(rep.ok)
+        self.assertEqual(vbc.headline(rep), 'PASS')
+
+
+class TestZeroDeletableIsAnAnswerNotAnAbsence(ContainmentTestCase):
+    """Refusing exists to prevent a vacuous pass, not to punish a clean state.
+
+    "No retention record" means we do not know what is deletable -> refuse.
+    "A retention record listing zero deletable branches" is a definite answer,
+    and it is the retention programme's designed END STATE: once every eligible
+    branch is retired, nothing is deletable. Refusing there would turn CI red
+    permanently at the exact moment the process succeeded.
+    """
+
+    def _write_retention(self, branches):
+        os.makedirs(os.path.join(self.r.path, 'manifests'), exist_ok=True)
+        with open(os.path.join(self.r.path, 'manifests', 'retention.json'), 'w',
+                  encoding='utf-8') as fh:
+            json.dump({'schema': 1, 'branches': branches}, fh)
+
+    def test_record_with_zero_deletable_branches_passes(self):
+        self.r.commit('base', {'base.txt': 'base\n'})
+        self._write_retention({'chore/keep': {
+            'class': 'PERMANENT-PRESERVATION', 'tip': 'a' * 40,
+            'deletable': False, 'retention': 'indefinite'}})
+        rep = vbc.verify(self.r.path, base='main')
+        self.assertFalse(rep.refused,
+                         'a record saying "nothing is deletable" is an answer')
+        self.assertTrue(rep.ok)
+        self.assertEqual(rep.counts['branches_checked'], 0)
+
+    def test_absent_record_still_refuses(self):
+        """The genuine unknown must still refuse."""
+        self.r.commit('base', {'base.txt': 'base\n'})
+        rep = vbc.verify(self.r.path, base='main')
+        self.assertTrue(rep.refused)
+        self.assertIn('nothing_to_check', rep.violations)
 
 
 if __name__ == '__main__':

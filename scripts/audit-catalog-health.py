@@ -166,16 +166,46 @@ def parse_expiry(value):
     return None
 
 
+def dirty_top_dirs(repo):
+    """Top-level directories with uncommitted changes, in one git call.
+
+    Attribution otherwise compares two different snapshots: `expected_sha256` is
+    read from the WORKING-TREE manifest while timestamps come from COMMITTED
+    history. On any machine mid-edit that gap makes canonical look old, so the
+    audit blames an external writer for the developer's own change - the exact
+    misdiagnosis this attribution exists to prevent, inverted.
+    """
+    out = set()
+    for line in _git(repo, 'status', '--porcelain').split('\n'):
+        path = line[3:].strip() if len(line) > 3 else ''
+        if ' -> ' in path:
+            path = path.split(' -> ', 1)[1]
+        path = path.strip('"')
+        if path:
+            out.add(path.split('/', 1)[0])
+    return out
+
+
 def _audit_runtime(rep, root, entries, runtime_roots, canonical_mtimes):
-    present = {t: p for t, p in (runtime_roots or {}).items() if os.path.isdir(p)}
+    configured = dict(runtime_roots or {})
+    present = {t: p for t, p in configured.items() if os.path.isdir(p)}
     if not present:
-        named = ', '.join(sorted((runtime_roots or {}).values())) or '<none configured>'
+        named = ', '.join(sorted(configured.values())) or '<none configured>'
         rep.skip('runtime', f'no runtime store present ({named}) - '
                             'expected on a CI runner; drift is a local question')
         return
 
+    # One present root must not mask a wholly unchecked second runtime. Without
+    # this, entries targeting the absent root fall through silently and the
+    # output reads as complete while half the catalog went unverified.
+    for target, path in sorted(configured.items()):
+        if target not in present:
+            rep.skip(f'runtime:{target}',
+                     f'{path} is absent, so no {target} target was verified')
+
     if canonical_mtimes is None:
         canonical_mtimes = canonical_mtimes_from_git(root)
+    dirty = dirty_top_dirs(root)
 
     for e in entries:
         if e.get('mode') not in DEPLOYABLE_MODES:
@@ -188,6 +218,9 @@ def _audit_runtime(rep, root, entries, runtime_roots, canonical_mtimes):
         for target in (e.get('targets') or []):
             rt_root = present.get(target)
             if not rt_root:
+                # Disclosed at section level above; counted so the anti-vacuity
+                # signal cannot overstate what was actually verified.
+                rep.counts['runtime_targets_unchecked'] += 1
                 continue
             rt_file = os.path.join(rt_root, name, 'SKILL.md')
             if not os.path.isfile(rt_file):
@@ -218,7 +251,15 @@ def _audit_runtime(rep, root, entries, runtime_roots, canonical_mtimes):
             # new finding into a known one.
             rt_mtime = os.path.getmtime(rt_file)
             canon_mtime = canonical_mtimes.get(src_dir)
-            if canon_mtime is None:
+            if src_dir in dirty:
+                # Canonical has uncommitted changes for this skill, so the
+                # committed timestamp understates it. This is our own edit.
+                side = ('UNDEPLOYED canonical change - canonical has uncommitted '
+                        'changes for this skill, so the runtime is behind')
+            elif canon_mtime is None:
+                rep.skip('attribution',
+                         'no canonical timestamp available (no git history for '
+                         'these paths), so drift could not be attributed to a side')
                 side = 'unknown side (no canonical timestamp available)'
             elif rt_mtime > canon_mtime:
                 side = ('EXTERNAL writer - the runtime copy is newer than the '
@@ -280,12 +321,29 @@ def _audit_retention(rep, root, remote_refs, today):
             else:
                 recorded_tip = (meta.get('tip') or '').strip()
                 actual_tip = remote_refs[name]
-                if recorded_tip and recorded_tip != actual_tip:
-                    rep.add('retention_tip_moved',
-                            f'{name}: record says {recorded_tip[:8]}, '
-                            f'origin has {actual_tip[:8]}')
+                if not recorded_tip:
+                    # The count is an anti-vacuity signal; an entry with no tip
+                    # had nothing compared and must not inflate it.
+                    rep.notice('retention_incomplete',
+                               f'{name}: no tip recorded, so nothing was verified '
+                               f'against origin')
+                else:
+                    rep.counts['retention_tips_verified'] += 1
+                    if recorded_tip != actual_tip:
+                        rep.add('retention_tip_moved',
+                                f'{name}: record says {recorded_tip[:8]}, '
+                                f'origin has {actual_tip[:8]}')
 
-        expiry = parse_expiry(meta.get('retention'))
+        raw_retention = str(meta.get('retention') or '').strip()
+        expiry = parse_expiry(raw_retention)
+        if not raw_retention:
+            rep.notice('retention_incomplete',
+                       f'{name}: no retention window recorded')
+        elif expiry is None:
+            # An unreadable expiry must not be indistinguishable from "no expiry
+            # configured" - silence there means a window can pass unnoticed.
+            rep.notice('retention_unparseable_expiry',
+                       f'{name}: cannot read a date from {raw_retention!r}')
         if expiry == 'expired':
             rep.notice('retention_expired', f'{name}: recorded as already expired')
         elif isinstance(expiry, datetime.date) and today is not None \

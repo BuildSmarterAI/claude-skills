@@ -40,18 +40,24 @@ Usage
 
 Severity
 --------
-**violation** (exit 1): a tip path exists nowhere in the base ref, so deleting
-the branch destroys the only copy. This is the invariant.
+Any tip path carrying bytes absent from the base ref BLOCKS by default. Two kinds,
+both real losses:
 
-**notice** (exit 0): a tip path still exists on the base ref carrying different
-content, so deleting drops an older revision. Nearly every squash-merged branch
-that was revised in place produces these; blocking on them would fire the gate on
-every legitimate retirement until people stopped reading it. Review before
-deleting - the retirement checklist in docs/consolidation/RETENTION.md is where
-that acknowledgement belongs.
+- **orphaned** - the base ref has no such path at all. The only copy dies.
+- **divergent** - the base ref has that path with different content. The path
+  survives; those exact bytes do not.
 
-Exit codes: 0 nothing would be orphaned (notices allowed), 1 content would be
-orphaned, 2 refused.
+Path survival is not content survival, and conflating them is how a gate ends up
+printing PASS over a deletion that destroys data. `--advisory` demotes divergent
+loss to a notice so a *reporting* run (CI) does not fail on a condition no commit
+caused; orphaned loss blocks even then. The bare command - the one an operator
+runs immediately before a deletion - always gives the safe answer.
+
+Acknowledging a divergent loss is a human act, and the retirement checklist in
+docs/consolidation/RETENTION.md is where it belongs.
+
+Exit codes: 0 nothing would be lost (or advisory notices only), 1 content would
+be lost, 2 refused.
 """
 from __future__ import annotations
 
@@ -227,20 +233,44 @@ class Report:
 
 
 def deletable_branches(repo):
-    """Branches retention.json marks deletable. Absent file -> empty list."""
+    """(branches retention.json marks deletable, whether the record was found).
+
+    The second value matters. "No record" means we do not know what is deletable
+    and must refuse. "A record listing zero deletable branches" is a definite
+    answer - and it is this programme's designed END STATE, once every eligible
+    branch has been retired. Refusing there would turn CI red permanently at the
+    moment the process succeeded.
+    """
     path = os.path.join(repo, RETENTION_FILE)
     if not os.path.isfile(path):
-        return []
+        return [], False
     try:
         with open(path, encoding='utf-8') as fh:
             data = json.load(fh)
     except (OSError, ValueError):
-        return []
+        return [], False
     return sorted(name for name, meta in (data.get('branches') or {}).items()
-                  if isinstance(meta, dict) and meta.get('deletable') is True)
+                  if isinstance(meta, dict) and meta.get('deletable') is True), True
 
 
-def verify(repo, branches=None, base='origin/main', ref_prefix=None):
+def headline(rep):
+    """One verdict per run.
+
+    An earlier revision printed 'PASS' above a body reading 'NOT CONTAINED',
+    with exit 0 and ok:true taking the permissive side. A run must not emit two
+    contradictory verdicts about the same branch.
+    """
+    if rep.refused:
+        return 'REFUSED'
+    if rep.violations:
+        return 'FAIL'
+    if rep.notices:
+        return 'REVIEW REQUIRED'
+    return 'PASS'
+
+
+def verify(repo, branches=None, base='origin/main', ref_prefix=None,
+           advisory=False):
     """Verify every named branch is contained in `base`.
 
     `ref_prefix` is prepended to every name before resolving. It defaults to
@@ -251,16 +281,21 @@ def verify(repo, branches=None, base='origin/main', ref_prefix=None):
     `--branch` names are used verbatim.
     """
     rep = Report()
+    record_found = False
 
     if branches is None:
-        branches = deletable_branches(repo)
+        branches, record_found = deletable_branches(repo)
         rep.counts['source_retention_json'] = 1
         if ref_prefix is None:
             ref_prefix = 'origin/'
     ref_prefix = ref_prefix or ''
 
     if not branches:
-        # Not a pass. Nothing was inspected, so nothing has been established.
+        if record_found:
+            # A definite answer: the record exists and nothing is deletable.
+            rep.counts['branches_checked'] = 0
+            return rep
+        # A genuine unknown. Nothing was inspected, so nothing is established.
         rep.refused = True
         rep.add('nothing_to_check',
                 'no branches supplied and none marked deletable in retention.json')
@@ -293,15 +328,25 @@ def verify(repo, branches=None, base='origin/main', ref_prefix=None):
         rep.counts['orphan_paths'] += len(c['orphan_paths'])
         rep.counts['divergent_paths'] += len(c['divergent_paths'])
 
-        # Only-copy loss blocks. Older-version loss informs.
+        # Only-copy loss always blocks.
         if c['orphan_paths']:
             rep.add('would_orphan_content',
                     f'{ref}: {len(c["orphan_paths"])} path(s) exist nowhere in '
                     f'{base} - deleting this branch destroys the only copy')
+
+        # Divergent loss blocks BY DEFAULT. These paths still carry blobs present
+        # in zero commits of the base ref, so deleting destroys those exact bytes;
+        # only the path survives. Advisory mode demotes them so a reporting run
+        # does not fail on a condition no commit caused - but the bare command an
+        # operator runs before a deletion must give the safe answer.
         if c['divergent_paths']:
-            rep.notice('would_lose_older_version',
-                       f'{ref}: {len(c["divergent_paths"])} path(s) still exist on '
-                       f'{base} with different content - review before deleting')
+            detail = (f'{ref}: {len(c["divergent_paths"])} path(s) carry bytes '
+                      f'absent from {base}; {base} has those paths with different '
+                      f'content, so only the path survives, not the content')
+            if advisory:
+                rep.notice('would_lose_older_version', detail)
+            else:
+                rep.add('would_lose_content', detail)
 
     return rep
 
@@ -313,9 +358,13 @@ def main(argv=None):
                     help='branch to verify (repeatable); default: retention.json')
     ap.add_argument('--base', default='origin/main')
     ap.add_argument('--json', action='store_true')
+    ap.add_argument('--advisory', action='store_true',
+                    help='demote divergent-path loss to a notice (CI reporting mode); '
+                         'only-copy loss still blocks')
     args = ap.parse_args(argv)
 
-    rep = verify(args.repo, branches=args.branches, base=args.base)
+    rep = verify(args.repo, branches=args.branches, base=args.base,
+                 advisory=args.advisory)
 
     if args.json:
         json.dump(rep.as_dict(), sys.stdout, indent=1, sort_keys=True)
@@ -327,8 +376,7 @@ def main(argv=None):
                 print(f'  {kind}: {o}')
         print('  (no claim has been made about any branch)')
     else:
-        status = 'PASS' if rep.ok else 'FAIL'
-        print(f'Branch containment: {status}')
+        print(f'Branch containment: {headline(rep)}')
         print(f'  base                 : {rep.counts["base_commits"]} commits, '
               f'{rep.counts["base_blobs"]} blobs')
         print(f'  branches checked     : {rep.counts["branches_checked"]}')
