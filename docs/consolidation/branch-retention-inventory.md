@@ -19,7 +19,7 @@ Generated against `origin/main` `6470d65f` (catalog **v1.0.0**). Policy: [`RETEN
 |---|---|---|---|---:|---|---|---|
 | `chore/canonical-risk-based-tdd` | MERGED-IMPLEMENTATION | (none — content landed via #3) | **no** | 1 | no | 2026-09-20 (30 days after the merge that carried it) | Retire on or after **2026-09-20** |
 | `chore/canonical-skill-source-consolidation` | MERGED-IMPLEMENTATION | #3 MERGED (squash `de06054`) | yes (superseded states only) | 0 | no | 2026-09-20 (30 days after merge) | Retire on or after **2026-09-20** |
-| `claude/add-claude-documentation-IaLZN` | MERGED-IMPLEMENTATION | #1 MERGED | yes | 0 | no | expired (merged well over 30 days ago) | Retire — eligible now |
+| `claude/add-claude-documentation-IaLZN` | MERGED-IMPLEMENTATION | #1 MERGED | yes | 0 | no | expired | **RETIRED 2026-08-24** — tip `9fc33a67` |
 | `archive/runtime-pinned-f175f20` | PERMANENT-PRESERVATION | (none) | **no** | 57 | yes | indefinite | **KEEP INDEFINITELY** |
 | `chore/pre-consolidation-skill-snapshot-2026-08-20` | PERMANENT-PRESERVATION | (none) | **no** | 913 | yes | indefinite | **KEEP INDEFINITELY** |
 
@@ -47,7 +47,11 @@ Generated against `origin/main` `6470d65f` (catalog **v1.0.0**). Policy: [`RETEN
 - **Purpose:** Added the top-level CLAUDE.md repo guide.
 - **Protects against:** Nothing.
 - **Containment evidence:** **0 blobs absent from main history** — the only branch that is also a true ancestor of main. Fully contained by every measure.
-- **Retention:** expired (merged well over 30 days ago) — Retire — eligible now
+- **Retention:** expired — **RETIRED 2026-08-24**
+- **Deleted tip:** `9fc33a672688ccc308461cabc00dc3261282a023`
+- **Recovery:** `git push origin 9fc33a672688ccc308461cabc00dc3261282a023:refs/heads/claude/add-claude-documentation-IaLZN` recreates it verbatim while the object
+  survives on the remote. Containment was re-verified immediately before deletion:
+  0 blobs absent from `main` history, 0 orphaned and 0 divergent tip paths.
 
 ### `archive/runtime-pinned-f175f20`
 

@@ -127,7 +127,7 @@ When you write or edit code samples inside a skill, default to this stack so exa
 ## Git workflow
 
 - The default branch is `main`. Never push directly to `main`.
-- Develop on the feature branch the harness specifies (e.g. `claude/add-claude-documentation-IaLZN`).
+- Develop on the feature branch the harness specifies (e.g. `claude/<task-slug>`).
 - Commit subject style follows the repo's existing pattern: short imperative — `Add: …`, `Update: …`, `Fix: …` (see install/update notes in `README.md`).
 - Push with `git push -u origin <branch>`. Retry transient network failures with exponential backoff; do not force-push.
 - CI **does** run: `.github/workflows/skill-consistency.yml` gates every PR and every push to `main`. Wait for the `Skill consistency` check. Before pushing, run

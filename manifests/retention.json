@@ -48,15 +48,14 @@
    "unique_tip_paths_absent_from_main": 1,
    "pr": "(none \u2014 content landed via #3)",
    "reason": "D1: created the canonical risk-based TDD doctrine (`d63e893`)."
-  },
+  }
+ },
+ "retired": {
   "claude/add-claude-documentation-IaLZN": {
-   "class": "MERGED-IMPLEMENTATION",
    "tip": "9fc33a672688ccc308461cabc00dc3261282a023",
-   "deletable": true,
-   "retention": "expired (merged well over 30 days ago)",
-   "unique_tip_paths_absent_from_main": 0,
-   "pr": "#1 MERGED",
-   "reason": "Added the top-level CLAUDE.md repo guide."
+   "retired_on": "2026-08-24",
+   "class_at_retirement": "MERGED-IMPLEMENTATION",
+   "evidence": "0 blobs absent from main history; 0 orphaned and 0 divergent tip paths, re-verified immediately before deletion"
   }
  }
 }
