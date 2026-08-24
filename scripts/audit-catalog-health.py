@@ -371,6 +371,9 @@ def main(argv=None):
     ap.add_argument('--json', action='store_true')
     ap.add_argument('--no-runtime', action='store_true',
                     help='skip the runtime drift section entirely')
+    ap.add_argument('--quiet', action='store_true',
+                    help='print nothing when there is nothing to report; '
+                         'intended for a session-start or scheduled run')
     ap.add_argument('--claude-root', default=DEFAULT_RUNTIME_ROOTS['claude'])
     ap.add_argument('--codex-root', default=DEFAULT_RUNTIME_ROOTS['codex'])
     args = ap.parse_args(argv)
@@ -379,9 +382,17 @@ def main(argv=None):
                                         'codex': args.codex_root}
     rep = audit(args.repo, runtime_roots=roots, today=datetime.date.today())
 
+    # Silence must mean clean, never suppressed. Violations and notices both
+    # break it. A skipped section does not: a skip is structural - a CI runner
+    # has no runtime stores - rather than a finding, and it is still reported
+    # in full whenever anything else has something to say.
+    silent = args.quiet and rep.ok and not rep.notices
+
     if args.json:
         json.dump(rep.as_dict(), sys.stdout, indent=1, sort_keys=True)
         sys.stdout.write('\n')
+    elif silent:
+        pass
     else:
         print(f'Catalog health: {"PASS" if rep.ok else "FAIL"}')
         print(f'  manifest entries        : {rep.counts["manifest_entries"]}')
