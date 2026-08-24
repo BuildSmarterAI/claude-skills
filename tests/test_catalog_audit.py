@@ -153,8 +153,8 @@ class TestRuntimeDrift(AuditTestCase):
         self.assertNotIn('runtime', rep.skipped)
         self.assertIn('runtime_missing', rep.violations)
 
-    def test_missing_on_demand_skill_is_a_notice_not_a_violation(self):
-        """Whether `on-demand` is deployed-but-unloaded is NOT established.
+    def test_missing_on_demand_skill_is_a_violation(self):
+        """Settled 2026-08-24: `on-demand` IS deployed, just not auto-loaded.
 
         The repository documents both readings and they conflict:
           - RELEASING.md: active<->on-demand changes "what is *loaded*, not what
@@ -172,9 +172,10 @@ class TestRuntimeDrift(AuditTestCase):
         self.write_manifest([e])
         self.deploy(self.claude, 'other', 'X\n')
         rep = ach.audit(self.root, runtime_roots={'claude': self.claude})
-        self.assertIn('runtime_missing', rep.notices)
-        self.assertNotIn('runtime_missing', rep.violations)
-        self.assertTrue(rep.ok, 'an unresolved premise must not fail the run')
+        self.assertIn('runtime_missing', rep.violations)
+        self.assertNotIn('runtime_missing', rep.notices)
+        self.assertFalse(rep.ok, 'a governed skill missing from a present runtime '
+                                 'is a defect regardless of exposure')
 
 
 class TestRetentionVersusReality(AuditTestCase):

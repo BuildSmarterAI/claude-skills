@@ -45,6 +45,13 @@ no frontmatter at all. See `divergence-adjudication.md`.
 | `targets` | `["claude"]`, `["codex"]`, or both |
 | `mode` | `IDENTICAL` · `CLAUDE_ONLY` · `CODEX_ONLY` · `ADAPTER` · `DISABLED` · `REPO_LOCAL` · `VENDORED` · `HOLD` |
 | `status` | `active` · `on-demand` · `repo-local` · `hold` |
+
+`status` controls what a runtime **loads**; `mode` and `targets` control what it
+**receives**. They are independent: `on-demand` is installed but not auto-loaded,
+never withheld from the runtime. So a deployable entry targeting a present runtime
+must exist on disk whatever its status, and `audit-catalog-health.py` reports its
+absence as a violation. Settled 2026-08-24 — before that, two documents disagreed
+and the catalog held exactly one on-demand entry, too few to break the tie.
 | `classification` | A–J ownership class (see `skill-inventory.md`) |
 | `canonical_owner`, `origin` | provenance, including vendored upstream |
 | `expected_sha256` | canonical content hash |

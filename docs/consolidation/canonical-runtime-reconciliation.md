@@ -96,7 +96,7 @@ Claude side only). 111 rows / 78 skills were substantive; 49 rows were line-endi
 | `crosspost` | A | canonical corrected **from** runtime | runtime is a superset (adds Platform Specifications) | canonical == runtime, deploy is a no-op |
 | `market-research` | B | **canonical wins**, deployed | canonical carries `origin: ECC (customized for BuildSmarter stack)` and CRE/PropTech targeting the generic runtime copy lost | deployed; description now shows the BuildSmarter customization |
 | `investor-materials`, `investor-outreach` | B | canonical wins | canonical holds BuildSmarter Portfolio Context / Investor Targeting Segments | canonical only (classified REPO_LOCAL, not globally deployed) |
-| 33 Codex skills | F | **canonical wins** | runtime carries the blind `Claude`->`Codex` substitution; canonical clean in every case | 6 deployed this round; the rest are on-demand and stay held |
+| 33 Codex skills | F | **canonical wins** | runtime carries the blind `Claude`->`Codex` substitution; canonical clean in every case | 6 deployed this round; the rest are on-demand and stay held *(transitional D3 state; on-demand does not mean withheld — see README.md)* |
 | 49 rows | G | canonical wins | line endings only | deployed where active |
 
 ## Held for human decision

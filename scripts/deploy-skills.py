@@ -47,6 +47,12 @@ EXCLUDE_SUFFIX = ('.pyc', '.pyo', '.log', '.tmp', '.pem', '.key')
 EXCLUDE_NAMES = {'.env', '.DS_Store', 'Thumbs.db'}
 
 DEPLOYABLE_MODES = {'IDENTICAL', 'CLAUDE_ONLY', 'CODEX_ONLY'}
+# Delivery is governed by mode and targets; exposure is a separate axis.
+# `on-demand` means installed but not auto-loaded - all 105 skills switched off
+# via skillOverrides are still present on disk - so withholding the file would
+# make it impossible to load on demand at all. `hold` stays out: that flags
+# unsettled content, which is a statement about the bytes, not about exposure.
+DELIVERABLE_STATUS = {'active', 'on-demand'}
 
 
 def sha(path: str) -> str:
@@ -90,7 +96,7 @@ def plan(manifest, roots, only_skill=None):
             continue
         if entry['mode'] not in DEPLOYABLE_MODES:
             continue
-        if entry.get('status') != 'active':
+        if entry.get('status') not in DELIVERABLE_STATUS:
             continue
         if name in NEVER_DEPLOY:
             problems.append({'skill': name, 'issue': 'name collides with a reserved directory'})
