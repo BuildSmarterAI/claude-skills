@@ -890,7 +890,6 @@
    "source": null,
    "source_present_in_canonical": false,
    "targets": [
-    "claude",
     "codex"
    ],
    "mode": "VENDORED",
@@ -904,7 +903,8 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,
-   "notes": "no recorded use and not a core methodology"
+   "notes": "Claude Code is served by the mattpocock-skills@claude-plugins-official plugin, which registers this skill; this repo deploys no Claude copy. Codex keeps its own install under ~/.agents/skills via `npx skills`. Prior note: no recorded use and not a core methodology",
+   "claude_runtime_source": "mattpocock-skills@claude-plugins-official (Claude Code plugin; not deployed by this repo)"
   },
   {
    "skill": "automation-audit-ops",
@@ -1313,7 +1313,6 @@
    "source": null,
    "source_present_in_canonical": false,
    "targets": [
-    "claude",
     "codex"
    ],
    "mode": "VENDORED",
@@ -1327,7 +1326,8 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 4,
-   "notes": "recurring use (4 recorded invocations)"
+   "notes": "Claude Code is served by the mattpocock-skills@claude-plugins-official plugin, which registers this skill; this repo deploys no Claude copy. Codex keeps its own install under ~/.agents/skills via `npx skills`. Prior note: recurring use (4 recorded invocations)",
+   "claude_runtime_source": "mattpocock-skills@claude-plugins-official (Claude Code plugin; not deployed by this repo)"
   },
   {
    "skill": "codebase-onboarding",
@@ -1979,7 +1979,6 @@
    "source": null,
    "source_present_in_canonical": false,
    "targets": [
-    "claude",
     "codex"
    ],
    "mode": "VENDORED",
@@ -1993,7 +1992,8 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 4,
-   "notes": "recurring use (4 recorded invocations)"
+   "notes": "Claude Code is served by the mattpocock-skills@claude-plugins-official plugin, which registers this skill; this repo deploys no Claude copy. Codex keeps its own install under ~/.agents/skills via `npx skills`. Prior note: recurring use (4 recorded invocations)",
+   "claude_runtime_source": "mattpocock-skills@claude-plugins-official (Claude Code plugin; not deployed by this repo)"
   },
   {
    "skill": "django-patterns",
@@ -2132,7 +2132,6 @@
    "source": null,
    "source_present_in_canonical": false,
    "targets": [
-    "claude",
     "codex"
    ],
    "mode": "VENDORED",
@@ -2146,7 +2145,8 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 3,
-   "notes": "recurring use (3 recorded invocations)"
+   "notes": "Claude Code is served by the mattpocock-skills@claude-plugins-official plugin, which registers this skill; this repo deploys no Claude copy. Codex keeps its own install under ~/.agents/skills via `npx skills`. Prior note: recurring use (3 recorded invocations)",
+   "claude_runtime_source": "mattpocock-skills@claude-plugins-official (Claude Code plugin; not deployed by this repo)"
   },
   {
    "skill": "e2e-testing",
@@ -2678,7 +2678,6 @@
    "source": null,
    "source_present_in_canonical": false,
    "targets": [
-    "claude",
     "codex"
    ],
    "mode": "VENDORED",
@@ -2692,14 +2691,14 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,
-   "notes": "core methodology family: brainstorming"
+   "notes": "Claude Code is served by the mattpocock-skills@claude-plugins-official plugin, which registers this skill; this repo deploys no Claude copy. Codex keeps its own install under ~/.agents/skills via `npx skills`. Prior note: core methodology family: brainstorming",
+   "claude_runtime_source": "mattpocock-skills@claude-plugins-official (Claude Code plugin; not deployed by this repo)"
   },
   {
    "skill": "grill-with-docs",
    "source": null,
    "source_present_in_canonical": false,
    "targets": [
-    "claude",
     "codex"
    ],
    "mode": "VENDORED",
@@ -2713,14 +2712,14 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 2,
-   "notes": "core methodology family: brainstorming"
+   "notes": "Claude Code is served by the mattpocock-skills@claude-plugins-official plugin, which registers this skill; this repo deploys no Claude copy. Codex keeps its own install under ~/.agents/skills via `npx skills`. Prior note: core methodology family: brainstorming",
+   "claude_runtime_source": "mattpocock-skills@claude-plugins-official (Claude Code plugin; not deployed by this repo)"
   },
   {
    "skill": "grilling",
    "source": null,
    "source_present_in_canonical": false,
    "targets": [
-    "claude",
     "codex"
    ],
    "mode": "VENDORED",
@@ -2734,14 +2733,14 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 7,
-   "notes": "recurring use (7 recorded invocations)"
+   "notes": "Claude Code is served by the mattpocock-skills@claude-plugins-official plugin, which registers this skill; this repo deploys no Claude copy. Codex keeps its own install under ~/.agents/skills via `npx skills`. Prior note: recurring use (7 recorded invocations)",
+   "claude_runtime_source": "mattpocock-skills@claude-plugins-official (Claude Code plugin; not deployed by this repo)"
   },
   {
    "skill": "handoff",
    "source": null,
    "source_present_in_canonical": false,
    "targets": [
-    "claude",
     "codex"
    ],
    "mode": "VENDORED",
@@ -2755,7 +2754,8 @@
    "divergence_decision": "claude",
    "divergence_reason": "Claude side: 0 structural defects vs Codex side carrying blind Claude->Codex substitution (broken paths / mangled frontmatter)",
    "usage": 83,
-   "notes": "recurring use (83 recorded invocations)"
+   "notes": "Claude Code is served by the mattpocock-skills@claude-plugins-official plugin, which registers this skill; this repo deploys no Claude copy. Codex keeps its own install under ~/.agents/skills via `npx skills`. Prior note: recurring use (83 recorded invocations)",
+   "claude_runtime_source": "mattpocock-skills@claude-plugins-official (Claude Code plugin; not deployed by this repo)"
   },
   {
    "skill": "hexagonal-architecture",
@@ -2798,7 +2798,6 @@
    "source": null,
    "source_present_in_canonical": false,
    "targets": [
-    "claude",
     "codex"
    ],
    "mode": "VENDORED",
@@ -2812,7 +2811,8 @@
    "divergence_decision": "claude",
    "divergence_reason": "Claude side: 0 structural defects vs Codex side carrying blind Claude->Codex substitution (broken paths / mangled frontmatter)",
    "usage": 0,
-   "notes": "core methodology family: specs-plans-tickets"
+   "notes": "Claude Code is served by the mattpocock-skills@claude-plugins-official plugin, which registers this skill; this repo deploys no Claude copy. Codex keeps its own install under ~/.agents/skills via `npx skills`. Prior note: core methodology family: specs-plans-tickets",
+   "claude_runtime_source": "mattpocock-skills@claude-plugins-official (Claude Code plugin; not deployed by this repo)"
   },
   {
    "skill": "implement-spec",
@@ -2840,7 +2840,6 @@
    "source": null,
    "source_present_in_canonical": false,
    "targets": [
-    "claude",
     "codex"
    ],
    "mode": "VENDORED",
@@ -2854,7 +2853,8 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 7,
-   "notes": "recurring use (7 recorded invocations)"
+   "notes": "Claude Code is served by the mattpocock-skills@claude-plugins-official plugin, which registers this skill; this repo deploys no Claude copy. Codex keeps its own install under ~/.agents/skills via `npx skills`. Prior note: recurring use (7 recorded invocations)",
+   "claude_runtime_source": "mattpocock-skills@claude-plugins-official (Claude Code plugin; not deployed by this repo)"
   },
   {
    "skill": "inventory-demand-planning",
@@ -3835,7 +3835,6 @@
    "source": null,
    "source_present_in_canonical": false,
    "targets": [
-    "claude",
     "codex"
    ],
    "mode": "VENDORED",
@@ -3849,7 +3848,8 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,
-   "notes": "core methodology family: specs-plans-tickets"
+   "notes": "Claude Code is served by the mattpocock-skills@claude-plugins-official plugin, which registers this skill; this repo deploys no Claude copy. Codex keeps its own install under ~/.agents/skills via `npx skills`. Prior note: core methodology family: specs-plans-tickets",
+   "claude_runtime_source": "mattpocock-skills@claude-plugins-official (Claude Code plugin; not deployed by this repo)"
   },
   {
    "skill": "python-patterns",
@@ -4089,7 +4089,6 @@
    "source": null,
    "source_present_in_canonical": false,
    "targets": [
-    "claude",
     "codex"
    ],
    "mode": "VENDORED",
@@ -4103,7 +4102,8 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,
-   "notes": "core methodology family: research"
+   "notes": "Claude Code is served by the mattpocock-skills@claude-plugins-official plugin, which registers this skill; this repo deploys no Claude copy. Codex keeps its own install under ~/.agents/skills via `npx skills`. Prior note: core methodology family: research",
+   "claude_runtime_source": "mattpocock-skills@claude-plugins-official (Claude Code plugin; not deployed by this repo)"
   },
   {
    "skill": "research-ops",
@@ -4128,7 +4128,6 @@
    "source": null,
    "source_present_in_canonical": false,
    "targets": [
-    "claude",
     "codex"
    ],
    "mode": "VENDORED",
@@ -4142,7 +4141,8 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 8,
-   "notes": "recurring use (8 recorded invocations)"
+   "notes": "Claude Code is served by the mattpocock-skills@claude-plugins-official plugin, which registers this skill; this repo deploys no Claude copy. Codex keeps its own install under ~/.agents/skills via `npx skills`. Prior note: recurring use (8 recorded invocations)",
+   "claude_runtime_source": "mattpocock-skills@claude-plugins-official (Claude Code plugin; not deployed by this repo)"
   },
   {
    "skill": "returns-reverse-logistics",
@@ -4416,7 +4416,6 @@
    "source": null,
    "source_present_in_canonical": false,
    "targets": [
-    "claude",
     "codex"
    ],
    "mode": "VENDORED",
@@ -4430,7 +4429,8 @@
    "divergence_decision": "claude",
    "divergence_reason": "Claude side: 0 structural defects vs Codex side carrying blind Claude->Codex substitution (broken paths / mangled frontmatter)",
    "usage": 0,
-   "notes": "no recorded use and not a core methodology"
+   "notes": "Claude Code is served by the mattpocock-skills@claude-plugins-official plugin, which registers this skill; this repo deploys no Claude copy. Codex keeps its own install under ~/.agents/skills via `npx skills`. Prior note: no recorded use and not a core methodology",
+   "claude_runtime_source": "mattpocock-skills@claude-plugins-official (Claude Code plugin; not deployed by this repo)"
   },
   {
    "skill": "setup-pre-commit",
@@ -5415,7 +5415,6 @@
    "source": null,
    "source_present_in_canonical": false,
    "targets": [
-    "claude",
     "codex"
    ],
    "mode": "VENDORED",
@@ -5429,7 +5428,8 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,
-   "notes": "core methodology family: tdd"
+   "notes": "Claude Code is served by the mattpocock-skills@claude-plugins-official plugin, which registers this skill; this repo deploys no Claude copy. Codex keeps its own install under ~/.agents/skills via `npx skills`. Prior note: core methodology family: tdd",
+   "claude_runtime_source": "mattpocock-skills@claude-plugins-official (Claude Code plugin; not deployed by this repo)"
   },
   {
    "skill": "tdd-workflow",
@@ -5461,7 +5461,6 @@
    "source": null,
    "source_present_in_canonical": false,
    "targets": [
-    "claude",
     "codex"
    ],
    "mode": "VENDORED",
@@ -5475,7 +5474,8 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,
-   "notes": "no recorded use and not a core methodology"
+   "notes": "Claude Code is served by the mattpocock-skills@claude-plugins-official plugin, which registers this skill; this repo deploys no Claude copy. Codex keeps its own install under ~/.agents/skills via `npx skills`. Prior note: no recorded use and not a core methodology",
+   "claude_runtime_source": "mattpocock-skills@claude-plugins-official (Claude Code plugin; not deployed by this repo)"
   },
   {
    "skill": "team-builder",
@@ -5581,7 +5581,6 @@
    "source": null,
    "source_present_in_canonical": false,
    "targets": [
-    "claude",
     "codex"
    ],
    "mode": "VENDORED",
@@ -5595,14 +5594,14 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,
-   "notes": "installed 2026-08-22 from mattpocock/skills @5b15a47; claude runtime only"
+   "notes": "Claude Code is served by the mattpocock-skills@claude-plugins-official plugin, which registers this skill; this repo deploys no Claude copy. Codex keeps its own install under ~/.agents/skills via `npx skills`. Prior note: installed 2026-08-22 from mattpocock/skills @5b15a47; claude runtime only",
+   "claude_runtime_source": "mattpocock-skills@claude-plugins-official (Claude Code plugin; not deployed by this repo)"
   },
   {
    "skill": "to-spec",
    "source": null,
    "source_present_in_canonical": false,
    "targets": [
-    "claude",
     "codex"
    ],
    "mode": "VENDORED",
@@ -5616,14 +5615,14 @@
    "divergence_decision": "claude",
    "divergence_reason": "Claude side: 0 structural defects vs Codex side carrying blind Claude->Codex substitution (broken paths / mangled frontmatter)",
    "usage": 0,
-   "notes": "core methodology family: specs-plans-tickets"
+   "notes": "Claude Code is served by the mattpocock-skills@claude-plugins-official plugin, which registers this skill; this repo deploys no Claude copy. Codex keeps its own install under ~/.agents/skills via `npx skills`. Prior note: core methodology family: specs-plans-tickets",
+   "claude_runtime_source": "mattpocock-skills@claude-plugins-official (Claude Code plugin; not deployed by this repo)"
   },
   {
    "skill": "to-tickets",
    "source": null,
    "source_present_in_canonical": false,
    "targets": [
-    "claude",
     "codex"
    ],
    "mode": "VENDORED",
@@ -5637,7 +5636,8 @@
    "divergence_decision": "claude",
    "divergence_reason": "Claude side: 0 structural defects vs Codex side carrying blind Claude->Codex substitution (broken paths / mangled frontmatter)",
    "usage": 1,
-   "notes": "core methodology family: specs-plans-tickets"
+   "notes": "Claude Code is served by the mattpocock-skills@claude-plugins-official plugin, which registers this skill; this repo deploys no Claude copy. Codex keeps its own install under ~/.agents/skills via `npx skills`. Prior note: core methodology family: specs-plans-tickets",
+   "claude_runtime_source": "mattpocock-skills@claude-plugins-official (Claude Code plugin; not deployed by this repo)"
   },
   {
    "skill": "token-budget-advisor",
@@ -5662,7 +5662,6 @@
    "source": null,
    "source_present_in_canonical": false,
    "targets": [
-    "claude",
     "codex"
    ],
    "mode": "VENDORED",
@@ -5676,7 +5675,8 @@
    "divergence_decision": "claude",
    "divergence_reason": "Claude side: 0 structural defects vs Codex side carrying blind Claude->Codex substitution (broken paths / mangled frontmatter)",
    "usage": 0,
-   "notes": "core methodology family: debugging"
+   "notes": "Claude Code is served by the mattpocock-skills@claude-plugins-official plugin, which registers this skill; this repo deploys no Claude copy. Codex keeps its own install under ~/.agents/skills via `npx skills`. Prior note: core methodology family: debugging",
+   "claude_runtime_source": "mattpocock-skills@claude-plugins-official (Claude Code plugin; not deployed by this repo)"
   },
   {
    "skill": "ubiquitous-language",
@@ -5831,7 +5831,6 @@
    "source": null,
    "source_present_in_canonical": false,
    "targets": [
-    "claude",
     "codex"
    ],
    "mode": "VENDORED",
@@ -5845,14 +5844,14 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,
-   "notes": "installed 2026-08-22 from mattpocock/skills @5b15a47; claude runtime only"
+   "notes": "Claude Code is served by the mattpocock-skills@claude-plugins-official plugin, which registers this skill; this repo deploys no Claude copy. Codex keeps its own install under ~/.agents/skills via `npx skills`. Prior note: installed 2026-08-22 from mattpocock/skills @5b15a47; claude runtime only",
+   "claude_runtime_source": "mattpocock-skills@claude-plugins-official (Claude Code plugin; not deployed by this repo)"
   },
   {
    "skill": "wayfinder",
    "source": null,
    "source_present_in_canonical": false,
    "targets": [
-    "claude",
     "codex"
    ],
    "mode": "VENDORED",
@@ -5866,14 +5865,14 @@
    "divergence_decision": "claude",
    "divergence_reason": "Claude side: 0 structural defects vs Codex side carrying blind Claude->Codex substitution (broken paths / mangled frontmatter)",
    "usage": 0,
-   "notes": "core methodology family: specs-plans-tickets"
+   "notes": "Claude Code is served by the mattpocock-skills@claude-plugins-official plugin, which registers this skill; this repo deploys no Claude copy. Codex keeps its own install under ~/.agents/skills via `npx skills`. Prior note: core methodology family: specs-plans-tickets",
+   "claude_runtime_source": "mattpocock-skills@claude-plugins-official (Claude Code plugin; not deployed by this repo)"
   },
   {
    "skill": "wizard",
    "source": null,
    "source_present_in_canonical": false,
    "targets": [
-    "claude",
     "codex"
    ],
    "mode": "VENDORED",
@@ -5887,7 +5886,8 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,
-   "notes": "no recorded use and not a core methodology"
+   "notes": "Claude Code is served by the mattpocock-skills@claude-plugins-official plugin, which registers this skill; this repo deploys no Claude copy. Codex keeps its own install under ~/.agents/skills via `npx skills`. Prior note: no recorded use and not a core methodology",
+   "claude_runtime_source": "mattpocock-skills@claude-plugins-official (Claude Code plugin; not deployed by this repo)"
   },
   {
    "skill": "workspace-surface-audit",
@@ -5933,7 +5933,6 @@
    "source": null,
    "source_present_in_canonical": false,
    "targets": [
-    "claude",
     "codex"
    ],
    "mode": "VENDORED",
@@ -5947,7 +5946,8 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,
-   "notes": "installed 2026-08-22 from mattpocock/skills @5b15a47; claude runtime only; model-invoked"
+   "notes": "Claude Code is served by the mattpocock-skills@claude-plugins-official plugin, which registers this skill; this repo deploys no Claude copy. Codex keeps its own install under ~/.agents/skills via `npx skills`. Prior note: installed 2026-08-22 from mattpocock/skills @5b15a47; claude runtime only; model-invoked",
+   "claude_runtime_source": "mattpocock-skills@claude-plugins-official (Claude Code plugin; not deployed by this repo)"
   },
   {
    "skill": "writing-fragments",
