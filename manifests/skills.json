@@ -27,10 +27,10 @@
   "total": 293,
   "by_mode": {
    "DISABLED": 165,
-   "CLAUDE_ONLY": 1,
+   "IDENTICAL": 67,
+   "VENDORED": 42,
    "REPO_LOCAL": 17,
-   "IDENTICAL": 63,
-   "VENDORED": 46,
+   "CLAUDE_ONLY": 1,
    "ADAPTER": 1
   },
   "by_status": {
@@ -38,7 +38,7 @@
    "active": 92,
    "repo-local": 17
   },
-  "missing_from_canonical": 161
+  "missing_from_canonical": 157
  },
  "skills": [
   {
@@ -1927,23 +1927,30 @@
   {
    "skill": "design-an-interface",
    "source": null,
-   "source_present_in_canonical": false,
+   "source_present_in_canonical": true,
    "targets": [
     "claude",
     "codex"
    ],
-   "mode": "VENDORED",
+   "mode": "IDENTICAL",
    "status": "active",
-   "classification": "D. THIRD-PARTY-VENDORED",
+   "classification": "A. GLOBAL-CANONICAL",
    "family": "domain-modeling",
-   "canonical_owner": "mattpocock/skills",
+   "canonical_owner": "claude-skills repo",
    "origin": "mattpocock/skills",
    "adapter": null,
-   "expected_sha256": null,
+   "expected_sha256": "a2596e9fa2d50e23ba014f64a5b8f9df4eb56b846a52cad152899ef5eb97b085",
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 2,
-   "notes": "core methodology family: domain-modeling"
+   "notes": "ADOPTED FORK of a former Matt Pocock skill. Upstream deleted skills/deprecated/design-an-interface/SKILL.md; this repo is now the source of truth. Claude Code gets Matt's current 25 skills from the mattpocock-skills plugin, which does not provide this one. Prior note: core methodology family: domain-modeling",
+   "adopted_from": {
+    "upstream_repo": "mattpocock/skills",
+    "upstream_path": "skills/deprecated/design-an-interface/SKILL.md",
+    "upstream_state": "deleted upstream; not provided by mattpocock-skills@claude-plugins-official",
+    "adopted_on": "2026-08-28",
+    "content_at_adoption": "unchanged from the last upstream copy"
+   }
   },
   {
    "skill": "design-system",
@@ -2236,23 +2243,30 @@
   {
    "skill": "edit-article",
    "source": null,
-   "source_present_in_canonical": false,
+   "source_present_in_canonical": true,
    "targets": [
     "claude",
     "codex"
    ],
-   "mode": "VENDORED",
+   "mode": "IDENTICAL",
    "status": "active",
-   "classification": "D. THIRD-PARTY-VENDORED",
+   "classification": "A. GLOBAL-CANONICAL",
    "family": null,
-   "canonical_owner": "mattpocock/skills",
+   "canonical_owner": "claude-skills repo",
    "origin": "mattpocock/skills",
    "adapter": null,
-   "expected_sha256": null,
+   "expected_sha256": "e10fba546f45357fe0aaa7494b9e186910d4525818d19f9b2ad6f28cc506aa5e",
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 3,
-   "notes": "recurring use (3 recorded invocations)"
+   "notes": "ADOPTED FORK of a former Matt Pocock skill. Upstream deleted skills/personal/edit-article/SKILL.md; this repo is now the source of truth. Claude Code gets Matt's current 25 skills from the mattpocock-skills plugin, which does not provide this one. Prior note: recurring use (3 recorded invocations)",
+   "adopted_from": {
+    "upstream_repo": "mattpocock/skills",
+    "upstream_path": "skills/personal/edit-article/SKILL.md",
+    "upstream_state": "deleted upstream; not provided by mattpocock-skills@claude-plugins-official",
+    "adopted_on": "2026-08-28",
+    "content_at_adoption": "unchanged from the last upstream copy"
+   }
   },
   {
    "skill": "email-ops",
@@ -3906,23 +3920,30 @@
   {
    "skill": "qa",
    "source": null,
-   "source_present_in_canonical": false,
+   "source_present_in_canonical": true,
    "targets": [
     "claude",
     "codex"
    ],
-   "mode": "VENDORED",
+   "mode": "IDENTICAL",
    "status": "active",
-   "classification": "D. THIRD-PARTY-VENDORED",
+   "classification": "A. GLOBAL-CANONICAL",
    "family": "debugging",
-   "canonical_owner": "mattpocock/skills",
+   "canonical_owner": "claude-skills repo",
    "origin": "mattpocock/skills",
    "adapter": null,
-   "expected_sha256": null,
+   "expected_sha256": "d9727aac6503981bf69bdd8b37e0d85b32b8fbd353a57528c252dac1337ab761",
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 2,
-   "notes": "core methodology family: debugging"
+   "notes": "ADOPTED FORK of a former Matt Pocock skill. Upstream deleted skills/deprecated/qa/SKILL.md; this repo is now the source of truth. Claude Code gets Matt's current 25 skills from the mattpocock-skills plugin, which does not provide this one. Prior note: core methodology family: debugging",
+   "adopted_from": {
+    "upstream_repo": "mattpocock/skills",
+    "upstream_path": "skills/deprecated/qa/SKILL.md",
+    "upstream_state": "deleted upstream; not provided by mattpocock-skills@claude-plugins-official",
+    "adopted_on": "2026-08-28",
+    "content_at_adoption": "unchanged from the last upstream copy"
+   }
   },
   {
    "skill": "quality-nonconformance",
@@ -5660,23 +5681,30 @@
   {
    "skill": "ubiquitous-language",
    "source": null,
-   "source_present_in_canonical": false,
+   "source_present_in_canonical": true,
    "targets": [
     "claude",
     "codex"
    ],
-   "mode": "VENDORED",
+   "mode": "IDENTICAL",
    "status": "active",
-   "classification": "D. THIRD-PARTY-VENDORED",
+   "classification": "A. GLOBAL-CANONICAL",
    "family": "domain-modeling",
-   "canonical_owner": "mattpocock/skills",
+   "canonical_owner": "claude-skills repo",
    "origin": "mattpocock/skills",
    "adapter": null,
-   "expected_sha256": null,
+   "expected_sha256": "2449e2345b96b9f1e861c697b5eab50d03ae1254481a4306b6f815684e523b3a",
    "divergence_decision": "claude",
    "divergence_reason": "Claude side: 0 structural defects vs Codex side carrying blind Claude->Codex substitution (broken paths / mangled frontmatter)",
    "usage": 1,
-   "notes": "core methodology family: domain-modeling"
+   "notes": "ADOPTED FORK of a former Matt Pocock skill. Upstream deleted skills/deprecated/ubiquitous-language/SKILL.md; this repo is now the source of truth. Claude Code gets Matt's current 25 skills from the mattpocock-skills plugin, which does not provide this one. Prior note: core methodology family: domain-modeling",
+   "adopted_from": {
+    "upstream_repo": "mattpocock/skills",
+    "upstream_path": "skills/deprecated/ubiquitous-language/SKILL.md",
+    "upstream_state": "deleted upstream; not provided by mattpocock-skills@claude-plugins-official",
+    "adopted_on": "2026-08-28",
+    "content_at_adoption": "unchanged from the last upstream copy except restoration of `disable-model-invocation: true`, stripped by a doctor/repair tool on 2026-07-19"
+   }
   },
   {
    "skill": "ui-demo",
