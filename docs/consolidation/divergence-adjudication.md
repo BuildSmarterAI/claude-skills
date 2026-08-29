@@ -47,6 +47,15 @@ a name** (shared-line ratio **0.019**):
 > Claude. Both variants are preserved; which one keeps the bare name `code-review` is a
 > **human decision** (it changes dispatch for a heavily-used capability).
 
+**Resolved (D5, 2026-08-29) — KEEP MATT ONLY.** The naming decision above is closed. The
+Claude variant was renamed to `code-review-patterns` by the D3 split, so only one side of the
+collision still exists — and that side is not a distinct capability: normalised for punctuation
+it differs from the official `mattpocock-skills:code-review` by a single functional line, with
+7/7 headings and 16/16 smell bullets identical. The dual-axis reviewer is now supplied upstream
+by the plugin, and the Codex slot already tracks Matt upstream. The repo fork is retired to
+`I. DISABLED-BUT-PRESERVE` with `targets: []` — byte-preserved, deployed nowhere. The findings
+above are unchanged historical record.
+
 ## Major divergences (>20 changed lines)
 
 | Skill | diff lines | shared ratio | Claude bytes | Codex bytes | Decision |
