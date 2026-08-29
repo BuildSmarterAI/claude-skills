@@ -1,0 +1,96 @@
+# yaml-language-server: $schema=https://storage.googleapis.com/coderabbit_public_assets/schema.v2.json
+#
+# CodeRabbit is an EVIDENCE SOURCE for this repository, not a merge authority.
+# Findings are verified before they are acted on; see CLAUDE.md > Review Governance.
+# This repo is mostly prose (SKILL.md) plus the Python gates that police it, so review
+# weight sits on the gates and on skill metadata correctness, not on code style.
+
+language: en-US
+
+tone_instructions: >-
+  Be direct and specific. Every finding must name the concrete failure: the input, the
+  state, and the wrong behaviour that results. Do not soften findings with praise, and do
+  not pad reviews with encouragement.
+
+reviews:
+  profile: assertive
+  # false, deliberately: a CHANGES_REQUESTED / APPROVE review state is a verdict, and this
+  # file's own premise is that CodeRabbit is evidence, not a merge authority. With true,
+  # CodeRabbit blocks the merge and then clears its own block by auto-approving once its
+  # comments are resolved - a self-releasing gate that decides nothing on the evidence.
+  request_changes_workflow: false
+
+  high_level_summary: true
+  changed_files_summary: true
+  estimate_code_review_effort: true
+  related_issues: true
+  related_prs: true
+
+  poem: false
+  in_progress_fortune: false
+  collapse_walkthrough: true
+  sequence_diagrams: false
+
+  auto_review:
+    enabled: true
+    drafts: false
+    base_branches:
+      - main
+
+  path_filters:
+    - "!**/__pycache__/**"
+    - "!**/*.lock"
+
+  path_instructions:
+    - path: "scripts/*.py"
+      instructions: >-
+        These are catalog and consistency gates that other repositories depend on. The
+        failure mode that matters most is a gate that exits 0 while inspecting nothing —
+        verify each reports the COUNT of units examined and fails on an empty match set.
+        Check that any deletion or removal path is guarded: a check that verifies a filename
+        survived does NOT verify its contents survived. Flag any path where a lock/ledger
+        entry could drive an unintended removal.
+    - path: "**/SKILL.md"
+      instructions: >-
+        Frontmatter is load-bearing. A SKILL.md whose first line is not the YAML frontmatter
+        delimiter is silently never registered, so flag any file that opens with a heading
+        or blank line. Verify `name` matches the containing directory and that `description`
+        actually states WHEN to trigger, not merely what the skill is about — a description
+        without trigger conditions makes the skill undiscoverable.
+    - path: "tests/**"
+      instructions: >-
+        Verify each test could fail against a deliberately broken implementation. A checker
+        self-test that passes on both the correct and the broken checker proves nothing.
+
+  tools:
+    gitleaks:
+      enabled: true
+    ruff:
+      enabled: true
+    markdownlint:
+      enabled: true
+    actionlint:
+      enabled: true
+    yamllint:
+      enabled: true
+
+  # READ-ONLY REVIEW. CodeRabbit must never modify this repository.
+  finishing_touches:
+    docstrings:
+      enabled: false
+    unit_tests:
+      enabled: false
+    simplify:
+      enabled: false
+    autofix:
+      enabled: false
+    fix_ci:
+      enabled: false
+    resolve_merge_conflict:
+      enabled: false
+
+knowledge_base:
+  learnings:
+    scope: local
+  issues:
+    scope: local

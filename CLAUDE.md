@@ -152,3 +152,30 @@ When you write or edit code samples inside a skill, default to this stack so exa
 - Canonical complex-skill layout: `continuous-learning-v2/`
 - Canonical CLI-extension skill: `ck/`
 - Portfolio + install/update commands: `README.md`
+
+---
+
+## Review Governance
+
+Behaviour is canonical in `~/.claude/rules/review-governance.md` — separation of duties, the review flow, and the evidence rules. That file is operator-local agent configuration, not a repo artifact — it is intentionally absent from clones and CI, which enforce this repo's deterministic gates instead. This section records only what is specific to this repo.
+
+**Canonical validation order.** "Git workflow" above names the two commands to run *before pushing*; that list is deliberately a subset. The full gate chain CI enforces (`.github/workflows/skill-consistency.yml`) is:
+
+1. `python -m unittest discover -s tests -v` — the checkers' own self-tests
+2. `python scripts/check-skill-consistency.py`
+3. `python scripts/audit-catalog-health.py --no-runtime`
+4. `python scripts/verify-branch-containment.py --advisory` — note the flag: CI runs this in
+   **reporting** mode, and only when `manifests/retention.json` is present.
+
+Steps 1–2 are the pre-push subset. Steps 3–4 run in CI and are the ones a local pre-push check will not tell you about. Step 4 is the one place the CI form is **weaker** than the operator form: `--advisory` demotes divergent-path loss to a notice and exits 0, where the bare command exits 1 — only-copy (orphaned) loss still blocks either way. Before deleting a branch, run the bare command. `deploy-skills.py --check` remains a separate local-only runtime-parity question, not part of this chain.
+
+**Review order.** Deterministic gates first, then AI review. Never spend a review on a red tree.
+
+**CodeRabbit** is configured in [`.coderabbit.yaml`](.coderabbit.yaml) with every auto-fix surface (`finishing_touches.*`) disabled: it reports, it does not modify this repo. Its findings are **evidence, not a verdict** — verify with the `investigator` agent before acting.
+
+**Repo-specific review traps** (encoded in `.coderabbit.yaml` path instructions):
+- **A `SKILL.md` whose first line is not the frontmatter delimiter is silently never registered.** Check line 1 before concluding a capability is missing.
+- **Path survival is not content survival.** A deletion gate that asserts a filename still exists prints PASS over permanent loss of that file's contents.
+- **These gates are depended on by other repos.** A checker that exits 0 having inspected zero skills has abstained, not passed — verify each reports the count it examined.
+
+Run `/review` for the orchestrated flow, `/audit-repo` for a read-only whole-repo audit.
