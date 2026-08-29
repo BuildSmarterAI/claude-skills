@@ -177,4 +177,4 @@ Steps 1–2 are the pre-push subset. Steps 3–4 run in CI and are the ones a lo
 - **Path survival is not content survival.** A deletion gate that asserts a filename still exists prints PASS over permanent loss of that file's contents.
 - **These gates are depended on by other repos.** A checker that exits 0 having inspected zero skills has abstained, not passed — verify each reports the count it examined.
 
-Run `/review` for the orchestrated flow, `/audit-repo` for a read-only whole-repo audit.
+Run `/review` for the orchestrated flow, `/audit-repo` for a read-only whole-repo audit. Both are operator-local commands in `~/.claude/commands/`, not repo artifacts — like `review-governance.md` above, they are absent from clones and CI.
