@@ -26,9 +26,9 @@
  "summary": {
   "total": 293,
   "by_mode": {
-   "DISABLED": 165,
+   "DISABLED": 166,
    "IDENTICAL": 65,
-   "VENDORED": 42,
+   "VENDORED": 41,
    "REPO_LOCAL": 17,
    "CLAUDE_ONLY": 3,
    "ADAPTER": 1
@@ -38,7 +38,7 @@
    "active": 92,
    "repo-local": 17
   },
-  "missing_from_canonical": 157
+  "missing_from_canonical": 156
  },
  "skills": [
   {
@@ -5973,23 +5973,34 @@
   {
    "skill": "writing-great-skills",
    "source": null,
-   "source_present_in_canonical": false,
-   "targets": [
-    "claude",
-    "codex"
-   ],
-   "mode": "VENDORED",
+   "source_present_in_canonical": true,
+   "targets": [],
+   "mode": "DISABLED",
    "status": "on-demand",
-   "classification": "D. THIRD-PARTY-VENDORED",
+   "classification": "I. DISABLED-BUT-PRESERVE",
    "family": null,
-   "canonical_owner": "mattpocock/skills",
+   "canonical_owner": "claude-skills repo",
    "origin": "mattpocock/skills",
    "adapter": null,
-   "expected_sha256": null,
+   "expected_sha256": "4d6ccbc3760b1bd4107c495a79872286ea69494003f3b0a719fc95b147457061",
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,
-   "notes": "no recorded use and not a core methodology"
+   "notes": "ARCHIVED / RETIRED 2026-08-29. Superseded by writing-for-agents, which is provided to both runtimes by mattpocock-skills@claude-plugins-official and carries the same doctrine plus SKILL-MECHANICS.md. Upstream deleted skills/productivity/writing-great-skills/SKILL.md, so this repo is the preservation owner. Retained for rollback and provenance only; mode DISABLED and targets [] mean it is not deployable by default. Companion GLOSSARY.md (18488 bytes) is preserved alongside and exists in no successor skill.",
+   "archived_from": {
+    "upstream_repo": "mattpocock/skills",
+    "upstream_path": "skills/productivity/writing-great-skills/SKILL.md",
+    "upstream_state": "deleted upstream; absent at plugin pin 0ab1b63a410a03d3627979a109c8695de27af954",
+    "archived_on": "2026-08-29",
+    "superseded_by": "writing-for-agents",
+    "status": "RETIRED",
+    "reason_for_retention": "rollback and provenance only; not deployable by default",
+    "content_at_archive": "byte-identical to the loose ~/.claude/skills copy and to the permanent snapshot branch chore/pre-consolidation-skill-snapshot-2026-08-20 (tip 8a756b95b122ffad19f22199679bc6536d0a94d6)",
+    "files": {
+     "GLOSSARY.md": "cccd684c73fb7a06f523497b0121765f92d2b33d6ef9c51602294849233451d6",
+     "SKILL.md": "4d6ccbc3760b1bd4107c495a79872286ea69494003f3b0a719fc95b147457061"
+    }
+   }
   },
   {
    "skill": "writing-shape",
