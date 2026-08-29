@@ -60,7 +60,7 @@ above are unchanged historical record.
 
 | Skill | diff lines | shared ratio | Claude bytes | Codex bytes | Decision |
 |---|---:|---:|---:|---:|---|
-| `code-review` | 155 | 0.019 | 3911 | 6740 | PRESERVE BOTH (human naming decision) |
+| `code-review` | 155 | 0.019 | 3911 | 6740 | PRESERVE BOTH (D3.5) — superseded by D5: KEEP MATT ONLY |
 | `autonomous-loops` | 120 | 0.842 | 25336 | 25247 | Claude side canonical |
 | `configure-ecc` | 64 | 0.86 | 16135 | 16029 | Claude side canonical |
 | `claude-api` | 50 | 0.901 | 8881 | 8854 | Claude side canonical |
