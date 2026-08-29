@@ -14,7 +14,11 @@ tone_instructions: >-
 
 reviews:
   profile: assertive
-  request_changes_workflow: true
+  # false, deliberately: a CHANGES_REQUESTED / APPROVE review state is a verdict, and this
+  # file's own premise is that CodeRabbit is evidence, not a merge authority. With true,
+  # CodeRabbit blocks the merge and then clears its own block by auto-approving once its
+  # comments are resolved - a self-releasing gate that decides nothing on the evidence.
+  request_changes_workflow: false
 
   high_level_summary: true
   changed_files_summary: true

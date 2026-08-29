@@ -164,9 +164,10 @@ Behaviour is canonical in `~/.claude/rules/review-governance.md` — separation 
 1. `python -m unittest discover -s tests -v` — the checkers' own self-tests
 2. `python scripts/check-skill-consistency.py`
 3. `python scripts/audit-catalog-health.py --no-runtime`
-4. `python scripts/verify-branch-containment.py`
+4. `python scripts/verify-branch-containment.py --advisory` — note the flag: CI runs this in
+   **reporting** mode, and only when `manifests/retention.json` is present.
 
-Steps 1–2 are the pre-push subset. Steps 3–4 run in CI and are the ones a local pre-push check will not tell you about. `deploy-skills.py --check` remains a separate local-only runtime-parity question, not part of this chain.
+Steps 1–2 are the pre-push subset. Steps 3–4 run in CI and are the ones a local pre-push check will not tell you about. Step 4 is the one place the CI form is **weaker** than the operator form: `--advisory` demotes divergent-path loss to a notice and exits 0, where the bare command exits 1 — only-copy (orphaned) loss still blocks either way. Before deleting a branch, run the bare command. `deploy-skills.py --check` remains a separate local-only runtime-parity question, not part of this chain.
 
 **Review order.** Deterministic gates first, then AI review. Never spend a review on a red tree.
 
