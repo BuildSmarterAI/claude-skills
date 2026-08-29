@@ -26,19 +26,19 @@
  "summary": {
   "total": 293,
   "by_mode": {
-   "DISABLED": 166,
+   "DISABLED": 167,
    "IDENTICAL": 65,
    "VENDORED": 41,
    "REPO_LOCAL": 17,
-   "CLAUDE_ONLY": 3,
-   "ADAPTER": 1
+   "ADAPTER": 1,
+   "CLAUDE_ONLY": 2
   },
   "by_status": {
-   "on-demand": 184,
-   "active": 92,
+   "on-demand": 185,
+   "active": 91,
    "repo-local": 17
   },
-  "missing_from_canonical": 156
+  "missing_from_canonical": 155
  },
  "skills": [
   {
@@ -1271,24 +1271,24 @@
   {
    "skill": "code-review",
    "source": null,
-   "source_present_in_canonical": false,
-   "targets": [
-    "claude"
-   ],
-   "mode": "CLAUDE_ONLY",
-   "status": "active",
-   "classification": "J. HUMAN-ADJUDICATION-REQUIRED",
+   "source_present_in_canonical": true,
+   "targets": [],
+   "mode": "DISABLED",
+   "status": "on-demand",
+   "classification": "I. DISABLED-BUT-PRESERVE",
    "family": "review",
-   "canonical_owner": "mattpocock/skills",
+   "canonical_owner": "claude-skills repo",
    "origin": "mattpocock/skills",
    "adapter": null,
    "expected_sha256": "6a65cc61114f96db07ec41e3920e67c9c5bf70dd6e0901eb9460ebcb2bdc209f",
    "divergence_decision": "adjudicated (D3.5) - split finalized",
    "divergence_reason": "Dual-axis Standards+Spec reviewer. Impact map re-verified in D3.5: 0 breaking skill-dispatch references (the /code-review slash command belongs to the code-review PLUGIN namespace; other hits are prose). The 350-invocation code-reviewer AGENT is independent (0 skill references) and unaffected.",
    "usage": 20,
-   "notes": "blocked on naming decision",
+   "notes": "RETIRED 2026-08-29. Superseded by mattpocock-skills:code-review. Source preserved byte-exact under the DISABLED-PRESERVED convention; no deployment target remains.",
    "intentional_divergence": "Dispatches two parallel sub-agents via the Agent tool. D2 established Codex has no subagent dispatch mechanism, so this is functionally Claude-only.",
-   "d3_classification": "D. TWO_DIFFERENT_SKILLS_SAME_NAME"
+   "d3_classification": "D. TWO_DIFFERENT_SKILLS_SAME_NAME",
+   "d5_decision": "KEEP_MATT_ONLY",
+   "d5_reason": "D5 governance resolution of the D3.5 human-adjudication hold. The collision D3.5 recorded was between two files, only one of which still exists: the differentiated Claude variant (sha256 23d487d8, 3911 bytes, \"Code review, debugging, and quality patterns\") was already renamed to code-review-patterns (3920 bytes; the 9-byte delta is exactly the length of \"-patterns\"), so that half of the conflict was resolved by the D3 split. The half remaining here is not a distinct capability: normalized against punctuation and wording it differs from mattpocock-skills:code-review (sha256 47f4e52c, plugin 1.2.3 at pin 0ab1b63a410a03d3627979a109c8695de27af954) by a single functional line - \"Send a single message with two Agent tool calls. Use the general-purpose subagent for both.\" Structure is identical: 7 of 7 headings and 16 of 16 Fowler smell bullets match. The dual-axis capability an earlier audit called \"truly missing\" is now supplied upstream by the official plugin, and the Codex runtime slot already tracks Matt upstream (sha256 47f4e52c) via the skills.sh lock. D3.5 measured 0 breaking skill-dispatch references; re-verified at D5 - remaining hits are advisory prose naming the /code-review slash command, which still resolves to the native Claude Code command and the namespaced plugin skills. Retiring the fork removes the deploy CREATE that would otherwise write it into the bare name ~/.claude/skills/code-review and manufacture the ambiguity the hold existed to prevent."
   },
   {
    "skill": "code-tour",
