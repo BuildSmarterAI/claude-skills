@@ -27,10 +27,10 @@
   "total": 293,
   "by_mode": {
    "DISABLED": 165,
-   "IDENTICAL": 67,
+   "IDENTICAL": 65,
    "VENDORED": 42,
    "REPO_LOCAL": 17,
-   "CLAUDE_ONLY": 1,
+   "CLAUDE_ONLY": 3,
    "ADAPTER": 1
   },
   "by_status": {
@@ -1929,10 +1929,9 @@
    "source": null,
    "source_present_in_canonical": true,
    "targets": [
-    "claude",
-    "codex"
+    "claude"
    ],
-   "mode": "IDENTICAL",
+   "mode": "CLAUDE_ONLY",
    "status": "active",
    "classification": "A. GLOBAL-CANONICAL",
    "family": "domain-modeling",
@@ -1950,7 +1949,8 @@
     "upstream_state": "deleted upstream; not provided by mattpocock-skills@claude-plugins-official",
     "adopted_on": "2026-08-28",
     "content_at_adoption": "unchanged from the last upstream copy"
-   }
+   },
+   "intentional_divergence": "Step 2 spawns 3+ parallel sub-agents via the Task tool (SKILL.md:26) and step 3's comparison depends on their independent outputs, so subagent dispatch is the skill's mechanism, not an optimisation. Codex has no subagent dispatch mechanism (D2, recorded on the code-review entry), so the skill cannot execute there."
   },
   {
    "skill": "design-system",
@@ -3922,10 +3922,9 @@
    "source": null,
    "source_present_in_canonical": true,
    "targets": [
-    "claude",
-    "codex"
+    "claude"
    ],
-   "mode": "IDENTICAL",
+   "mode": "CLAUDE_ONLY",
    "status": "active",
    "classification": "A. GLOBAL-CANONICAL",
    "family": "debugging",
@@ -3943,7 +3942,8 @@
     "upstream_state": "deleted upstream; not provided by mattpocock-skills@claude-plugins-official",
     "adopted_on": "2026-08-28",
     "content_at_adoption": "unchanged from the last upstream copy"
-   }
+   },
+   "intentional_divergence": "Step 2 kicks off a background Agent (subagent_type=Explore) to gather domain context while the user is still describing the bug (SKILL.md:24). Codex has no subagent dispatch mechanism (D2, recorded on the code-review entry), so that required step cannot execute."
   },
   {
    "skill": "quality-nonconformance",
