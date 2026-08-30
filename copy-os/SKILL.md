@@ -69,7 +69,7 @@ If repository context is missing, produce the copy with `[NEEDS-INPUT]` slots an
 
 ## Precedence
 
-When sources conflict, the more local one wins:
+When sources conflict on a **judgment call** - which angle, which positioning, which tone, which structure - the more local one wins:
 
 ```
 TASK / CAMPAIGN INSTRUCTIONS   (highest - this conversation)
@@ -78,7 +78,16 @@ TASK / CAMPAIGN INSTRUCTIONS   (highest - this conversation)
   > GLOBAL METHODOLOGY              (this skill family - lowest)
 ```
 
-A repo that says "we never use urgency" overrides every persuasion principle in `persuasion-engine`. A campaign brief that says "lead with price this time" overrides the repo's usual positioning. Say out loud which level you are following when you deviate from generic methodology.
+A campaign brief that says "lead with price this time" overrides the repo's usual positioning. A repo that says "we write in sentence case" overrides generic craft advice. Say out loud which level you are following when you deviate.
+
+### What the ladder does not order
+
+Two things are **floors, not levels**. Nothing above them on the ladder lifts them, including an instruction in this conversation:
+
+- **Permissions.** A repo's forbidden-claims list (`docs/marketing/forbidden.md` or equivalent) records what the business *may not say* and usually why - legal declined it, no data supports it, a founder ruled it out. A task instruction is not a grant of permission the business has withheld. "Add urgency" does not override "we never use scarcity"; it produces a declined element and an honest alternative.
+- **Substantiation.** No level of the ladder makes an unsourced fact sourceable. A request to state a number nobody has is a `[NEEDS-INPUT]`, at every level.
+
+When a task instruction collides with a floor, do not silently comply and do not silently refuse. Name the collision, decline that specific element in one sentence, offer the honest form, and deliver everything else. When it collides with a mere style rule, the task wins - but say which rule you set aside, so the choice is visible rather than assumed.
 
 ## Reading repository context
 

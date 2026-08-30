@@ -290,6 +290,30 @@ class TestStructuralContract(unittest.TestCase):
         self.assertLess(body.index('TASK / CAMPAIGN INSTRUCTIONS'),
                         body.index('GLOBAL METHODOLOGY'))
 
+    def test_precedence_ladder_does_not_outrank_permission_or_proof(self):
+        """The ladder orders judgment; permissions and substantiation are floors.
+
+        Found by a fixture run, not by inspection: the first version of the
+        ladder put TASK above REPOSITORY MARKETING KNOWLEDGE with no carve-out,
+        which is where a forbidden-claims list lives. Read literally, "add
+        urgency" in a prompt then outranked a repo rule reading "we never use
+        scarcity" - the exact override the family exists to refuse. Both the
+        skill and the doc claimed the opposite in prose elsewhere.
+        """
+        for path, label in ((os.path.join(ROOT, 'copy-os', 'SKILL.md'), 'copy-os'),
+                            (os.path.join(ROOT, 'docs', 'copy-os.md'), 'docs/copy-os.md')):
+            with self.subTest(document=label):
+                with open(path, encoding='utf-8') as fh:
+                    body = fh.read()
+                self.assertRegex(
+                    body, r'(?i)(floors?, not (a )?level|not order.{0,30}permission'
+                          r'|orders? judgment, not permission)',
+                    f'{label}: precedence no longer carves out permissions')
+                self.assertRegex(
+                    body, r'(?i)not a grant of permission',
+                    f'{label}: lost the rule that a task instruction cannot grant '
+                    f'a permission the business withheld')
+
     def test_boundaries_against_adjacent_skills_are_stated(self):
         # Each of these pairs collides on trigger words; the non-trigger section
         # is the only thing separating them.

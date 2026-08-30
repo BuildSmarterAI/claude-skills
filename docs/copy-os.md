@@ -75,8 +75,19 @@ TASK / CAMPAIGN INSTRUCTIONS        (this conversation)
   > GLOBAL METHODOLOGY              (these skills)
 ```
 
-A repo rule saying "we never use urgency" beats every principle in `persuasion-engine`. A campaign
-brief saying "lead with price this time" beats the repo's usual positioning.
+A campaign brief saying "lead with price this time" beats the repo's usual positioning. A repo rule
+saying "sentence case headlines" beats generic craft advice.
+
+**The ladder orders judgment, not permission.** Two things sit outside it as floors that nothing
+above them lifts — including an instruction in the conversation:
+
+- **The forbidden-claims list.** It records what the business *may not say*, and why. A task
+  instruction is not a grant of permission the business has withheld.
+- **Substantiation.** No level makes an unsourced number sourceable. It stays `[NEEDS-INPUT]`.
+
+Colliding with a floor produces a named, declined element plus an honest alternative — never
+silent compliance and never a silent refusal. Colliding with a style rule lets the task win, but
+the set-aside rule is stated so the choice is visible.
 
 ## Structuring repo-local context
 
