@@ -67,10 +67,56 @@ REQUIRED_SECTIONS = (
 
 FRONTMATTER_NAME = re.compile(r'''(?m)^name:\s*(?:"([^"]+)"|'([^']+)'|(\S+))\s*$''')
 
+PROVENANCE_HEADING = re.compile(r'(?mi)^## (?:The )?provenance rule[^\n]*$')
+
+# The exact anti-fabrication sentence each skill is responsible for, pinned so
+# that weakening one is a visible, deliberate act rather than a silent edit.
+PROVENANCE_ANCHORS = {
+    'copy-os':
+        'Never invent proof, customer quotes, performance numbers',
+    'copy-strategist':
+        'Never invent proof, customers, results, pricing, positioning, or permissions.',
+    'direct-response-copy':
+        'Never invent proof, customers, results, pricing, guarantees, or competitor claims.',
+    'persuasion-engine':
+        'Never invent proof, customers, results, pricing, guarantees, competitor claims, '
+        'or credentials.',
+    'copychief':
+        'Never invent proof, customers, results, pricing, or competitor claims - including '
+        'inside a rewrite.',
+    'humanizer':
+        'Never add a statistic, anecdote, quote, or attribution that was not in the input.',
+    'compliance-review':
+        'Never invent a source to resolve an unsubstantiated claim.',
+    'landing-page-copy':
+        'Never invent proof, customer names, results, pricing, or guarantees.',
+    'ad-copy':
+        'Never invent proof, results, review counts, customer names, competitor claims, '
+        'or pricing.',
+    'email-copy':
+        'Never invent a prior conversation, a mutual connection, a customer result, '
+        'a company detail, or a statistic in order to personalise.',
+    'social-copy':
+        'Never invent an anecdote, a client story, a result, a conversation, or a statistic '
+        'to make a post land.',
+}
+
 
 def read(name):
     with open(os.path.join(ROOT, name, 'SKILL.md'), encoding='utf-8') as fh:
         return fh.read()
+
+
+def provenance_section(name):
+    """The provenance section only. Scoping matters: a whole-body search for
+    'never' is satisfied by any incidental use of the word elsewhere."""
+    body = read(name)
+    m = PROVENANCE_HEADING.search(body)
+    if not m:
+        return ''
+    tail = body[m.end():]
+    nxt = re.search(r'(?m)^## ', tail)
+    return tail[:nxt.start()] if nxt else tail
 
 
 def manifest_entries():
@@ -103,16 +149,49 @@ class TestFamilyIsPresent(unittest.TestCase):
 class TestSafetyRules(unittest.TestCase):
     """The properties whose loss is invisible to a reader."""
 
-    def test_every_skill_carries_the_provenance_rule(self):
+    def test_every_skill_has_a_provenance_section(self):
         for name in sorted(MUST_CARRY_PROVENANCE):
             with self.subTest(skill=name):
-                body = read(name)
-                self.assertRegex(
-                    body, r'(?i)never (invent|add)',
-                    f'{name}: lost its "never invent" rule - it may now fabricate')
+                self.assertNotEqual(
+                    '', provenance_section(name),
+                    f'{name}: has no provenance section at all')
                 self.assertIn(
-                    'fact-provenance.md', body,
+                    'fact-provenance.md', read(name),
                     f'{name}: no longer points at the provenance contract')
+
+    def test_every_skill_carries_its_specific_prohibition(self):
+        """Pinned per skill, deliberately.
+
+        A whole-body search for "never" is satisfied by any incidental use of
+        the word - measured: deleting humanizer's actual rule left a loose
+        check green because an unrelated "## Never add" heading survived. The
+        anchor must sit INSIDE the provenance section, and it must be the real
+        sentence. Editing a safety rule should force a conscious edit here too.
+        """
+        for name in sorted(PROVENANCE_ANCHORS):
+            with self.subTest(skill=name):
+                section = provenance_section(name)
+                self.assertIn(
+                    PROVENANCE_ANCHORS[name], section,
+                    f'{name}: its anti-fabrication rule changed or was removed. '
+                    f'If the change is intentional, update PROVENANCE_ANCHORS '
+                    f'and say why in the commit.')
+
+    def test_no_skill_grants_permission_to_invent(self):
+        """A cheap second net, deliberately a blocklist.
+
+        Incomplete by construction - a novel rewording evades it. It exists to
+        catch the obvious inversion, not to be the primary defence; the pinned
+        anchors above are that.
+        """
+        permissive = re.compile(
+            r'(?i)(feel free to (add|invent)|you may (invent|fabricate)|'
+            r'(it is|its) (fine|ok|acceptable) to (add|invent|fabricate)|'
+            r'invent a plausible|make up a)')
+        for name in FAMILY:
+            with self.subTest(skill=name):
+                hits = permissive.findall(read(name))
+                self.assertEqual([], hits, f'{name}: grants fact invention {hits}')
 
     def test_every_skill_defines_the_three_labels(self):
         for name in sorted(MUST_CARRY_PROVENANCE):
