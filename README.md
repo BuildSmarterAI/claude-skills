@@ -69,7 +69,7 @@ Curated and optimized Claude Code skills for the BuildSmarter Holdings ecosystem
 ### Copy OS
 Reusable copywriting and marketing-intelligence methodology. **Methodology is global; truth is
 local** — these skills carry no company facts and read repository-local context before writing
-anything company-specific. See [`docs/copy-os.md`](docs/copy-os.md).
+anything company-specific. See [`docs/copy-os.md`](docs/copy-os.md) and [`docs/copy-os-verification.md`](docs/copy-os-verification.md).
 
 | Skill | Purpose |
 |-------|---------|
