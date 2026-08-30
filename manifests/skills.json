@@ -24,18 +24,18 @@
  },
  "contains_secrets": false,
  "summary": {
-  "total": 293,
+  "total": 304,
   "by_mode": {
    "DISABLED": 167,
    "IDENTICAL": 65,
    "VENDORED": 41,
    "REPO_LOCAL": 17,
    "ADAPTER": 1,
-   "CLAUDE_ONLY": 2
+   "CLAUDE_ONLY": 13
   },
   "by_status": {
    "on-demand": 185,
-   "active": 91,
+   "active": 102,
    "repo-local": 17
   },
   "missing_from_canonical": 155
@@ -6136,6 +6136,237 @@
    "usage": 0,
    "notes": "created by the D3 split",
    "d3_classification": "D. SPLIT PRODUCT"
+  },
+  {
+   "skill": "copy-os",
+   "source": "copy-os",
+   "source_present_in_canonical": true,
+   "targets": [
+    "claude"
+   ],
+   "mode": "CLAUDE_ONLY",
+   "status": "active",
+   "classification": "A. GLOBAL-CANONICAL",
+   "family": "copy-os",
+   "canonical_owner": "claude-skills repo",
+   "origin": "BuildSmarter Copy OS",
+   "adapter": null,
+   "expected_sha256": "49a4b0e6277ce92cc84b93f104e19acd76d6ce11ea25d88159c60514d72a8193",
+   "divergence_decision": null,
+   "divergence_reason": null,
+   "usage": 0,
+   "notes": "Router and shared contracts for the copy family: the routing table, the Copy Brief schema, and the fact-provenance rules that keep global methodology free of any business's facts. Carries references/.",
+   "intentional_divergence": "Scope, not mechanism. These skills are plain markdown and would execute in either runtime; they were commissioned as a Claude Code global layer, and adding eleven entries to the Codex store is a separate decision with its own blast radius (an external installer manages ~/.agents/skills). Flip mode to IDENTICAL and add \"codex\" to targets to grant parity - no content change is required."
+  },
+  {
+   "skill": "copy-strategist",
+   "source": "copy-strategist",
+   "source_present_in_canonical": true,
+   "targets": [
+    "claude"
+   ],
+   "mode": "CLAUDE_ONLY",
+   "status": "active",
+   "classification": "A. GLOBAL-CANONICAL",
+   "family": "copy-os",
+   "canonical_owner": "claude-skills repo",
+   "origin": "BuildSmarter Copy OS",
+   "adapter": null,
+   "expected_sha256": "59c7bd18d395b899247f47d549d420b4225d983df313736aa875a7e1417d6ab0",
+   "divergence_decision": null,
+   "divergence_reason": null,
+   "usage": 0,
+   "notes": "Strategy layer: awareness stage, market sophistication, proof inventory, offer architecture, message hierarchy. Produces the Copy Brief the rest of the family consumes.",
+   "intentional_divergence": "Scope, not mechanism. These skills are plain markdown and would execute in either runtime; they were commissioned as a Claude Code global layer, and adding eleven entries to the Codex store is a separate decision with its own blast radius (an external installer manages ~/.agents/skills). Flip mode to IDENTICAL and add \"codex\" to targets to grant parity - no content change is required."
+  },
+  {
+   "skill": "direct-response-copy",
+   "source": "direct-response-copy",
+   "source_present_in_canonical": true,
+   "targets": [
+    "claude"
+   ],
+   "mode": "CLAUDE_ONLY",
+   "status": "active",
+   "classification": "A. GLOBAL-CANONICAL",
+   "family": "copy-os",
+   "canonical_owner": "claude-skills repo",
+   "origin": "BuildSmarter Copy OS",
+   "adapter": null,
+   "expected_sha256": "1a4ed9c38eefba61bf8a2b6e740509d2985a7838dd06e27c90e8d11829b8e364",
+   "divergence_decision": null,
+   "divergence_reason": null,
+   "usage": 0,
+   "notes": "Craft layer for response-driven copy: headlines, leads, body architecture, offers, CTAs, editing rules. Aliased as copy-that-sells in its body; folder name avoids colliding with the upstream avectats7/copy-that-sells plugin skill if that is ever installed.",
+   "intentional_divergence": "Scope, not mechanism. These skills are plain markdown and would execute in either runtime; they were commissioned as a Claude Code global layer, and adding eleven entries to the Codex store is a separate decision with its own blast radius (an external installer manages ~/.agents/skills). Flip mode to IDENTICAL and add \"codex\" to targets to grant parity - no content change is required."
+  },
+  {
+   "skill": "persuasion-engine",
+   "source": "persuasion-engine",
+   "source_present_in_canonical": true,
+   "targets": [
+    "claude"
+   ],
+   "mode": "CLAUDE_ONLY",
+   "status": "active",
+   "classification": "A. GLOBAL-CANONICAL",
+   "family": "copy-os",
+   "canonical_owner": "claude-skills repo",
+   "origin": "BuildSmarter Copy OS",
+   "adapter": null,
+   "expected_sha256": "f508e18e8fdb8d804e6ab7c6908a8d1ebb71d455c7d52080dce72a01b8557df9",
+   "divergence_decision": null,
+   "divergence_reason": null,
+   "usage": 0,
+   "notes": "Behavioral persuasion principle selection matched to audience temperature, with hard stops on fabricated scarcity, authority, statistics, testimonials, and guarantees.",
+   "intentional_divergence": "Scope, not mechanism. These skills are plain markdown and would execute in either runtime; they were commissioned as a Claude Code global layer, and adding eleven entries to the Codex store is a separate decision with its own blast radius (an external installer manages ~/.agents/skills). Flip mode to IDENTICAL and add \"codex\" to targets to grant parity - no content change is required."
+  },
+  {
+   "skill": "copychief",
+   "source": "copychief",
+   "source_present_in_canonical": true,
+   "targets": [
+    "claude"
+   ],
+   "mode": "CLAUDE_ONLY",
+   "status": "active",
+   "classification": "A. GLOBAL-CANONICAL",
+   "family": "copy-os",
+   "canonical_owner": "claude-skills repo",
+   "origin": "BuildSmarter Copy OS",
+   "adapter": null,
+   "expected_sha256": "b315b8bd8b8675b85f5b510bb0e93485e5a8dcc341513d8d1d1e996a93603863",
+   "divergence_decision": null,
+   "divergence_reason": null,
+   "usage": 0,
+   "notes": "Adversarial reviewer. Fifteen scored dimensions, an exact rewrite per defect, and escalation paths. Never returns a verdict without replacement text.",
+   "intentional_divergence": "Scope, not mechanism. These skills are plain markdown and would execute in either runtime; they were commissioned as a Claude Code global layer, and adding eleven entries to the Codex store is a separate decision with its own blast radius (an external installer manages ~/.agents/skills). Flip mode to IDENTICAL and add \"codex\" to targets to grant parity - no content change is required."
+  },
+  {
+   "skill": "humanizer",
+   "source": "humanizer",
+   "source_present_in_canonical": true,
+   "targets": [
+    "claude"
+   ],
+   "mode": "CLAUDE_ONLY",
+   "status": "active",
+   "classification": "A. GLOBAL-CANONICAL",
+   "family": "copy-os",
+   "canonical_owner": "claude-skills repo",
+   "origin": "BuildSmarter Copy OS",
+   "adapter": null,
+   "expected_sha256": "880330eebed5da22cba02a4d17eb8be02a7072d9757f4a69a1690ccf489b4aa7",
+   "divergence_decision": null,
+   "divergence_reason": null,
+   "usage": 0,
+   "notes": "Final editorial pass removing AI vocabulary and structural tells while preserving facts, persuasive force, brand register, and technical terms.",
+   "intentional_divergence": "Scope, not mechanism. These skills are plain markdown and would execute in either runtime; they were commissioned as a Claude Code global layer, and adding eleven entries to the Codex store is a separate decision with its own blast radius (an external installer manages ~/.agents/skills). Flip mode to IDENTICAL and add \"codex\" to targets to grant parity - no content change is required."
+  },
+  {
+   "skill": "compliance-review",
+   "source": "compliance-review",
+   "source_present_in_canonical": true,
+   "targets": [
+    "claude"
+   ],
+   "mode": "CLAUDE_ONLY",
+   "status": "active",
+   "classification": "A. GLOBAL-CANONICAL",
+   "family": "copy-os",
+   "canonical_owner": "claude-skills repo",
+   "origin": "BuildSmarter Copy OS",
+   "adapter": null,
+   "expected_sha256": "8fac8954001515034ae87910ce19b6403a71d26d9af9fd914c34c5fd2a90915c",
+   "divergence_decision": null,
+   "divergence_reason": null,
+   "usage": 0,
+   "notes": "Marketing-risk gate: claim substantiation ledger, guarantees, comparisons, urgency, endorsements, sensitive attributes, platform exposure. Carries a dated, deliberately structural references/platform-policy-checkpoints.md rather than a policy snapshot.",
+   "intentional_divergence": "Scope, not mechanism. These skills are plain markdown and would execute in either runtime; they were commissioned as a Claude Code global layer, and adding eleven entries to the Codex store is a separate decision with its own blast radius (an external installer manages ~/.agents/skills). Flip mode to IDENTICAL and add \"codex\" to targets to grant parity - no content change is required."
+  },
+  {
+   "skill": "landing-page-copy",
+   "source": "landing-page-copy",
+   "source_present_in_canonical": true,
+   "targets": [
+    "claude"
+   ],
+   "mode": "CLAUDE_ONLY",
+   "status": "active",
+   "classification": "A. GLOBAL-CANONICAL",
+   "family": "copy-os",
+   "canonical_owner": "claude-skills repo",
+   "origin": "BuildSmarter Copy OS",
+   "adapter": null,
+   "expected_sha256": "08671f21f9c5f162fb4934dcbaad0b0637be2dfd58a9b427244d8b667818bbb1",
+   "divergence_decision": null,
+   "divergence_reason": null,
+   "usage": 0,
+   "notes": "Page copy generation and section architecture with message match to the traffic source. Complements ads-landing, which audits an existing page rather than writing one.",
+   "intentional_divergence": "Scope, not mechanism. These skills are plain markdown and would execute in either runtime; they were commissioned as a Claude Code global layer, and adding eleven entries to the Codex store is a separate decision with its own blast radius (an external installer manages ~/.agents/skills). Flip mode to IDENTICAL and add \"codex\" to targets to grant parity - no content change is required."
+  },
+  {
+   "skill": "ad-copy",
+   "source": "ad-copy",
+   "source_present_in_canonical": true,
+   "targets": [
+    "claude"
+   ],
+   "mode": "CLAUDE_ONLY",
+   "status": "active",
+   "classification": "A. GLOBAL-CANONICAL",
+   "family": "copy-os",
+   "canonical_owner": "claude-skills repo",
+   "origin": "BuildSmarter Copy OS",
+   "adapter": null,
+   "expected_sha256": "d209219a0179e25a2c1f78454f0f0257df66ab3bfa3377a1a71fb87a3f989d84",
+   "divergence_decision": null,
+   "divergence_reason": null,
+   "usage": 0,
+   "notes": "Paid ad copy generation per platform intent and format limits. Complements ads-creative, which audits an account's existing creative rather than writing new copy.",
+   "intentional_divergence": "Scope, not mechanism. These skills are plain markdown and would execute in either runtime; they were commissioned as a Claude Code global layer, and adding eleven entries to the Codex store is a separate decision with its own blast radius (an external installer manages ~/.agents/skills). Flip mode to IDENTICAL and add \"codex\" to targets to grant parity - no content change is required."
+  },
+  {
+   "skill": "email-copy",
+   "source": "email-copy",
+   "source_present_in_canonical": true,
+   "targets": [
+    "claude"
+   ],
+   "mode": "CLAUDE_ONLY",
+   "status": "active",
+   "classification": "A. GLOBAL-CANONICAL",
+   "family": "copy-os",
+   "canonical_owner": "claude-skills repo",
+   "origin": "BuildSmarter Copy OS",
+   "adapter": null,
+   "expected_sha256": "f54664f068f7918279476d4c32e543e70cdedb3be6cdedf68effa675b1b343f8",
+   "divergence_decision": null,
+   "divergence_reason": null,
+   "usage": 0,
+   "notes": "Cold, nurture, lifecycle, and broadcast email copy plus sequence architecture. Distinct from email-ops, which triages a mailbox and operates sends.",
+   "intentional_divergence": "Scope, not mechanism. These skills are plain markdown and would execute in either runtime; they were commissioned as a Claude Code global layer, and adding eleven entries to the Codex store is a separate decision with its own blast radius (an external installer manages ~/.agents/skills). Flip mode to IDENTICAL and add \"codex\" to targets to grant parity - no content change is required."
+  },
+  {
+   "skill": "social-copy",
+   "source": "social-copy",
+   "source_present_in_canonical": true,
+   "targets": [
+    "claude"
+   ],
+   "mode": "CLAUDE_ONLY",
+   "status": "active",
+   "classification": "A. GLOBAL-CANONICAL",
+   "family": "copy-os",
+   "canonical_owner": "claude-skills repo",
+   "origin": "BuildSmarter Copy OS",
+   "adapter": null,
+   "expected_sha256": "e290ef5cca66e3db302c39ee704adf493175f64229d2eaa15874a7e3dbe950c9",
+   "divergence_decision": null,
+   "divergence_reason": null,
+   "usage": 0,
+   "notes": "Organic social posts and short-video scripts in platform-native register. Distinct from content-engine, which builds multi-platform content systems and calendars.",
+   "intentional_divergence": "Scope, not mechanism. These skills are plain markdown and would execute in either runtime; they were commissioned as a Claude Code global layer, and adding eleven entries to the Codex store is a separate decision with its own blast radius (an external installer manages ~/.agents/skills). Flip mode to IDENTICAL and add \"codex\" to targets to grant parity - no content change is required."
   }
  ],
  "d3": {

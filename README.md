@@ -66,6 +66,25 @@ Curated and optimized Claude Code skills for the BuildSmarter Holdings ecosystem
 | `market-research` | Competitive analysis, industry research |
 | `proptech-product-strategy` | Pricing, sprint planning, GTM, feature prioritization |
 
+### Copy OS
+Reusable copywriting and marketing-intelligence methodology. **Methodology is global; truth is
+local** — these skills carry no company facts and read repository-local context before writing
+anything company-specific. See [`docs/copy-os.md`](docs/copy-os.md).
+
+| Skill | Purpose |
+|-------|---------|
+| `copy-os` | Router + shared contracts: routing table, Copy Brief schema, fact-provenance rules |
+| `copy-strategist` | Awareness stage, market sophistication, proof inventory, offer architecture |
+| `direct-response-copy` | Headlines, leads, body architecture, offers, CTAs, editing rules |
+| `persuasion-engine` | Behavioral principles matched to audience temperature, with hard stops |
+| `copychief` | Adversarial review: 15 scored dimensions, an exact rewrite per defect |
+| `humanizer` | Final editorial pass removing AI tells without weakening the copy |
+| `compliance-review` | Claim substantiation ledger, platform exposure, human-review routing |
+| `landing-page-copy` | Page structure and section copy with message match to the traffic source |
+| `ad-copy` | Paid ad copy per platform intent and format limits |
+| `email-copy` | Cold, nurture, lifecycle email plus sequence architecture |
+| `social-copy` | Organic social posts and short-video scripts in native register |
+
 ### Meta / Utility
 | Skill | Purpose |
 |-------|---------|
