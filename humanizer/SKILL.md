@@ -135,6 +135,10 @@ MEANING CHECK
   Facts unchanged: <yes | what changed and why>
   Claims unchanged: <yes | ...>
   Register held:    <yes | ...>
+
+GAPS
+  [NEEDS-INPUT] <a missing voice profile, or a term you could not confirm is
+                 deliberate - name it rather than deciding for the brand>
 ```
 
 ## Quality gates

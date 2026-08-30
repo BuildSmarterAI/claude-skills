@@ -6256,7 +6256,7 @@
    "canonical_owner": "claude-skills repo",
    "origin": "BuildSmarter Copy OS",
    "adapter": null,
-   "expected_sha256": "880330eebed5da22cba02a4d17eb8be02a7072d9757f4a69a1690ccf489b4aa7",
+   "expected_sha256": "2137bdf98c1aba33da00ae8270233e86b5354db024707564940a747672223a4c",
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,
