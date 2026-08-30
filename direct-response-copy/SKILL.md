@@ -1,6 +1,6 @@
 ---
 name: direct-response-copy
-description: Write direct-response copy that asks for an action - headlines, leads, body architecture, offers, and CTAs - using awareness-stage and sophistication-aware frameworks rather than generic marketing prose. Use for sales copy, promos, long-form pages, headline sets, taglines, and any writing whose job is a measurable response. Also known as copy-that-sells.
+description: Write direct-response copy that asks for an action - headlines, leads, body architecture, offers, and CTAs - using awareness-stage and sophistication-aware frameworks rather than generic marketing prose. Use for sales copy, promos, long-form pages, headline sets, taglines, and any writing whose job is a measurable response; also known as copy-that-sells.
 origin: BuildSmarter Copy OS
 ---
 
