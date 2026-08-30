@@ -95,36 +95,67 @@ anything company-specific. See [`docs/copy-os.md`](docs/copy-os.md) and [`docs/c
 | `strategic-compact` | Context management for long sessions |
 | `verification-loop` | Session verification system |
 
-## Installation
+## How this repository reaches a runtime
 
-```bash
-git clone https://github.com/BuildSmarterAI/claude-skills.git ~/.claude/skills
+This repo is the **canonical source**. The runtime stores are **deployment outputs**:
+
+```
+BuildSmarterAI/claude-skills          canonical source (clone anywhere)
+  └─ manifests/skills.json            declares what deploys, where, and its SHA-256
+       └─ scripts/deploy-skills.py    the only writer
+            ├─ ~/.claude/skills       Claude Code       ← output, never hand-edited
+            └─ ~/.agents/skills       Codex CLI (`r0`)  ← output, never hand-edited
 ```
 
-## Updating
+> **Do not clone this repository into `~/.claude/skills`.** That was the old model and it is
+> retired. It made each runtime an orphan git repo pinned to a commit that does not exist on this
+> remote, which no `git pull` could reconcile — 89 untracked skills, 50 modified against an
+> unreachable commit, and 65 identically named skills that had silently diverged between the two
+> runtimes. See [`docs/consolidation/README.md`](docs/consolidation/README.md).
+
+### Installing
 
 ```bash
-cd ~/.claude/skills
-git pull
+git clone https://github.com/BuildSmarterAI/claude-skills.git
+cd claude-skills
+
+python scripts/deploy-skills.py --check      # what differs, changes nothing
+python scripts/deploy-skills.py --dry-run    # exactly what --deploy would do
+python scripts/deploy-skills.py --deploy     # copy/update only; never deletes
+python scripts/deploy-skills.py --check      # must end CLEAN
 ```
 
-## Syncing Changes
+A skill reaches a runtime only if `manifests/skills.json` declares it with a matching `targets`
+entry and a deliverable `status`. A directory added without a manifest entry is ungoverned and is
+reported as `EXTRA` rather than deployed.
 
-After modifying skills on any machine:
+### Changing a skill
+
+Edit the **canonical source**, never the runtime:
 
 ```bash
-cd ~/.claude/skills
-git add -A
-git commit -m "Update: description of changes"
-git push
+git switch main && git pull --ff-only
+git switch -c chore/<what-you-are-doing>
+
+# edit <skill>/SKILL.md, then update its expected_sha256 in manifests/skills.json:
+python -c "import hashlib;print(hashlib.sha256(open('<skill>/SKILL.md','rb').read()).hexdigest())"
+
+python -m unittest discover -s tests           # checker self-tests
+python scripts/check-skill-consistency.py      # is the repository correct?
+python scripts/audit-catalog-health.py --no-runtime
+python scripts/deploy-skills.py --check        # is THIS machine in parity? (local only)
 ```
 
-Then on other machines:
+Open a PR; the `Skill consistency` check must pass. Then redeploy locally.
 
-```bash
-cd ~/.claude/skills
-git pull
-```
+Two constraints bite:
+
+- `expected_sha256` is taken over **raw bytes**, and `.gitattributes` pins `* -text` so git never
+  rewrites line endings. Write LF.
+- `manifests/skills.json` is **CRLF with no trailing newline**. A naive `json.dump` silently
+  rewrites all ~226 KB and makes the diff unreviewable.
+
+Release and rollback procedure: [`docs/consolidation/RELEASING.md`](docs/consolidation/RELEASING.md).
 
 ## Audit History
 
