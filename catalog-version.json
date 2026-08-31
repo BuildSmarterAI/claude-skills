@@ -1,5 +1,5 @@
 {
- "catalog_version": "1.0.0",
+ "catalog_version": "1.1.0",
  "manifest_schema_version": 1,
  "deployment_state_schema_version": 1,
  "_comment": "Three independent versions; do not conflate them. catalog_version names this release of the skill catalog and follows semver per docs/consolidation/RELEASING.md. manifest_schema_version describes the SHAPE of manifests/skills.json and must equal its own `schema` field - check-skill-consistency.py enforces that agreement. deployment_state_schema_version describes the shape of the .deployment-state.json that deploy-skills.py writes into each runtime root.",
