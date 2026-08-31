@@ -4,7 +4,7 @@ This file orients Claude Code (and other AI assistants) working inside this repo
 
 ## What this repository is
 
-`claude-skills` is BuildSmarter Holdings' curated library of **Claude Code skills**. Each top-level directory is one skill. The repo is consumed by cloning it to `~/.claude/skills` so Claude Code can load skills at runtime — there is no application to build or run.
+`claude-skills` is BuildSmarter Holdings' curated library of **Claude Code skills**. Each top-level directory is one skill. This repo is the **canonical source**; the runtime stores (`~/.claude/skills`, `~/.agents/skills`) are **deployment outputs** written only by `scripts/deploy-skills.py` from `manifests/skills.json`. Never hand-edit a runtime store, and never clone this repo into one — that model is retired, and `README.md` records what it cost. There is no application to build or run.
 
 - **No build, no tests, no linters at the root.** Validation = "does the SKILL.md render and is the YAML frontmatter valid?"
 - **Content repository.** Do not introduce `package.json`, lockfiles, or framework code at the root.
@@ -17,8 +17,7 @@ For the portfolio context, stack overview, and install commands, see `README.md`
 ```
 /                          # README.md, this file
 <skill-name>/              # one folder per skill, kebab-case
-  SKILL.md                 # required for standard skills (YAML frontmatter + body)
-  CLAUDE.md                # used INSTEAD of SKILL.md by team aggregator skills only
+  SKILL.md                 # REQUIRED, always. A folder without one is never registered
   scripts/    agents/      # optional sub-dirs for complex skills
   hooks/      commands/
   rules/      references/
@@ -26,7 +25,7 @@ For the portfolio context, stack overview, and install commands, see `README.md`
   tests/      config.json
 ```
 
-There are ~288 catalogued skills, governed by `manifests/skills.json`. All folder names are **kebab-case** and match the `name` field in their frontmatter -- CI enforces that agreement.
+There are 304 catalogued skills, governed by `manifests/skills.json`. All folder names are **kebab-case** and match the `name` field in their frontmatter -- CI enforces that agreement.
 
 ### Standard skills
 
@@ -42,14 +41,25 @@ A few skills add sub-directories when markdown alone is not enough:
 - `remotion-video-creation/` — `rules/` (per-topic markdown rule files).
 - `lead-intelligence/`, `brand-voice/`, `videodb/`, `manim-video/`, `rules-distill/`, `skill-stocktake/` — assorted `agents/`, `references/`, `assets/`, `scripts/`.
 
-### Team aggregator skills (use `CLAUDE.md`, not `SKILL.md`)
+### Skill families
 
-These seven folders are routing/index documents for clusters of related sub-skills and Python tools — they intentionally use `CLAUDE.md` instead of `SKILL.md`. Preserve that pattern when extending them:
+Related skills share a `family` value in the manifest and cross-reference each other through
+explicit handoffs. They stay separate folders with their own `SKILL.md`; the routing lives in a
+member skill, not in a wrapper.
 
-- `engineering-team/` · `product-team/` · `project-management/`
-- `marketing-skill/` · `business-growth/` · `finance/` · `c-level-advisor/`
+- `copy-os` — the eleven copywriting and marketing skills. `copy-os/SKILL.md` is the router and
+  owns the family's shared contracts under `copy-os/references/`. See `docs/copy-os.md`.
 
-Do **not** add `CLAUDE.md` files inside ordinary skill folders. The only `CLAUDE.md` at the repo root is this file.
+> **Retired pattern — team aggregators.** Seven folders (`engineering-team`, `product-team`,
+> `project-management`, `marketing-skill`, `business-growth`, `finance`, `c-level-advisor`) once
+> used a `CLAUDE.md` instead of a `SKILL.md` as a routing index. They were vendored in `41aca39`
+> and **retired in `cb87b03`** ("Retire deadweight"). None exists on disk or in the manifest, and
+> no skill in this repo uses that pattern today. Do not reintroduce it: a folder whose entry point
+> is not `SKILL.md` is never registered by the harness, which is the failure this repo already
+> pays a CodeRabbit path instruction to catch.
+
+Do **not** add `CLAUDE.md` files inside skill folders. The only `CLAUDE.md` in this repo is this
+file, at the root.
 
 ## SKILL.md format (authoritative)
 
@@ -99,8 +109,8 @@ Mirrors the index in `README.md`. Browse the relevant category before creating a
 | AI & Data | `cost-aware-llm-pipeline`, `regex-vs-llm-structured-text`, `content-hash-cache-pattern`, `claude-api` |
 | Infrastructure | `deployment-patterns`, `database-migrations`, `docker-patterns` |
 | Content & Business | `article-writing`, `content-engine`, `investor-materials`, `market-research` |
+| Copy OS (family) | `copy-os`, `copy-strategist`, `direct-response-copy`, `persuasion-engine`, `copychief`, `humanizer`, `compliance-review`, `landing-page-copy`, `ad-copy`, `email-copy`, `social-copy` |
 | Meta / Utility | `continuous-learning-v2`, `eval-harness`, `search-first`, `skill-stocktake`, `strategic-compact`, `verification-loop` |
-| Team aggregators | `engineering-team`, `product-team`, `project-management`, `marketing-skill`, `business-growth`, `finance`, `c-level-advisor` |
 
 ## Tech stack assumed by skill examples
 
@@ -115,12 +125,12 @@ When you write or edit code samples inside a skill, default to this stack so exa
 
 ## Conventions when adding or editing skills
 
-1. **Search before creating.** Grep across `*/SKILL.md` and `*/CLAUDE.md` for the topic first. Extend the existing skill instead of creating a near-duplicate.
+1. **Search before creating.** Grep across `*/SKILL.md` for the topic first. Extend the existing skill instead of creating a near-duplicate.
 2. **Folder name = `name` frontmatter value**, kebab-case. No prefixes/suffixes.
 3. **One concern per skill.** Don't bundle unrelated topics.
 4. **Keep `description` concrete.** It's what the harness matches against — vague descriptions never get loaded.
 5. **Prefer markdown.** Add a sub-directory (`scripts/`, `agents/`, `hooks/`, etc.) only when a single `SKILL.md` cannot express the skill.
-6. **Preserve aggregator pattern.** Team folders use `CLAUDE.md` and list sub-skills + tools; do not convert them to `SKILL.md`.
+6. **Every skill folder has a `SKILL.md`.** No exceptions. A folder whose entry point is named anything else is silently never registered.
 7. **Update `README.md`** when adding a skill that fits one of the existing category tables.
 8. **Don't add application tooling at the root.** No `package.json`, no lockfiles, no framework code. The repo does carry deliberate governance tooling -- `scripts/`, `tests/`, and the `Skill consistency` workflow -- which is load-bearing; do not remove or bypass it.
 
@@ -148,10 +158,11 @@ When you write or edit code samples inside a skill, default to this stack so exa
 ## Useful pointers
 
 - Canonical `SKILL.md`: `api-design/SKILL.md`
-- Canonical team-aggregator `CLAUDE.md`: `engineering-team/CLAUDE.md`
+- Canonical skill family with shared contracts: `copy-os/` (see `docs/copy-os.md`)
 - Canonical complex-skill layout: `continuous-learning-v2/`
 - Canonical CLI-extension skill: `ck/`
-- Portfolio + install/update commands: `README.md`
+- Portfolio + deploy/update commands: `README.md`
+- Release, rollback, and version policy: `docs/consolidation/RELEASING.md`
 
 ---
 
