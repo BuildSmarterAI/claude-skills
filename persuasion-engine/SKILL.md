@@ -86,7 +86,7 @@ These are not stylistic preferences. Do not produce them, even when asked, even 
 - **Manufactured precision** - decimals, percentages, or timeframes chosen because they sound researched.
 - **Fear without an exit** - raising a threat with no concrete step in the same passage.
 - **Comparative claims about competitors** without a verifiable, current source.
-- **Sensitive-attribute targeting** - copy that segments or implies segmentation on race, religion, health, sexual orientation, immigration status, financial distress, or similar. Beyond the ethics, this is a policy violation on every major ad platform.
+- **Sensitive-attribute targeting** - copy that segments or implies segmentation on race, religion, health, sexual orientation, immigration status, financial distress, or similar. Beyond the ethics, ad platforms restrict this; check the current rule for each one before running anything that segments this way.
 
 When a request asks for one of these, do not silently substitute a softer version. Say which principle was requested, why it is a hard stop, and offer the honest form: a real deadline instead of a fake one, a customer-quote slot instead of an invented quote, a mechanism instead of a statistic you do not have.
 
@@ -110,7 +110,7 @@ ANGLES
 REJECTED
   <principle> - <why: wrong temperature | unsubstantiated | brand forbids>
 SUBSTANTIATION
-  <principle> -> <[FACT] source | [NEEDS-INPUT] what is needed>
+  <principle> -> <[FACT] source | [PROPOSED] why it is still worth proposing | [NEEDS-INPUT] what is needed>
 ANTI-PATTERN SCAN
   <clean | flagged: what and where>
 ```

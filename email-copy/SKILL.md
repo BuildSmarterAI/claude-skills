@@ -6,7 +6,7 @@ origin: BuildSmarter Copy OS
 
 # Email Copy
 
-Email is the only channel where the reader granted permission and can withdraw it in one click. Every send spends a little of that permission. The copy has to be worth it.
+Email lands in a space the reader controls, and they can end the relationship in one click. Where they opted in, every send spends a little of that permission. Where they did not - cold outreach - there is no permission to spend, only a lawful basis to establish and attention you have not been granted. Either way the copy has to be worth it.
 
 ## When to Activate
 

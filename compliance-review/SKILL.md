@@ -44,7 +44,7 @@ Every assertion of fact gets a verdict:
 | **PUFFERY** | Subjective and non-falsifiable ("the best coffee in town"). Generally low risk; still flag in regulated categories |
 | **NEEDS-HUMAN** | Cannot be judged without legal, regulatory, or business input |
 
-Numbers get the strictest treatment. Any statistic without a named source is `UNSUBSTANTIATED` at minimum. A precise-looking number with no source is `FABRICATED`, not "close enough".
+Numbers get the strictest treatment. Any statistic without a named source is `UNSUBSTANTIATED` at minimum, and a precise-looking number is never waved through as "close enough". Escalate it to `FABRICATED` once tracing establishes that no origin exists - the two verdicts differ in what was checked, not in how seriously the number is taken, and neither is ever `CLEAR`.
 
 ### 2. Guarantees and promises
 

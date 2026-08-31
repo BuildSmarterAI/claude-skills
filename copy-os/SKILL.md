@@ -18,7 +18,7 @@ The router and the rulebook for the copy skill family. Methodology is global; **
 
 ## When NOT to Activate
 
-- Editing a single line the user already wrote and only wants tightened → go straight to `humanizer` or `direct-response-copy`.
+- Editing a single line the user already wrote and only wants to be tightened → go straight to `humanizer` or `direct-response-copy`.
 - Auditing an existing paid-ads account's creative portfolio, budgets, or tracking → that is the `ads` / `ads-creative` family, not this one.
 - Product documentation, changelogs, API docs, technical writing → not direct-response copy.
 - Building a voice profile from existing published work → `brand-voice`.
@@ -57,11 +57,11 @@ Both live in full under `references/`. Read them before writing company-specific
 
 ## The provenance rule, in short
 
-Every factual assertion in generated copy carries one of three labels:
+Every factual assertion in generated copy is labelled with one of three labels. The labels travel in the notes beside the copy, not inside the copy itself - the deliverable ships clean:
 
 - **`[FACT]`** — sourced from repository-local context, a file the user supplied, or something the user stated in this conversation. Cite where.
 - **`[PROPOSED]`** — messaging you are recommending. True only if the business chooses to make it true. Positioning, angle, promise framing.
-- **`[NEEDS-INPUT]`** — a slot the copy needs filled and you do not have. Name the input; never fill it yourself.
+- **`[NEEDS-INPUT]`** — a slot the copy needs to be filled and you do not have. Name the input; never fill it yourself.
 
 Never invent proof, customer quotes, performance numbers, competitor claims, pricing, guarantees, certifications, headcounts, founding dates, or awards. A plausible number is worse than a blank, because a blank gets filled and a plausible number ships.
 

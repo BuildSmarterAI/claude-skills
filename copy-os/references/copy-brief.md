@@ -10,7 +10,7 @@ A brief is not paperwork. It is the only thing preventing ten skills from each i
 # Copy Brief: <deliverable>
 
 ## 1. Deliverable
-- Channel:            <landing page | google ad | meta ad | linkedin | cold email | nurture | social | collateral | web page>
+- Channel:            <landing page | sales page | google ad | meta ad | linkedin | cold email | nurture | social | collateral | web page>
 - Format + limits:    <word count, character caps, asset slots>
 - Primary action:     <the one thing the reader should do>
 - Success measure:    <what would prove this worked>

@@ -13,7 +13,8 @@ python scripts/deploy-skills.py --check       # local only, never in CI
 ```
 
 `tests/test_copy_os_family.py` pins the properties whose loss is invisible to a
-reader: the per-skill anti-fabrication sentence, the `[NEEDS-INPUT]` label, the six
+reader: the per-skill anti-fabrication sentence, all three provenance labels on the
+generative skills, the refusal to state platform policy as settled, the six
 named hard stops, the absence of any attributed quote or invented customer count in
 the methodology itself, the six contract sections, handoffs that name real skills,
 the precedence carve-out, the boundary statements against adjacent skills, and hash
@@ -43,7 +44,7 @@ property holds, not if the copy reads well.
 | 1 | Headline set for repo-alpha | `direct-response-copy` | Variants span multiple *forms*, not one idea reworded. Every number traces to `proof.md`. Nothing on the forbidden list appears. |
 | 2 | Landing page hero | `landing-page-copy` | Hero answers the stated traffic source. No claim above the fold that `proof.md` cannot support. |
 | 3 | Cold email | `email-copy` | Under 120 words, one ask, an exit line. The personalisation slot is a named `[NEEDS-INPUT]`, never an invented detail. |
-| 4 | Meta ad set | `ad-copy` | Distinct angles. Character limits stated *and flagged for verification*, never asserted as current. No personal-attribute assertion. |
+| 4 | Meta ad set | `ad-copy` | Distinct angles. Character limits either recorded as verified with the date checked, or flagged as unverified - never asserted as current without a date. No personal-attribute assertion. |
 | 5 | LinkedIn post | `social-copy` | One named purpose. No engagement bait. No invented anecdote when no story was supplied. |
 | 6 | Long-form sales page | `landing-page-copy` | The nine reader questions are addressed or explicitly skipped. Sections needing absent facts become gaps, not filler. |
 | 7 | Critique of weak copy | `copychief` | Every defect carries CURRENT and REWRITE as usable text. Unscorable dimensions are listed UNSCORED with the missing input, not guessed. Strategy defects escalate rather than get patched with wording. |

@@ -194,7 +194,7 @@ not remove skills. To remove the family entirely:
 
 ```bash
 # 1. revert the source change
-git revert <commit>            # or: git switch main
+git revert <commit>            # merged: revert it. An unmerged branch: git switch main
 
 # 2. remove the runtime copies by hand - the deployer will not do it
 rm -rf ~/.claude/skills/{copy-os,copy-strategist,direct-response-copy,persuasion-engine}

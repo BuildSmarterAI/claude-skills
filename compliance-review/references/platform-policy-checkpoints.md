@@ -25,7 +25,7 @@ These risk *categories* have been durable across platforms and years. The specif
 - **Unrealistic outcomes** - income claims, health outcomes, guaranteed results.
 - **Before-and-after imagery** and body-related claims.
 - **Countdown and pressure mechanics** - especially timers that reset.
-- **Landing-page mismatch** - the destination must deliver what the ad promised. This is enforced by every major platform and is the most common quiet rejection.
+- **Landing-page mismatch** - whether the destination delivers what the ad promised. Look up each platform's current destination-experience requirement; do not assume a shared rule or a shared severity.
 - **Restricted and prohibited categories** - crypto, supplements, gambling, firearms, tobacco, adult, political and social issue advertising, pharmaceuticals.
 - **Trademark and competitor naming** - rules differ sharply between search and social.
 - **Disclosure requirements** - paid partnership, affiliate, endorsement, AI-generated content labelling.

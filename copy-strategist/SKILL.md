@@ -53,7 +53,7 @@ Schwartz's five stages. The stage decides where the copy must start, and it is t
 | **Product-aware** | Yours, but not convinced | The differentiator and the proof |
 | **Most aware** | Everything; they need a reason now | The offer and the deadline |
 
-Getting this wrong is the most common cause of a page that "reads fine" and converts badly. Product-aware copy shown to an unaware reader reads as noise. Unaware copy shown to a most-aware reader reads as stalling.
+Getting this wrong is a frequent and easily missed cause of a page that "reads fine" and converts badly. Product-aware copy shown to an unaware reader reads as noise. Unaware copy shown to a most-aware reader reads as stalling.
 
 ### 2. Read market sophistication
 

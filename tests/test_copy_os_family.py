@@ -102,9 +102,34 @@ PROVENANCE_ANCHORS = {
 }
 
 
+# Skills that GENERATE company-specific copy must be able to express all three
+# provenance labels. The three reviewer/editor skills judge or edit copy rather
+# than asserting facts about a business, so they carry the gap label only - their
+# provenance mechanism is their own verdict vocabulary (copychief's scorecard,
+# compliance-review's claim ledger).
+GENERATIVE = {'copy-os', 'copy-strategist', 'direct-response-copy', 'persuasion-engine',
+              'landing-page-copy', 'ad-copy', 'email-copy', 'social-copy'}
+REVIEWERS = {'copychief', 'humanizer', 'compliance-review'}
+
+
 def read(name):
     with open(os.path.join(ROOT, name, 'SKILL.md'), encoding='utf-8') as fh:
         return fh.read()
+
+
+def frontmatter(name):
+    """The delimiter-bounded YAML block only.
+
+    Searching the whole file lets prose satisfy a frontmatter assertion: a
+    SKILL.md whose frontmatter omits `name` but whose body happens to contain a
+    line reading `name: ad-copy` passed the unbounded check, while the harness
+    would never register it. Verified to reproduce before this was bounded.
+    """
+    body = read(name)
+    if not body.startswith('---'):
+        return ''
+    end = body.find('\n---', 3)
+    return body[3:end] if end != -1 else ''
 
 
 def provenance_section(name):
@@ -133,10 +158,23 @@ class TestFamilyIsPresent(unittest.TestCase):
     def test_frontmatter_name_matches_folder(self):
         for name in FAMILY:
             with self.subTest(skill=name):
-                m = FRONTMATTER_NAME.search(read(name))
+                block = frontmatter(name)
+                self.assertNotEqual('', block, f'{name}: no frontmatter block')
+                m = FRONTMATTER_NAME.search(block)
                 self.assertIsNotNone(m, f'{name}: no name in frontmatter')
                 declared = next(g for g in m.groups() if g)
                 self.assertEqual(name, declared)
+
+    def test_name_is_not_satisfied_by_prose_outside_frontmatter(self):
+        # Guards the bound itself: without it, body prose reading "name: x"
+        # satisfies the check on a skill the harness would never register.
+        forged = '---\ndescription: no name field here\n---\n\n# T\n\nname: copy-os\n'
+        end = forged.find('\n---', 3)
+        block = forged[3:end]
+        self.assertIsNone(FRONTMATTER_NAME.search(block),
+                          'frontmatter bound is not actually bounding')
+        self.assertIsNotNone(FRONTMATTER_NAME.search(forged),
+                             'unbounded search would have passed - the bound is load-bearing')
 
     def test_first_line_is_the_frontmatter_delimiter(self):
         # A SKILL.md whose first line is not `---` is silently never registered.
@@ -193,12 +231,33 @@ class TestSafetyRules(unittest.TestCase):
                 hits = permissive.findall(read(name))
                 self.assertEqual([], hits, f'{name}: grants fact invention {hits}')
 
-    def test_every_skill_defines_the_three_labels(self):
-        for name in sorted(MUST_CARRY_PROVENANCE):
+    def test_generative_skills_define_all_three_labels(self):
+        """The name used to promise three labels and assert one.
+
+        A skill that writes company-specific copy needs all three: [FACT] to
+        attribute, [PROPOSED] to mark a recommendation as not-yet-true, and
+        [NEEDS-INPUT] for the gap. Asserting only the gap label left the other
+        two free to disappear, which is how unlabelled proposed messaging starts
+        reading as established fact.
+        """
+        for name in sorted(GENERATIVE):
+            body = read(name)
+            for label in ('[FACT]', '[PROPOSED]', '[NEEDS-INPUT]'):
+                with self.subTest(skill=name, label=label):
+                    self.assertIn(label, body, f'{name}: lost {label}')
+
+    def test_reviewer_skills_carry_the_gap_label(self):
+        # These judge or edit rather than assert; their provenance mechanism is
+        # their own verdict vocabulary. They still need somewhere to put a gap.
+        for name in sorted(REVIEWERS):
             with self.subTest(skill=name):
-                body = read(name)
-                self.assertIn('[NEEDS-INPUT]', body,
+                self.assertIn('[NEEDS-INPUT]', read(name),
                               f'{name}: lost the gap label, so a gap has nowhere to go')
+
+    def test_family_partition_is_exhaustive(self):
+        # A skill dropped from both sets would silently escape both checks.
+        self.assertEqual(set(FAMILY), GENERATIVE | REVIEWERS)
+        self.assertEqual(set(), GENERATIVE & REVIEWERS)
 
     def test_no_fabricated_testimonial_appears_in_the_methodology(self):
         # A quoted sentence attributed to a Firstname Lastname is a fabricated
@@ -241,6 +300,25 @@ class TestSafetyRules(unittest.TestCase):
         self.assertRegex(body, r'(?i)verify')
         self.assertRegex(read('compliance-review'),
                          r'(?i)verify .{0,40}(current )?polic')
+
+        # The disclaimer alone is not enough. A checklist can carry "not a policy
+        # snapshot" at the top and still assert, in a bullet, that every platform
+        # enforces a rule - which is the misleading half, and the half a reader
+        # acts on. Measured: the file shipped exactly that until this check.
+        universal = re.compile(
+            r'(?i)(every major (ad )?platform|all major platforms|'
+            r'enforced by (every|all)|the most common (quiet )?rejection|'
+            r'always rejected|universally (enforced|prohibited))')
+        for path, label in ((ref, 'platform-policy-checkpoints.md'),
+                            (os.path.join(ROOT, 'compliance-review', 'SKILL.md'),
+                             'compliance-review')):
+            with self.subTest(document=label):
+                with open(path, encoding='utf-8') as fh:
+                    hits = universal.findall(fh.read())
+                self.assertEqual(
+                    [], hits,
+                    f'{label}: asserts current platform policy as settled {hits}. '
+                    f'Name the risk category and say where to check it instead.')
 
     def test_humanizer_protects_meaning(self):
         # The stated failure mode of a humanizer is weakening true, strong copy.
