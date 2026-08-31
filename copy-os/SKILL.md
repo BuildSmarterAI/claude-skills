@@ -61,7 +61,7 @@ Every factual assertion in generated copy is labelled with one of three labels. 
 
 - **`[FACT]`** — sourced from repository-local context, a file the user supplied, or something the user stated in this conversation. Cite where.
 - **`[PROPOSED]`** — messaging you are recommending. True only if the business chooses to make it true. Positioning, angle, promise framing.
-- **`[NEEDS-INPUT]`** — a slot the copy needs to be filled and you do not have. Name the input; never fill it yourself.
+- **`[NEEDS-INPUT]`** — a slot that needs to be filled and that you do not have a source for. Name the input; never fill it yourself.
 
 Never invent proof, customer quotes, performance numbers, competitor claims, pricing, guarantees, certifications, headcounts, founding dates, or awards. A plausible number is worse than a blank, because a blank gets filled and a plausible number ships.
 

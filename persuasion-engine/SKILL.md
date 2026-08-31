@@ -86,7 +86,7 @@ These are not stylistic preferences. Do not produce them, even when asked, even 
 - **Manufactured precision** - decimals, percentages, or timeframes chosen because they sound researched.
 - **Fear without an exit** - raising a threat with no concrete step in the same passage.
 - **Comparative claims about competitors** without a verifiable, current source.
-- **Sensitive-attribute targeting** - copy that segments or implies segmentation on race, religion, health, sexual orientation, immigration status, financial distress, or similar. Beyond the ethics, ad platforms restrict this; check the current rule for each one before running anything that segments this way.
+- **Sensitive-attribute targeting** - copy that segments or implies segmentation on race, religion, health, sexual orientation, immigration status, financial distress, or similar. The ethical objection stands on its own and does not depend on any platform rule. Separately, targeting on these attributes is legally restricted in areas such as housing, employment, and credit in many jurisdictions, and platforms impose their own rules on top - look up the current rule for each platform and jurisdiction before running anything that segments this way.
 
 When a request asks for one of these, do not silently substitute a softer version. Say which principle was requested, why it is a hard stop, and offer the honest form: a real deadline instead of a fake one, a customer-quote slot instead of an invented quote, a mechanism instead of a statistic you do not have.
 
