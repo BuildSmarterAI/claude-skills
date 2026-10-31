@@ -61,6 +61,8 @@ Curated and optimized Claude Code skills for the BuildSmarter Holdings ecosystem
 |-------|---------|
 | `article-writing` | Blog posts, case studies, guides for construction/PropTech |
 | `content-engine` | Social media, multi-platform campaigns |
+| `copy-editing` | Edit existing marketing copy; third-party (MIT), pinned to marketingskills `15b38b5` |
+| `copywriting` | Write marketing page copy; third-party (MIT), pinned to marketingskills `15b38b5` |
 | `investor-materials` | Pitch decks, one-pagers, investor memos |
 | `investor-outreach` | Cold emails, follow-ups, investor communications |
 | `market-research` | Competitive analysis, industry research |
