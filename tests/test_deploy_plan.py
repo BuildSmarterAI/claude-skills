@@ -9,11 +9,11 @@ independent things:
   * what a runtime RECEIVES  -> `mode` + `targets`
   * what a runtime LOADS     -> exposure
 
-The evidence that they are independent is in the live runtime: all 105 skills
-turned off via `skillOverrides` are still present on disk. Exposure is switched
-by the override, never by withholding the file. `on-demand` therefore means
-installed but not auto-loaded, and an on-demand entry that never reaches the
-runtime cannot be loaded on demand at all.
+They are independent because Claude Code switches exposure with the
+`skillOverrides` setting (or `disable-model-invocation` frontmatter), never by
+withholding the file. `on-demand` therefore records an exposure intent that the
+deployer does not enforce, and an on-demand entry that never reaches the runtime
+cannot be loaded on demand at all.
 
 `hold` stays excluded on purpose. It means adjudication is still pending, which
 is a statement about whether the content is settled - not about exposure.
@@ -61,7 +61,7 @@ class TestExposureDoesNotGateDelivery(PlanTestCase):
         """The change. An on-demand skill absent from disk cannot be loaded."""
         self.assertTrue(
             self.planned('on-demand'),
-            'on-demand means installed but not auto-loaded, so it must deploy')
+            'on-demand is an exposure intent, not a delivery gate, so it must deploy')
 
     def test_hold_is_not_delivered(self):
         """`hold` is about unsettled content, not exposure, and stays excluded."""

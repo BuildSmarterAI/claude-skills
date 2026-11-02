@@ -47,8 +47,11 @@ no frontmatter at all. See `divergence-adjudication.md`.
 | `status` | `active` · `on-demand` · `repo-local` · `hold` |
 
 `status` controls what a runtime **loads**; `mode` and `targets` control what it
-**receives**. They are independent: `on-demand` is installed but not auto-loaded,
-never withheld from the runtime. So a deployable entry targeting a present runtime
+**receives**. They are independent: `on-demand` is installed like any other entry
+and never withheld from the runtime; it records an exposure intent that this
+repository does not enforce (in Claude Code, exposure is the `skillOverrides`
+setting or `disable-model-invocation` frontmatter, set outside the deployer).
+So a deployable entry targeting a present runtime
 must exist on disk whatever its status, and `audit-catalog-health.py` reports its
 absence as a violation. Settled 2026-08-24 — before that, two documents disagreed
 and the catalog held exactly one on-demand entry, too few to break the tie.

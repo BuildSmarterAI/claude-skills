@@ -228,8 +228,8 @@ def _audit_runtime(rep, root, entries, runtime_roots, canonical_mtimes):
                 # what a runtime LOADS; mode and targets control what it
                 # RECEIVES. A deployable entry targeting a runtime that is
                 # present on disk must therefore exist there whatever its
-                # status - `on-demand` means installed but not auto-loaded, not
-                # withheld. Settled 2026-08-24; previously split by severity
+                # status - `on-demand` is an exposure intent, not a reason to
+                # withhold the file. Settled 2026-08-24; previously split by severity
                 # because two documents disagreed and the catalog had a single
                 # on-demand entry to test them against.
                 rep.add('runtime_missing',

@@ -154,7 +154,7 @@ class TestRuntimeDrift(AuditTestCase):
         self.assertIn('runtime_missing', rep.violations)
 
     def test_missing_on_demand_skill_is_a_violation(self):
-        """Settled 2026-08-24: `on-demand` IS deployed, just not auto-loaded.
+        """Settled 2026-08-24: `on-demand` IS deployed; exposure is a runtime setting.
 
         The repository documents both readings and they conflict:
           - RELEASING.md: active<->on-demand changes "what is *loaded*, not what

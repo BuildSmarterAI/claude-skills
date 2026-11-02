@@ -127,11 +127,11 @@ re-expressed for this skill"), `copy-editing/references/checklist.md` line 26 (P
 - Catalog status is `on-demand` by intent (the skills overlap the active Copy OS family). The deployer does **not** enforce it: it only checks that the
   status is deliverable. In Claude Code, what is listed or auto-invoked comes from `skillOverrides` settings or `disable-model-invocation` frontmatter
   (editing frontmatter here would break the byte pin, so exposure must be set in runtime settings, owned outside this repository). How Codex exposure
-  is controlled is not established here. Older text in `docs/consolidation/README.md` and `scripts/deploy-skills.py` describes `on-demand` as "not
-  auto-loaded"; read that as the catalog's intent, not as something the deployer performs. A comment in `scripts/deploy-skills.py` (line 51) and the docstring of
-  `tests/test_deploy_plan.py` (line 12) cite "105 skills switched off via `skillOverrides`" in the live runtime; checked 2026-11-01, the user-level settings hold no
-  `skillOverrides` at all (the only match in the files inspected is five unrelated `name-only` entries in the `maxx-seo-agent` project settings), so both skills
-  are fully auto-discoverable today and were before this PR. The supported Claude Code controls are the `skillOverrides` setting (`name-only`,
+  is controlled is not established here. This PR corrects older wording in `docs/consolidation/README.md`, `scripts/deploy-skills.py`,
+  `scripts/audit-catalog-health.py`, `tests/test_deploy_plan.py` and `tests/test_catalog_audit.py` that described `on-demand` as "not auto-loaded" and cited
+  "105 skills switched off via `skillOverrides`" in the live runtime (comments and docstrings only; no logic changed). Checked 2026-11-01, the user-level settings
+  hold no `skillOverrides` at all (the only match in the files inspected is five unrelated `name-only` entries in the `maxx-seo-agent` project settings), so both
+  skills are fully auto-discoverable today and were before this PR. The supported Claude Code controls are the `skillOverrides` setting (`name-only`,
   `user-invocable-only`, `off`) and `disable-model-invocation` in a skill's frontmatter (Claude Code changelog and settings examples, via Context7 on 2026-11-01).
   Only the setting is available here without breaking the byte pin.
 - Copy OS (`copy-os`, `copychief`, `humanizer`, `landing-page-copy` and seven others) is a separate family owned by this catalogue: `CLAUDE_ONLY`, `active`, with a
