@@ -6387,7 +6387,7 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,
-   "notes": "Third-party, MIT (coreyhaines31/marketingskills). The ten skill files are byte-identical to upstream 15b38b5388dfdd17f4ab424e986ccd32c24d5b22 (skills/copywriting); LICENSE.txt is the upstream MIT notice (byte-identical to upstream LICENSE at that revision) so it ships with every deployed copy. Provenance record: docs/third-party/marketingskills-PROVENANCE.md. No Maxx-specific content. Exposure intent is on-demand (trigger scope overlaps the Copy OS family), but the deployer does not enforce exposure: that is a runtime setting (skillOverrides / disable-model-invocation) outside this repository."
+   "notes": "Third-party, MIT (coreyhaines31/marketingskills). The five upstream files in skills/copywriting are byte-identical to upstream 15b38b5388dfdd17f4ab424e986ccd32c24d5b22; LICENSE.txt is the upstream MIT notice (byte-identical to upstream LICENSE at that revision) so it ships with every deployed copy. Provenance, per-file hashes, attribution and open third-party-source items: docs/third-party/marketingskills-PROVENANCE.md. No Maxx-specific content. Exposure intent is on-demand (trigger scope overlaps the Copy OS family), but the deployer does not enforce exposure: in Claude Code that is a runtime setting (skillOverrides / disable-model-invocation) outside this repository; Codex exposure control is not established here."
   },
   {
    "skill": "copy-editing",
@@ -6408,7 +6408,7 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,
-   "notes": "Third-party, MIT (coreyhaines31/marketingskills). The ten skill files are byte-identical to upstream 15b38b5388dfdd17f4ab424e986ccd32c24d5b22 (skills/copy-editing); LICENSE.txt is the upstream MIT notice (byte-identical to upstream LICENSE at that revision) so it ships with every deployed copy. Provenance record: docs/third-party/marketingskills-PROVENANCE.md. No Maxx-specific content. Exposure intent is on-demand (trigger scope overlaps the Copy OS family), but the deployer does not enforce exposure: that is a runtime setting (skillOverrides / disable-model-invocation) outside this repository."
+   "notes": "Third-party, MIT (coreyhaines31/marketingskills). The five upstream files in skills/copy-editing are byte-identical to upstream 15b38b5388dfdd17f4ab424e986ccd32c24d5b22; LICENSE.txt is the upstream MIT notice (byte-identical to upstream LICENSE at that revision) so it ships with every deployed copy. Provenance, per-file hashes, attribution and open third-party-source items: docs/third-party/marketingskills-PROVENANCE.md. No Maxx-specific content. Exposure intent is on-demand (trigger scope overlaps the Copy OS family), but the deployer does not enforce exposure: in Claude Code that is a runtime setting (skillOverrides / disable-model-invocation) outside this repository; Codex exposure control is not established here."
   }
  ],
  "d3": {

@@ -5,13 +5,21 @@ Third-party skills imported from `coreyhaines31/marketingskills` (MIT) at revisi
 ## Reproduce
 
 ```bash
-gh api "repos/coreyhaines31/marketingskills/git/trees/15b38b5388dfdd17f4ab424e986ccd32c24d5b22?recursive=1" --jq '.tree[] | select(.path|startswith("skills/copywriting/") or startswith("skills/copy-editing/") or .path=="LICENSE") | "\(.sha) \(.path)"'
-git hash-object copywriting/SKILL.md   # compare each file with the git blob sha below
+# upstream blob shas for the shipped files (run from anywhere; needs gh)
+gh api "repos/coreyhaines31/marketingskills/git/trees/15b38b5388dfdd17f4ab424e986ccd32c24d5b22?recursive=1" \
+  --jq '.tree[] | select(.type=="blob" and ((.path|startswith("skills/copywriting/")) or (.path|startswith("skills/copy-editing/")) or .path=="LICENSE")) | "\(.sha) \(.path)"'
+# local blob sha (run from the repo root; .gitattributes pins `* -text`, so these are comparable)
+git hash-object copywriting/SKILL.md
+# local sha256, for the second column
+sha256sum copywriting/SKILL.md
 ```
 
-Each skill directory is the upstream skill directory unchanged, plus `LICENSE.txt` (the upstream `LICENSE` file, unchanged).
+Each skill directory is the upstream skill directory unchanged, plus `LICENSE.txt` (the upstream `LICENSE` file, unchanged). It is the first licence
+file inside a skill directory in this catalogue; nothing in `scripts/check-skill-consistency.py` forbids it, and it deploys like any other file.
 The deployer ships only skill directories (`docs/` is never deployed), so the notice must live inside each one.
-`manifests/skills.json` pins `expected_sha256` for `SKILL.md` only; the table below records every file.
+`manifests/skills.json` pins `expected_sha256` for `SKILL.md` only (as it does for every entry); the table below records every file. No automated
+check pins the other files, including `LICENSE.txt`: a later edit would pass CI and is caught only by diff review or by `deploy-skills.py --check`
+on a machine whose runtime still holds the old bytes.
 
 | File | git blob sha1 | sha256 |
 |---|---|---|
@@ -30,23 +38,51 @@ The deployer ships only skill directories (`docs/` is never deployed), so the no
 
 ## Attribution
 
-The upstream files credit Profound's `skills-marketing-library` (MIT) for adapted ideas, "re-expressed" in their own words. Checked 2026-11-01 by measuring
-verbatim overlap between these ten files and the 24 text files of that repository: 21 shared 8-word sequences out of 13,273 (0.16%). Most come from
-generic trigger phrasing in the frontmatter description; 4 short phrases in `copywriting/references/ai-tells.md` match Profound's `humanizer`.
-That is not a substantial portion of the work, and upstream's own credit lines are preserved in the files, so no second licence file is shipped.
-This is an engineering judgement, not legal advice; if the four phrases matter, the remedy is to add Profound's MIT notice next to this one.
+### Profound and Wispr Flow (credited inside the upstream files)
+
+`copywriting/SKILL.md` (line 77) says its diagnosis, gate and decompose-and-lock material is "adapted from Profound's `improved-copywriting` skill
+... (MIT), re-expressed for this skill". `copy-editing/references/checklist.md` (line 26) credits Profound's `improved-copywriting` and Wispr Flow's
+`copy-editing`; `copywriting/references/ai-tells.md` (line 306) credits Profound's `humanizer` and `improved-copywriting` and Wispr Flow's `writing`.
+Wispr Flow's skills are published in the same repository: `github.com/retieedra-profound/skills-marketing-library` (MIT).
+
+Check, run once on 2026-11-01 against that repository at commit `80293f156c27d3f90aedebfb3c27309769b2eec6`: lower-case both sides, strip URLs and
+punctuation, and count 8-word sequences shared between the ten imported files and the 24 `.md`/`.txt`/`.json` files of that repository (this includes
+the `profound/` and `wisprflow/` directories). Result: 21 shared sequences out of 13,273 (0.16%). Most are generic trigger phrasing in the frontmatter
+description; 4 short phrases in `copywriting/references/ai-tells.md` match Profound's `humanizer`. The script is not committed (this catalogue carries no
+application tooling), so the figure is reproducible only from this description.
+
+Judgement: that is not a substantial portion of the work, upstream's own credit lines are preserved in the files, and no second licence file is shipped.
+This is an engineering judgement, not legal advice. If the four phrases matter, the remedy is to add the Profound repository's MIT notice next to this one.
+
+### Open item: other sources named inside the upstream files (not measured, not resolved)
+
+Upstream's MIT grant covers only what upstream owns. These files name third-party sources whose terms are not stated in this repository:
+
+- `copywriting/references/natural-transitions.md` line 5: "Adapted from: University of Manchester Academic Phrasebank (2023), Plain English Campaign".
+- `copy-editing/references/plain-english-alternatives.md` line 5: Plain English Campaign A-Z of Alternative Words (2001), Australian Government Style Manual
+  (2024), plainlanguage.gov.
+- `copywriting/references/ai-tells.md` lines 299-307: Wikipedia "Signs of AI writing" (CC BY-SA), papers and blog posts, stated to be "rewritten in our own words".
+
+No overlap measurement was made for these. The two phrase-list files are the kind of content that could be reproduced verbatim. The owner decides whether
+to accept the risk as is, measure it, or ship without those two reference files (which would end byte-identity with the upstream directory).
 
 ## Exposure and targets
 
-- Catalog status is `on-demand` by intent (the skills overlap the active Copy OS family). The deployer does **not** enforce it: Claude Code decides what is
-  listed or auto-invoked from `skillOverrides` settings or `disable-model-invocation` frontmatter. Editing frontmatter here would break the byte pin, so
-  exposure must be set in runtime settings, owned outside this repository.
+- Catalog status is `on-demand` by intent (the skills overlap the active Copy OS family). The deployer does **not** enforce it: it only checks that the
+  status is deliverable. In Claude Code, what is listed or auto-invoked comes from `skillOverrides` settings or `disable-model-invocation` frontmatter
+  (editing frontmatter here would break the byte pin, so exposure must be set in runtime settings, owned outside this repository). How Codex exposure
+  is controlled is not established here. Older text in `docs/consolidation/README.md` and `scripts/deploy-skills.py` describes `on-demand` as "not
+  auto-loaded"; read that as the catalog's intent, not as something the deployer performs.
 - Targets are both runtimes because both stores already hold these skills (`~/.agents/skills` as real directories, `~/.claude/skills` as links into them,
   and neither is tracked in the installer lock), so a Claude-only target would still write through the link into the Codex store.
 - A project copy of these skills in another repository is independent of this record. A repository that loads project skills only (for example an SDK
-  orchestrator with `settingSources: ["project"]`) needs its own copy.
+  orchestrator with `settingSources: ["project"]`) needs its own copy, and such a copy carries no `LICENSE.txt` unless it is copied from here.
 
 ## Rollback
 
-`deploy-skills.py` never deletes. Roll back by reverting the import and deploying the older bytes (upstream `e6fb742` for copywriting, `158bd3a` for
-copy-editing were the previously installed states); a leftover `LICENSE.txt` is harmless.
+`deploy-skills.py` never deletes and acts only on skills declared in the manifest, so reverting this import does **not** restore older bytes: the
+runtime would keep what was last deployed. To roll back, commit the previous upstream bytes into the two skill directories (upstream `e6fb742` for
+`copywriting` and `158bd3a` for `copy-editing`: on 2026-10-31 and again 2026-11-01 the live runtime `SKILL.md` files were byte-identical to those
+revisions), set each entry's `expected_sha256` to match, and run `deploy-skills.py --deploy --skill <name>`. This was rehearsed in scratch roots:
+the rolled-back tree passed `check-skill-consistency.py` and `deploy-skills.py --check` reported CLEAN. A leftover `LICENSE.txt` is harmless.
+These skills were not in this catalogue before this import, so there is no older catalogue state to deploy from.
