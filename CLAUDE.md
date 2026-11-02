@@ -145,6 +145,35 @@ When you write or edit code samples inside a skill, default to this stack so exa
 - Those two answer *"is the repository correct?"*. Runtime parity is a **separate, local** question — `python scripts/deploy-skills.py --check` compares canonical against your own `~/.claude/skills` and `~/.agents/skills`. It is deliberately **not** in CI: a runner has no runtime stores and would report every declared skill as a false CREATE.
 - Releasing the catalog: see `docs/consolidation/RELEASING.md`.
 
+## New and untracked artifacts
+
+Every file a session creates gets classified before the session ends — **commit-worthy**,
+**generated**, or **noise** — and its disposition reported. Git not tracking a file is not
+evidence that the file is disposable.
+
+- **Commit-worthy** — docs, implementation, tests, migrations, approved fixtures, durable
+  research or specs meant to live here. Add and commit it on the task branch inside its
+  scope; push or open a PR when the workflow calls for it. Finished work does not end a session
+  untracked.
+- **Generated** — reports, analysis output, debug files, exports, screenshots, eval results.
+  Copy anything potentially useful to a path **outside** the repo before any cleanup, and say
+  where the copy landed. Commit one only where repo policy or explicit approval puts it in
+  source control. Disposition unclear ⇒ report it and ask keep-or-delete.
+- **Noise** — accidental files, scratch output, obsolete temporaries with no review value.
+  Confirm it is unneeded, then delete only what this session created.
+
+**Eval-result JSON is evidence.** Preserve a copy outside the repo as soon as it is written and
+record that path. It becomes a fixture, baseline, or golden result only with explicit approval.
+
+**Before claiming done**, run `git status --porcelain` and account for every untracked path your
+work touched: path, classification, disposition (committed / copied outside the repo / left in
+place / deleted), whether `git clean -fd` would destroy it, and any approval still owed.
+Unexplained untracked files mean the session is not complete.
+
+**Cross-lane safety.** `git clean`, `git reset`, `git restore`, and deleting untracked files or
+another worktree's artifacts destroy work you may not own. Run them only against files this
+session created, or with explicit authorization each time.
+
 ## Anti-patterns
 
 - ❌ Creating a new skill when an existing one covers the topic.
