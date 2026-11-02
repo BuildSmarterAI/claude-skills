@@ -2,393 +2,299 @@
 
 Replace complex or pompous words with plain English alternatives.
 
-Source: Plain English Campaign A-Z of Alternative Words (2001), Australian Government Style Manual (2024), plainlanguage.gov
+Source: plainlanguage.gov, "Use simple words and phrases" (U.S. federal government work, public domain; CC0 1.0 dedication in the PlainLanguage.gov repository, commit `fd7694740f19c0ed20ed71c2dd1dc92699e920fa`). Row text is copied from that page. Rows specific to government or military documents, and rows that would weaken, inflate or garble marketing copy, are omitted (see `docs/third-party/marketingskills-PROVENANCE.md`). "(omit)" means the word can usually be cut. Do not apply a swap that changes the meaning: check each one in context.
 
 ---
-
-## Contents
-- A
-- B
-- C
-- D
-- E
-- F
-- G-H
-- I
-- L-M
-- N-O
-- P
-- R
-- S
-- T-U
-- V-Z
-- Phrases to Remove Entirely
 
 ## A
 
-| Complex | Plain Alternative |
-|---------|-------------------|
-| (an) absence of | no, none |
-| abundance | enough, plenty, many |
-| accede to | allow, agree to |
-| accelerate | speed up |
-| accommodate | meet, hold, house |
-| accomplish | do, finish, complete |
-| accordingly | so, therefore |
-| acknowledge | thank you for, confirm |
-| acquire | get, buy, obtain |
-| additional | extra, more |
-| adjacent | next to |
-| advantageous | useful, helpful |
-| advise | tell, say, inform |
-| aforesaid | this, earlier |
-| aggregate | total |
-| alleviate | ease, reduce |
-| allocate | give, share, assign |
-| alternative | other, choice |
-| ameliorate | improve |
+| Instead of | Use |
+|---|---|
+| accompany | go with |
+| accomplish | carry out, do |
+| accorded | given |
+| accordingly | so |
+| accrue | add, gain |
+| accurate | correct, exact, right |
+| additional | added, more, other |
+| adjacent to | next to |
+| advantageous | helpful |
+| adversely impact on | hurt, set back |
+| advise | recommend, tell |
+| afford an opportunity | allow, let |
+| allocate | divide |
 | anticipate | expect |
-| apparent | clear, obvious |
-| appreciable | large, noticeable |
-| appropriate | proper, right, suitable |
-| approximately | about, roughly |
-| ascertain | find out |
-| assistance | help |
-| at the present time | now |
+| a number of | some |
+| apparent | clear, plain |
+| appropriate | (omit), proper, right |
+| approximate | about |
+| as a means of | to |
+| ascertain | find out, learn |
+| as prescribed by | in, under |
+| assist, assistance | aid, help |
+| attain | meet |
 | attempt | try |
-| authorise | allow, let |
-
----
+| at the present time | at present, now |
 
 ## B
 
-| Complex | Plain Alternative |
-|---------|-------------------|
-| belated | late |
-| beneficial | helpful, useful |
-| bestow | give |
-| by means of | by |
-
----
+| Instead of | Use |
+|---|---|
+| by means of | by, with |
 
 ## C
 
-| Complex | Plain Alternative |
-|---------|-------------------|
-| calculate | work out |
-| cease | stop, end |
-| circumvent | avoid, get around |
-| clarification | explanation |
-| commence | start, begin |
-| communicate | tell, talk, write |
-| competent | able |
-| compile | collect, make |
-| complete | fill in, finish |
+| Instead of | Use |
+|---|---|
+| capability | ability |
+| caveat | warning |
+| close proximity | near |
+| commence | begin, start |
+| comply with | follow |
 | component | part |
-| comprise | include, make up |
-| (it is) compulsory | (you) must |
-| conceal | hide |
-| concerning | about |
+| comprise | form, include, make up |
+| concerning | about, on |
 | consequently | so |
-| considerable | large, great, much |
-| constitute | make up, form |
-| consult | ask, talk to |
-| consumption | use |
-| currently | now |
-
----
+| consolidate | combine, join, merge |
+| constitutes | is, forms, makes up |
+| contains | has |
+| convene | meet |
+| currently | (omit), now |
 
 ## D
 
-| Complex | Plain Alternative |
-|---------|-------------------|
-| deduct | take off |
-| deem | treat as, consider |
-| defer | delay, put off |
-| deficiency | lack |
-| delete | remove, cross out |
-| demonstrate | show, prove |
-| denote | show, mean |
-| designate | name, appoint |
-| despatch/dispatch | send |
-| determine | decide, find out |
-| detrimental | harmful |
-| diminish | reduce, lessen |
-| discontinue | stop |
-| disseminate | spread, distribute |
-| documentation | papers, documents |
-| due to the fact that | because |
-| duration | time, length |
-| dwelling | home |
-
----
+| Instead of | Use |
+|---|---|
+| deem | believe, consider, think |
+| delete | cut, drop |
+| depart | leave |
+| designate | appoint, choose, name |
+| desire | want, wish |
+| determine | decide, figure, find |
+| disclose | show |
+| discontinue | drop, stop |
+| disseminate | give, issue, pass, send |
+| due to the fact that | due to, since |
+| during the period | during |
 
 ## E
 
-| Complex | Plain Alternative |
-|---------|-------------------|
-| economical | cheap, good value |
-| eligible | allowed, qualified |
-| elucidate | explain |
-| enable | allow |
+| Instead of | Use |
+|---|---|
+| effect modifications | make changes |
+| elect | choose, pick |
+| eliminate | cut, drop, end |
+| employ | use |
 | encounter | meet |
-| endeavour | try |
-| enquire | ask |
+| endeavor | try |
 | ensure | make sure |
-| entitlement | right |
-| envisage | expect |
-| equivalent | equal, the same |
-| erroneous | wrong |
-| establish | set up, show |
-| evaluate | assess, test |
-| excessive | too much |
-| exclusively | only |
-| exempt | free from |
-| expedite | speed up |
-| expenditure | spending |
-| expire | run out |
-
----
+| enumerate | count |
+| equitable | fair |
+| evidenced | showed |
+| evident | clear |
+| exhibit | show |
+| expedite | hasten, speed up |
+| expeditious | fast, quick |
+| expend | spend |
+| expiration | end |
 
 ## F
 
-| Complex | Plain Alternative |
-|---------|-------------------|
-| fabricate | make |
-| facilitate | help, make possible |
-| finalise | finish, complete |
-| following | after |
-| for the purpose of | to, for |
-| for the reason that | because |
-| forthwith | now, at once |
+| Instead of | Use |
+|---|---|
+| facilitate | ease, help |
+| failed to | didn't |
+| feasible | can be done, workable |
+| finalize | complete, finish |
+| for a period of | for |
+| forfeit | give up, lose |
 | forward | send |
 | frequently | often |
-| furnish | give, provide |
-| furthermore | also, and |
+| function | act, role, work |
+| furnish | give, send |
 
----
+## H
 
-## G-H
-
-| Complex | Plain Alternative |
-|---------|-------------------|
-| generate | produce, create |
-| henceforth | from now on |
-| hitherto | until now |
-
----
+| Instead of | Use |
+|---|---|
+| has a requirement for | needs |
+| herein | here |
+| heretofore | until now |
+| herewith | below, here |
+| however | but |
 
 ## I
 
-| Complex | Plain Alternative |
-|---------|-------------------|
-| if and when | if, when |
-| illustrate | show |
-| immediately | at once, now |
-| implement | carry out, do |
-| imply | suggest |
-| in accordance with | under, following |
-| in addition to | and, also |
-| in conjunction with | with |
-| in excess of | more than |
-| in lieu of | instead of |
-| in order to | to |
-| in receipt of | receive |
-| in relation to | about |
-| in respect of | about, for |
-| in the event of | if |
-| in the majority of instances | most, usually |
-| in the near future | soon |
-| in view of the fact that | because |
+| Instead of | Use |
+|---|---|
+| identical | same |
+| identify | find, name, show |
+| immediately | at once |
+| impacted | affected, changed |
+| implement | carry out, start |
+| in accordance with | by, following, per, under |
+| in addition | also, besides, too |
+| in an effort to | to |
+| inasmuch as | since |
+| in a timely manner | on time, promptly |
 | inception | start |
-| indicate | show, suggest |
-| inform | tell |
-| initiate | start, begin |
-| insert | put in |
-| instances | cases |
-| irrespective of | despite |
-| issue | give, send |
+| incumbent upon | must |
+| indicate | show, write down |
+| indication | sign |
+| initial | first |
+| initiate | start |
+| in lieu of | instead |
+| in order that | for, so |
+| in order to | to |
+| in regard to | about, concerning, on |
+| in relation to | about, with, to |
+| inter alia | (omit) |
+| interface | meet, work with |
+| interpose no objection | don't object |
+| in the amount of | for |
+| in the event of | if |
+| in the near future | shortly, soon |
+| in the process of | (omit) |
+| in view of | since |
+| in view of the above | so |
+| is applicable to | applies to |
+| is authorized to | may |
+| is in consonance with | agrees with, follows |
+| is responsible for | (omit) handles |
+| it appears | seems |
+| it is essential | must, need to |
+| it is requested | please, we request, I request |
 
----
+## M
 
-## L-M
-
-| Complex | Plain Alternative |
-|---------|-------------------|
-| (a) large number of | many |
-| liaise with | work with, talk to |
-| locality | place, area |
-| locate | find |
+| Instead of | Use |
+|---|---|
 | magnitude | size |
-| (it is) mandatory | (you) must |
-| manner | way |
-| modification | change |
-| moreover | also, and |
+| maintain | keep, support |
+| maximum | greatest, largest, most |
+| methodology | method |
+| minimum | least, smallest |
+| modify | change |
+| monitor | check, watch |
 
----
+## N
 
-## N-O
-
-| Complex | Plain Alternative |
-|---------|-------------------|
-| negligible | small |
-| nevertheless | but, however |
-| notify | tell |
-| notwithstanding | despite, even if |
+| Instead of | Use |
+|---|---|
+| necessitate | cause, need |
+| notify | let know, tell |
+| not later than 10 May | by 10 May, before 11 May |
 | numerous | many |
-| objective | aim, goal |
-| (it is) obligatory | (you) must |
-| obtain | get |
-| occasioned by | caused by |
-| on behalf of | for |
-| on numerous occasions | often |
-| on receipt of | when you get |
-| on the grounds that | because |
-| operate | work, run |
-| optimum | best |
-| option | choice |
-| otherwise | or |
-| outstanding | unpaid |
-| owing to | because |
 
----
+## O
+
+| Instead of | Use |
+|---|---|
+| objective | aim, goal |
+| obligate | bind, compel |
+| observe | see |
+| on a regular basis | (omit) |
+| operate | run, use, work |
+| optimum | best, greatest, most |
+| option | choice, way |
 
 ## P
 
-| Complex | Plain Alternative |
-|---------|-------------------|
-| partially | partly |
+| Instead of | Use |
+|---|---|
+| parameters | limits |
 | participate | take part |
-| particulars | details |
-| per annum | a year |
 | perform | do |
-| permit | let, allow |
-| personnel | staff, people |
-| peruse | read |
+| permit | let |
+| pertaining to | about, of, on |
+| portion | part |
 | possess | have, own |
-| practically | almost |
-| predominant | main |
-| prescribe | set |
-| preserve | keep |
-| previous | earlier, before |
-| principal | main |
+| practicable | practical |
+| preclude | prevent |
+| previous | earlier |
+| previously | before |
 | prior to | before |
-| proceed | go ahead |
-| procure | get |
-| prohibit | ban, stop |
-| promptly | quickly |
-| provide | give |
+| proceed | do, go ahead, try |
+| proficiency | skill |
+| promulgate | issue, publish |
+| provide | give, offer, say |
 | provided that | if |
-| provisions | rules, terms |
-| proximity | nearness |
+| provides guidance for | guides |
 | purchase | buy |
-| pursuant to | under |
-
----
+| pursuant to | by, following, per, under |
 
 ## R
 
-| Complex | Plain Alternative |
-|---------|-------------------|
-| reconsider | think again |
-| reduction | cut |
-| referred to as | called |
-| regarding | about |
-| reimburse | repay |
-| reiterate | repeat |
-| relating to | about |
+| Instead of | Use |
+|---|---|
+| reflect | say, show |
+| regarding | about, of, on |
+| relative to | about, on |
+| relocate | move |
 | remain | stay |
 | remainder | rest |
-| remuneration | pay |
-| render | make, give |
-| represent | stand for |
+| remuneration | pay, payment |
+| render | give, make |
+| represents | is |
 | request | ask |
-| require | need |
-| residence | home |
+| require | must, need |
+| requirement | need |
+| reside | live |
 | retain | keep |
-| revised | changed, new |
-
----
 
 ## S
 
-| Complex | Plain Alternative |
-|---------|-------------------|
-| scrutinise | examine, check |
-| select | choose |
-| solely | only |
-| specified | given, stated |
-| state | say |
-| statutory | legal, by law |
-| subject to | depending on |
-| submit | send, give |
-| subsequent to | after |
-| subsequently | later |
+| Instead of | Use |
+|---|---|
+| selection | choice |
+| set forth in | in |
+| similar to | like |
+| solicit | ask for, request |
+| state-of-the-art | latest |
+| submit | give, send |
+| subsequent | later, next |
+| subsequently | after, later, then |
 | substantial | large, much |
+| successfully complete | complete, pass |
 | sufficient | enough |
-| supplement | add to |
-| supplementary | extra |
 
----
+## T
 
-## T-U
-
-| Complex | Plain Alternative |
-|---------|-------------------|
+| Instead of | Use |
+|---|---|
+| take action to | (omit) |
 | terminate | end, stop |
-| thereafter | then |
-| thereby | by this |
-| thus | so |
-| to date | so far |
-| transfer | move |
+| the month of | (omit) |
+| therefore | so |
+| therein | there |
+| thereof | its, their |
+| the use of | (omit) |
+| timely | prompt |
+| time period | (either one) |
 | transmit | send |
-| ultimately | in the end |
-| undertake | agree, do |
-| uniform | same |
-| utilise | use |
+| type | (omit) |
 
----
+## U
 
-## V-Z
+| Instead of | Use |
+|---|---|
+| under the provisions of | under |
+| until such time as | until |
+| utilize, utilization | use |
 
-| Complex | Plain Alternative |
-|---------|-------------------|
-| variation | change |
-| virtually | almost |
-| visualise | imagine, see |
-| ways and means | ways |
-| whatsoever | any |
-| with a view to | to |
-| with effect from | from |
+## V
+
+| Instead of | Use |
+|---|---|
+| validate | confirm |
+| viable | practical, workable |
+
+## W
+
+| Instead of | Use |
+|---|---|
+| whereas | because, since |
 | with reference to | about |
-| with regard to | about |
-| with respect to | about |
-| zone | area |
+| with the exception of | except for |
+| witnessed | saw |
 
----
-
-## Phrases to Remove Entirely
-
-These phrases often add nothing. Delete them:
-
-- a total of
-- absolutely
-- actually
-- all things being equal
-- as a matter of fact
-- at the end of the day
-- at this moment in time
-- basically
-- currently (when "now" or nothing works)
-- I am of the opinion that (use: I think)
-- in due course (use: soon, or say when)
-- in the final analysis
-- it should be understood
-- last but not least
-- obviously
-- of course
-- quite
-- really
-- the fact of the matter is
-- to all intents and purposes
-- very

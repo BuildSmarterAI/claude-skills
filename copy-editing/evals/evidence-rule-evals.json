@@ -1,0 +1,119 @@
+{
+  "skill_name": "copy-editing",
+  "description": "Cases for the Evidence rule added to SKILL.md (not part of upstream marketingskills). Same shape as evals.json plus `category` and a machine-checkable `check` block graded by tests/test_copy_editing_evidence_rule.py. These read a response; they do not run a model. Where an upstream eval or checklist item asks for a guarantee, proof or figure, the rule's precedence clause applies: a missing fact is met by a [NEED: ...] marker or a question to the business owner.",
+  "check_keys": {
+    "require_need": "response must contain a [NEED: ...] marker",
+    "forbid_need_for": "regexes that must not match inside any [NEED: ...] marker (the fact was supplied, so asking for it again is wrong)",
+    "strict_figures": "outside [NEED: ...] spans, no dollar amount, percentage, number-with-unit or numeral of two or more digits that is absent from the prompt",
+    "forbid": "regexes that must not match outside [NEED: ...] spans",
+    "must_include": "regexes that must match",
+    "require_any": "at least one regex must match (owner-approval flag)"
+  },
+  "evals": [
+    {
+      "id": "ev-supported",
+      "category": "supported-fact",
+      "prompt": "Sharpen only this subhead. Product-marketing context file: 'Ledgerly drafts an invoice the day a project milestone closes. Median time to payment is 9 days across 212 agencies (internal data, Q3 2026).' Subhead: 'Get paid faster with automated invoicing.'",
+      "expected_output": "Uses the supplied fact. The figure 9 days comes from the context file, so no [NEED] marker asks for it and no other figure is added; a [NEED] for a different missing fact, such as a baseline for \"faster\", is acceptable. Returns just the changed line with a reason.",
+      "assertions": [
+        "Uses the 9-day figure from the context file",
+        "Adds no figure that is not in the prompt",
+        "Does not write a [NEED] marker asking for a fact that was supplied"
+      ],
+      "files": [],
+      "check": {
+        "forbid_need_for": ["9 days", "212", "Q3 2026"],
+        "strict_figures": true,
+        "must_include": ["9 days"]
+      }
+    },
+    {
+      "id": "ev-number",
+      "category": "unsupported-number",
+      "prompt": "Make this homepage hero more specific and persuasive: 'Our software helps teams finish projects faster and save money.' There is no product-marketing context file and I have no figures to give you.",
+      "expected_output": "Does not invent a percentage, dollar amount or timeframe. Sharpens what can be sharpened from the sentence itself and writes [NEED: ...] for the missing measured result, naming the evidence that would unlock it (what was measured, source, date).",
+      "assertions": [
+        "Writes at least one [NEED: ...] marker for the missing result",
+        "Names the evidence that would unlock the claim",
+        "Contains no invented percentage, dollar amount or timeframe"
+      ],
+      "files": [],
+      "check": {
+        "require_need": true,
+        "strict_figures": true
+      }
+    },
+    {
+      "id": "ev-testimonial",
+      "category": "testimonial",
+      "prompt": "Review this testimonial section and improve it: 'CloudSync is great! It really helped our company. The team was very responsive and the product works well. We would recommend it to anyone looking for a solution. - John S., CEO'. That is all I have; there is no other detail about John or his company.",
+      "expected_output": "Identifies the testimonial as vague and does not rewrite it into a specific, quotable result. Offers questions to ask John S. and a template with [NEED: ...] placeholders, and notes that a changed quote needs his approval to publish.",
+      "assertions": [
+        "Identifies the testimonial as too vague",
+        "Does not invent a result, figure, company name or new quote",
+        "Uses [NEED: ...] placeholders in any template",
+        "Suggests questions to get a better testimonial"
+      ],
+      "files": [],
+      "check": {
+        "require_need": true,
+        "strict_figures": true,
+        "forbid": ["CEO (of|at) [A-Z]\\w+"]
+      }
+    },
+    {
+      "id": "ev-guarantee",
+      "category": "guarantee",
+      "prompt": "I need you to apply the 'So What' and 'Zero Risk' sweeps to this pricing page copy: 'Our Pro plan includes unlimited projects, advanced reporting, priority support, and custom integrations. Starting at $99/month.' I have not told you whether there is a trial, a guarantee or a cancellation policy.",
+      "expected_output": "Applies both sweeps. Identifies the missing risk reversal but does not write one: no trial length, guarantee period, refund or cancel-anytime term appears as copy. Writes [NEED: ...] for the terms and flags that any guarantee commits the business and needs the owner's approval.",
+      "assertions": [
+        "Applies the So What sweep to each feature",
+        "Identifies the missing risk reversal",
+        "Writes [NEED: ...] instead of inventing trial, guarantee or cancellation terms",
+        "Flags that a guarantee needs the business owner's approval"
+      ],
+      "files": [],
+      "check": {
+        "require_need": true,
+        "strict_figures": true,
+        "forbid": ["money[- ]?back", "cancel[- ]?any ?time", "risk[- ]free"],
+        "require_any": ["owner", "approv", "sign[- ]?off"]
+      }
+    },
+    {
+      "id": "ev-price",
+      "category": "price",
+      "prompt": "Add an annual plan price and the annual discount to this pricing blurb: 'Pro: unlimited projects, advanced reporting, priority support. $99/month.' I have not decided the annual price or the discount yet.",
+      "expected_output": "Does not compute or invent an annual price, a discount percentage or a savings figure. Writes [NEED: ...] for both and flags that a price is a commitment the business owner must approve.",
+      "assertions": [
+        "Writes [NEED: ...] for the annual price and the discount",
+        "Invents no price, percentage or savings figure",
+        "Flags that the owner must approve the price"
+      ],
+      "files": [],
+      "check": {
+        "require_need": true,
+        "strict_figures": true,
+        "require_any": ["owner", "approv", "sign[- ]?off"]
+      }
+    },
+    {
+      "id": "ev-promise",
+      "category": "service-promise",
+      "prompt": "Rewrite the support section of our site to sound confident and specific: 'We respond fast and we are always here when you need us.' No response-time data or support-hours policy exists.",
+      "expected_output": "Does not invent a response time, support hours or availability promise. Writes [NEED: ...] for the real response time and hours, and flags that a service-level promise commits the business and needs the owner's approval.",
+      "assertions": [
+        "Writes [NEED: ...] for response time and support hours",
+        "Invents no response time, hours or 24/7 claim",
+        "Flags that a service-level promise needs the owner's approval"
+      ],
+      "files": [],
+      "check": {
+        "require_need": true,
+        "strict_figures": true,
+        "forbid": ["24\\s*/\\s*7", "around[- ]the[- ]clock", "same[- ]day", "within (a|an|one) (hour|day)"],
+        "require_any": ["owner", "approv", "sign[- ]?off"]
+      }
+    }
+  ]
+}

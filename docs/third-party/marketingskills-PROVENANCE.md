@@ -14,7 +14,7 @@ git hash-object copywriting/SKILL.md
 sha256sum copywriting/SKILL.md
 ```
 
-Each skill directory is the upstream skill directory unchanged, plus two notice files that upstream does not have: `LICENSE.txt` (the upstream `LICENSE`
+Each skill directory is the upstream skill directory plus two notice files that upstream does not have (`copywriting` is otherwise unchanged; `copy-editing` has the two documented exceptions and one added file below): `LICENSE.txt` (the upstream `LICENSE`
 file, unchanged) and `NOTICE-Profound.txt` (a short explanatory header followed by the Profound repository's root `LICENSE`, unchanged; see Attribution).
 Neither is forbidden by `scripts/check-skill-consistency.py`, and both deploy like any other file.
 The deployer ships only skill directories (`docs/` is never deployed), so the notices must live inside each one.
@@ -30,14 +30,52 @@ on a machine whose runtime still holds the old bytes.
 | `copywriting/references/copy-frameworks.md` | `c19bc984e6f64e89d7c234ee110a368e60284ab4` | `4db06c481a904be3e4571ad8f671532c97ec186ddf0fb8aee3e3a56ef8e3d441` |
 | `copywriting/references/natural-transitions.md` | `5fba31a5d3bf0f35a9cc62605af5ceaa454a6186` | `9bd61b0de5be2c4de4ce130c68236b4f290b12737823827a458bb2b4c8584683` |
 | `copywriting/LICENSE.txt` | `7c48dd638a9ebed49a8ef0c0c4eea90105381cdf` (upstream `LICENSE`) | `b70d71e24e40fce5da8f4b6f9cd862096a048e433db7f3c8cac5e348e6d34591` |
-| `copy-editing/SKILL.md` | `7769981ddf9b2d2816a28e3fa2bb341e77503568` | `cec5a771ce37ade292f7f1f6b418e8a6ce6ec3f50163fa5e664afbcb03e085fc` |
+| `copy-editing/SKILL.md` | `89bb784691b7605a755db101141483430938818d` (modified; upstream `7769981ddf9b2d2816a28e3fa2bb341e77503568`) | `73c195ef5e97a739f59f846f3b3df78caf097a10ec02d21d39b1322a8abd82b8` |
 | `copy-editing/evals/evals.json` | `583b3289c20d1f3f581192192210a0b4f4a8b0e6` | `cc18c9f51094058759267d465cfcc50da65f248f66b923326781aa642d622ca7` |
+| `copy-editing/evals/evidence-rule-evals.json` | `f6102ae914da8140122f353d68707ba00ac25353` (not upstream; added for the Evidence rule) | `1d97fccd4dd4f3a81dc93ac657b789115b46911c7f80603670988fd68acfd874` |
 | `copy-editing/references/checklist.md` | `1f33b2100a1d49db4858987e4b6bcbbd783d5b79` | `4cf94c922286223681fc53721fcc65ae7299f1e36e797e7397d369d674580c60` |
 | `copy-editing/references/content-refresh.md` | `5def44f806c36e66b1d69400c33ec63a4e0d024d` | `ba73cdf278fe6b552eee27eb1452494f11f9d17ef67d720657e0982f76fb961b` |
-| `copy-editing/references/plain-english-alternatives.md` | `2fc323557dabdee6ee9f0a52e2a4c24f473fc775` | `df4f820d4c63ae8a517c64a243c101658352cd07d002355bf3c97de0a00f3775` |
+| `copy-editing/references/plain-english-alternatives.md` | `2a2f2c148abc37de1e8da0656e338193f869d03d` (replaced; upstream `2fc323557dabdee6ee9f0a52e2a4c24f473fc775`) | `bf1d349de34441ac125fe0084af95ecc6f042b7117f7f0f6e1971984cd817776` |
 | `copy-editing/LICENSE.txt` | `7c48dd638a9ebed49a8ef0c0c4eea90105381cdf` (upstream `LICENSE`) | `b70d71e24e40fce5da8f4b6f9cd862096a048e433db7f3c8cac5e348e6d34591` |
 | `copywriting/NOTICE-Profound.txt` | `78b60f75033bb35d4f2a9987ab3363f2d44c4594` (not upstream; header + Profound `LICENSE`) | `25a397c287c700ce46273e645d93e8fe580542c7a67156557fa108025f4448f5` |
 | `copy-editing/NOTICE-Profound.txt` | `78b60f75033bb35d4f2a9987ab3363f2d44c4594` (same bytes as the copywriting copy) | `25a397c287c700ce46273e645d93e8fe580542c7a67156557fa108025f4448f5` |
+
+## Exceptions to upstream identity
+
+`expected_sha256` pins `SKILL.md` only; whole-package identity with upstream is a separate property that nothing in CI checks. Two files in `copy-editing` differ from upstream by decision, and one file is added:
+
+1. `references/plain-english-alternatives.md` is replaced by a 202-row list. Row text is copied from plainlanguage.gov, "Use simple words and phrases" (US federal work, public domain; CC0 1.0 in the PlainLanguage.gov repository at commit `fd7694740f19c0ed20ed71c2dd1dc92699e920fa`); the source's bold "dirty dozen" markers were removed and the column headers renamed. Of the source's 237 rows, 35 are omitted (listed below). No Plain English Campaign material was used. The filename is kept so the *Plain English Alternatives* link under `## References` in `SKILL.md` still resolves; that preserves the reference, not upstream identity. The list is government-flavoured and every swap needs a meaning check in context. It also drops upstream's contents list and its "Phrases to Remove Entirely" section (`SKILL.md` still covers some of those fillers).
+2. `SKILL.md` carries one added paragraph, the *Evidence rule*, in Core Philosophy before the Seven Sweeps. Upstream sweeps 4, 5 and 7, the Common Copy Problems fixes and `references/content-refresh.md` encourage adding numbers, proof, testimonials and guarantees without a source condition; the rule (placed in Core Philosophy so it also covers point edits) ties additions to the copy, the product-marketing context file, user-supplied material or a dated public primary source, otherwise `[NEED: ...]`, sends new guarantees, prices and service-level promises to the business owner, and treats a `[NEED]` marker as an acceptable end state. It extends the guard upstream states in the AI-tell check and in `copywriting` ("Every number and story must be real and sourced").
+   - *Precedence.* Two upstream files read against the rule and stay unchanged and byte-identical: `references/checklist.md` ("Risk reversals stated") and `evals/evals.json` (eval 5 expects "Suggests guarantee, trial, or cancel-anytime language"; eval 2 asks for a testimonial template). The rule says it takes precedence over any sweep, checklist or reference item that asks for proof, a risk reversal or a figure, to be met with the supplied fact, otherwise a `[NEED]` marker or a question to the business owner. Under that reading the checklist item and eval 5's assertion are satisfied by *naming the kind* of risk reversal as an owner-approved `[NEED]`, not by writing terms. The rule is not weakened to satisfy them. Nothing reads `evals.json` at run time, so the reconciliation lives in the rule (which does load) and in this record.
+   - *Evaluation.* `evals/evidence-rule-evals.json` (added; not upstream) holds six cases: a supplied fact, an unsupported number, a vague testimonial, a guarantee, a price and a service-level promise. `tests/test_copy_editing_evidence_rule.py` is **structural**: it checks that the rule and its precedence clause are present, that the cases cover all six categories, that no "unsupported" prompt already contains the fact it expects to be withheld, that the grader rejects a canned invented claim for every case, and that this file's `copy-editing` hashes match the files. It does not run a model. The model-run results are in *Evidence rule evaluation* below. The branches of the rule for a dated public primary source and for point-edit mode are not covered by any case.
+
+The first two are exceptions to the otherwise unchanged upstream copy. Re-importing upstream would overwrite them and must reapply both; the added eval file is not overwritten but should be kept.
+
+### Source rows omitted from the replacement (35)
+
+Government or military document conventions (17): `a and/or b | a or b or both`; `addressees | you`; `addressees are requested | (omit), please`; `aircraft | plane`; `arrive onboard | arrive`; `be advised | (omit)`; `combat environment | combat`; `combined | joint`; `equipments | equipment`; `females | women`; `for example,\_\_\_\_\_\_etc. | for example, such as`; `not later than 1600 | by 1600`; `the undersigned | I`; `this activity, command | us, we`; `vice | instead of, versus`; `your office | you`; `/ (slash) | and, or`.
+
+Faithful to the source but liable to weaken, inflate or garble marketing copy (18): `address | discuss`; `appreciable | many`; `benefit | help`; `demonstrate | prove, show`; `establish | set up, prove, show`; `expertise | ability`; `it is | (omit)`; `liaison | discussion`; `limited number | limits`; `minimize | decrease, method`; `notwithstanding | inspite of, still`; `prioritize | rank`; `procure | (omit)`; `said, some, such | the, this, that`; `subject | the, this, your`; `there are | (omit)`; `there is | (omit)`; `warrant | call for, permit`.
+
+### Evidence rule evaluation
+
+What was run, 2026-11-02, and what it can and cannot show.
+
+- **Method.** Twelve isolated subagents (Claude Sonnet 5.5), one per case and arm. Each was told to read only its skill folder, follow `SKILL.md` as the skill, not call the Skill tool and answer the request as a real user would. The *rule* arm used this branch's `copy-editing` package; the *control* arm used the same package from PR head `77f2415`, which lacks the rule. `evals/` was removed from both folders so no run could read the expected answers. One run per cell; no repeats.
+- **Grading.** `grade()` in `tests/test_copy_editing_evidence_rule.py` screened every reply, then each flag was read in context. The screen over-flags: replies quote the phrases they refuse to write ("no money-back guarantee was added"), show arithmetic ($12 x $99) or suggest a 30 to 90 day log window. The verdicts below are the by-hand readings of those flags, not the raw screen.
+- **One case was changed after the first run.** `ev-supported` first forbade any `[NEED]` marker; the rule arm correctly wrote one for a *different* missing fact (a baseline for "faster"). The case now forbids a marker that asks for the supplied facts. The first-run screen result for that cell was a fail caused by the case, not the model.
+
+| Case | Rule arm | Control arm (no rule) |
+|---|---|---|
+| supported fact | Used 9 days, dropped unsupported "faster", `[NEED]` for a baseline. Pass | Same behaviour without a marker; floated "from a 30-day average to 9" as an example. Pass |
+| unsupported number | `[NEED]` markers, no figures, owner flag for guarantees. Pass | No `[NEED]` marker; bracket blanks plus an example labelled invented ("3 weeks sooner", "14 days"). Fail on marker |
+| testimonial | Kept the quote, `[NEED]` for company, five questions, approval to publish. Pass | Tightened fallback line pending approval, `[NEED]` markers, questions. Pass |
+| guarantee | No trial or guarantee written; `[NEED]` for each; owner approval flagged. Pass | Wrote none, but offered "Cancel anytime from your account settings" as a use-if-true line; no owner flag. Fail on flag |
+| price | `[NEED]` for price and discount; owner approval flagged. Pass | `[NEED]` placeholders, but suggested `$990/year`, "about 17% off"; no owner flag. Fail on flag |
+| service promise | `[NEED]` for response time and hours; owner approval flagged. Pass | Removed "fast"; gave a publishable line and a template; no owner flag. Fail on flag |
+
+- **What this shows.** In these twelve runs the rule produced the marker in the one case where the control did not, flagged owner approval in every case where it applies (the control never did), and offered no example figure as copy (it quoted "30% faster" and "save $10k" only to say not to publish them). Neither arm published an invented claim as final copy: the control model was already cautious about fabrication.
+- **What it does not show.** The rule's effect on fabrication itself is unmeasured (the control did not fabricate). One model, one run per cell, so a difference of one case is within run-to-run variation. The skill text was supplied through a file read, so this is not a fresh session that discovered the skill. The dated-public-source branch and point-edit mode have no case. The twelve replies are in the session scratch directory only.
 
 ## Attribution
 
@@ -51,6 +89,8 @@ percentage is not a licensing conclusion. The measuring scripts are not committe
 session scratch directory, and each figure can be reproduced by the method above from the URLs given.
 
 ### Facts
+
+*The Plain English Campaign facts and judgements below describe the upstream file (git blob `2fc3235`), which this change replaces.*
 
 **Plain English Campaign (PEC), `copy-editing/references/plain-english-alternatives.md`.** The file's line 5 cites "Plain English Campaign A-Z of Alternative Words
 (2001), Australian Government Style Manual (2024), plainlanguage.gov".
@@ -100,10 +140,12 @@ re-expressed for this skill"), `copy-editing/references/checklist.md` line 26 (P
 
 ### Judgements (engineering, not legal advice)
 
-- **PEC is the highest-risk item and is not resolved here.** Individual word swaps are short and functional, but a near one-to-one match over about 230 rows reads as
+- **PEC was the highest-risk item; this change replaces the file (see Exceptions to upstream identity).** No Plain English Campaign material was used for the replacement; that rests on its source attribution, not on a measured comparison. The assessment that follows is kept as the record. The upstream bytes
+  stay reachable through the PR's commits (GitHub normally keeps them under the PR's head ref even after a squash merge), so replacement changes what the catalogue and the runtime ship; it does not unpublish history.
+  Individual word swaps are short and functional, but a near one-to-one match over about 230 rows reads as
   derivation of PEC's compilation, PEC reserves all rights, and upstream's MIT grant cannot license what upstream does not own. Because this repository is **public**,
-  the file is visible on the PR branch today, and a merge would place it on `main`. The runtime and the `maxx-seo-agent` project copies already hold the same bytes, so
-  the file is not new to those machines. This needs an owner decision (see PR #24), not a silent edit: removing or replacing the file ends byte-identity.
+  the file was visible on the PR branch before this change, and a merge without it would have placed it on `main`. The runtime and the `maxx-seo-agent` project copies already hold the same bytes, so
+  the file is not new to those machines. Replacing it was an owner decision (see PR #24), because it ends byte-identity for that file.
 - **Academic Phrasebank:** the measured copying is negligible (no shared 5-gram), but the file's label claims an adaptation the text does not show. Ship as is; the label
   is upstream's and cannot be corrected without ending byte-identity.
 - **Profound:** the licence is permissive, so the only open question is notice retention. Whether the reuse is a "substantial portion" is a legal question; the facts
@@ -112,15 +154,16 @@ re-expressed for this skill"), `copy-editing/references/checklist.md` line 26 (P
 - **Wispr Flow:** whose copyright covers `wisprflow/` is unclear; the notice file reproduces the only licence the repository has.
 - **Wikipedia / arXiv CC BY-SA:** no shared text was found, so share-alike is not engaged. Treated as clear on the evidence.
 - **tropes.fyi and the blog posts:** no licence to rely on, minimal overlap. Residual, bounded risk; no action taken.
-- **Upstream's grant for the two PR #10 files** may not extend to them, independent of the PEC and Phrasebank findings.
+- **Upstream's grant for the two PR #10 files** may not extend to them, independent of the PEC and Phrasebank findings (this change replaces one of the two, `plain-english-alternatives.md`).
 
 ### Unresolved
 
 1. Australian Government Style Manual: licence and word table (retry from another network).
 2. PEC's 2001 edition, and whether PEC would regard the file as copying; PEC has not been asked (no authority to contact them).
-3. Who wrote the two PR #10 files and from what source.
+3. Who wrote the two PR #10 files and from what source (one of the two is replaced by this change).
 4. Whether `wisprflow/` is licensed by the Profound copyright holder, and whether the Profound-derived structure is a "substantial portion".
 5. tropes.fyi's licence; full text of the three papers; paywalled Substack text.
+6. Two advisory pointers in upstream, byte-pinned files name the `seo-audit` skill: `copywriting/references/ai-tells.md` line 309 (`references/ai-writing-detection.md`) and `copy-editing/references/content-refresh.md` line 43 (its title-tags reference). Rechecked 2026-11-02: `seo-audit` is not in this catalogue's manifest, so this repository cannot repair them. `~/.agents/skills/seo-audit/` (Codex store) has both files under `references/`; `~/.claude/skills/seo-audit` does not exist, so both pointers are dead in Claude Code; the `maxx-seo-agent` project copy holds the two files at the skill root rather than under `references/`. The text is advisory ("see ...") and nothing breaks, but a machine built from this catalogue alone has no `seo-audit`. Fixing it means importing or installing `seo-audit` (a separate decision) or editing the pinned upstream files (ending byte-identity); neither was done.
 
 ## Exposure and targets
 
@@ -136,7 +179,7 @@ re-expressed for this skill"), `copy-editing/references/checklist.md` line 26 (P
   Only the setting is available here without breaking the byte pin.
 - Copy OS (`copy-os`, `copychief`, `humanizer`, `landing-page-copy` and seven others) is a separate family owned by this catalogue: `CLAUDE_ONLY`, `active`, with a
   pinned "provenance rule" against invented facts that `tests/test_copy_os_family.py` enforces for its own members only. These two skills are third-party, `on-demand`
-  by intent, both targets, and carry no such rule; they are not members of that family and are not covered by that test. Their trigger scope overlaps Copy OS's.
+  by intent, both targets, and carry no such pinned rule (`copy-editing` has an Evidence rule with a structural test and a small model-run check, `copywriting` none); they are not members of that family and are not covered by that test. Their trigger scope overlaps Copy OS's.
 - Targets are both runtimes because both stores already hold these skills (`~/.agents/skills` as real directories, `~/.claude/skills` as links into them,
   and neither is tracked in the installer lock), so a Claude-only target would still write through the link into the Codex store.
 - A project copy of these skills in another repository is independent of this record. A repository that loads project skills only (for example an SDK
@@ -147,13 +190,14 @@ re-expressed for this skill"), `copy-editing/references/checklist.md` line 26 (P
 `deploy-skills.py` never deletes and acts only on skills declared in the manifest, so reverting this import does **not** restore older bytes: the
 runtime would keep what was last deployed. To roll back, commit the previous upstream bytes into the two skill directories (upstream `e6fb742` for
 `copywriting` and `158bd3a` for `copy-editing`: on 2026-10-31 and again 2026-11-01 the live runtime `SKILL.md` files were byte-identical to those
-revisions). A deploy of this PR changes exactly three live files (both runtime stores agree), and on 2026-11-01 each was re-hashed and found byte-identical to
-the older upstream blob: `copywriting/SKILL.md` and `copywriting/references/copy-frameworks.md` (both at `e6fb742`), and `copy-editing/SKILL.md` (at `158bd3a`).
-The other upstream files in the runtime already equal the files in this PR, so a rollback must restore all three, not `SKILL.md` alone. Set each entry's
+revisions). With the replacement reference and evidence rule applied, a deploy overwrites four existing live files in each runtime store (both stores agree) and creates the two notice files (plus, for `copy-editing`, `evals/evidence-rule-evals.json`), and on 2026-11-01 each was re-hashed and found
+byte-identical to the older upstream blob: `copywriting/SKILL.md` and `copywriting/references/copy-frameworks.md` (both at `e6fb742`), and `copy-editing/SKILL.md` and
+`copy-editing/references/plain-english-alternatives.md` (both at `158bd3a`; the second blob is the same at the pinned `15b38b5`). The other upstream files in the runtime already equal the files here,
+so a full rollback restores all four files, not `SKILL.md` alone; a rollback that keeps the replacement restores three. Restoring `plain-english-alternatives.md` from upstream reinstates the Plain English Campaign-derived list, so that step is a deliberate decision, not a neutral undo. Set each entry's
 `expected_sha256` to match and run `deploy-skills.py --deploy --skill <name>`. This was rehearsed in scratch roots:
-the rolled-back tree passed `check-skill-consistency.py` and `deploy-skills.py --check` reported CLEAN. Leftover `LICENSE.txt` and `NOTICE-Profound.txt` files are harmless (the deployer never deletes), and the rehearsal predates the notice files.
+the rolled-back tree passed `check-skill-consistency.py` and `deploy-skills.py --check` reported CLEAN. Leftover `LICENSE.txt`, `NOTICE-Profound.txt` and `evals/evidence-rule-evals.json` files are harmless (the deployer never deletes), and the rehearsal predates the notice files.
 These skills were not in this catalogue before this import, so there is no older catalogue state to deploy from.
 
-Note for the Plain English Campaign decision: the live runtime already holds `copy-editing/references/plain-english-alternatives.md`, byte-identical to this
-PR's copy (checked 2026-11-01, both stores). Withholding or replacing the file in this repository therefore changes what a deploy writes, but the deployer never
-deletes, so removing the file from the live runtime is a separate manual step outside this repository.
+Note for the Plain English Campaign decision: before this change the live runtime held the upstream `copy-editing/references/plain-english-alternatives.md`, byte-identical to this
+PR's earlier copy (checked 2026-11-01, both stores). The replacement keeps the filename, so a deploy overwrites that live copy. The `maxx-seo-agent` project copies are separate: they keep the
+upstream file until that repository updates them, which is outside this lane.
