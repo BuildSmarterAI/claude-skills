@@ -129,7 +129,7 @@ re-expressed for this skill"), `copy-editing/references/checklist.md` line 26 (P
   (editing frontmatter here would break the byte pin, so exposure must be set in runtime settings, owned outside this repository). How Codex exposure
   is controlled is not established here. This PR corrects older wording in `docs/consolidation/README.md`, `scripts/deploy-skills.py`,
   `scripts/audit-catalog-health.py`, `tests/test_deploy_plan.py` and `tests/test_catalog_audit.py` that described `on-demand` as "not auto-loaded" and cited
-  "105 skills switched off via `skillOverrides`" in the live runtime (comments and docstrings only; no logic changed). Checked 2026-11-01, the user-level settings
+  "105 skills switched off via `skillOverrides`" in the live runtime (comments, docstrings and one assertion message only; no logic changed). Checked 2026-11-01, the user-level settings
   hold no `skillOverrides` at all (the only match in the files inspected is five unrelated `name-only` entries in the `maxx-seo-agent` project settings), so both
   skills are fully auto-discoverable today and were before this PR. The supported Claude Code controls are the `skillOverrides` setting (`name-only`,
   `user-invocable-only`, `off`) and `disable-model-invocation` in a skill's frontmatter (Claude Code changelog and settings examples, via Context7 on 2026-11-01).
@@ -147,6 +147,13 @@ re-expressed for this skill"), `copy-editing/references/checklist.md` line 26 (P
 `deploy-skills.py` never deletes and acts only on skills declared in the manifest, so reverting this import does **not** restore older bytes: the
 runtime would keep what was last deployed. To roll back, commit the previous upstream bytes into the two skill directories (upstream `e6fb742` for
 `copywriting` and `158bd3a` for `copy-editing`: on 2026-10-31 and again 2026-11-01 the live runtime `SKILL.md` files were byte-identical to those
-revisions), set each entry's `expected_sha256` to match, and run `deploy-skills.py --deploy --skill <name>`. This was rehearsed in scratch roots:
+revisions). A deploy of this PR changes exactly three live files (both runtime stores agree), and on 2026-11-01 each was re-hashed and found byte-identical to
+the older upstream blob: `copywriting/SKILL.md` and `copywriting/references/copy-frameworks.md` (both at `e6fb742`), and `copy-editing/SKILL.md` (at `158bd3a`).
+The other upstream files in the runtime already equal the files in this PR, so a rollback must restore all three, not `SKILL.md` alone. Set each entry's
+`expected_sha256` to match and run `deploy-skills.py --deploy --skill <name>`. This was rehearsed in scratch roots:
 the rolled-back tree passed `check-skill-consistency.py` and `deploy-skills.py --check` reported CLEAN. Leftover `LICENSE.txt` and `NOTICE-Profound.txt` files are harmless (the deployer never deletes), and the rehearsal predates the notice files.
 These skills were not in this catalogue before this import, so there is no older catalogue state to deploy from.
+
+Note for the Plain English Campaign decision: the live runtime already holds `copy-editing/references/plain-english-alternatives.md`, byte-identical to this
+PR's copy (checked 2026-11-01, both stores). Withholding or replacing the file in this repository therefore changes what a deploy writes, but the deployer never
+deletes, so removing the file from the live runtime is a separate manual step outside this repository.

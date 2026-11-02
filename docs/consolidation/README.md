@@ -46,7 +46,7 @@ no frontmatter at all. See `divergence-adjudication.md`.
 | `mode` | `IDENTICAL` · `CLAUDE_ONLY` · `CODEX_ONLY` · `ADAPTER` · `DISABLED` · `REPO_LOCAL` · `VENDORED` · `HOLD` |
 | `status` | `active` · `on-demand` · `repo-local` · `hold` |
 
-`status` controls what a runtime **loads**; `mode` and `targets` control what it
+`status` records exposure intent; `mode` and `targets` control what a runtime
 **receives**. They are independent: `on-demand` is installed like any other entry
 and never withheld from the runtime; it records an exposure intent that this
 repository does not enforce (in Claude Code, exposure is the `skillOverrides`
