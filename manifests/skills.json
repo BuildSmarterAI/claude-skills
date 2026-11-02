@@ -6387,7 +6387,7 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,
-   "notes": "Third-party, MIT (coreyhaines31/marketingskills). Byte-identical to upstream 15b38b5388dfdd17f4ab424e986ccd32c24d5b22 (skills/copywriting). Imported so the global runtime resolves one pinned revision; project-level copies in other repositories are separate and unaffected. Deployed on-demand: installed but not auto-loaded, because trigger scope overlaps the active Copy OS family. No Maxx-specific content."
+   "notes": "Third-party, MIT (coreyhaines31/marketingskills). The ten skill files are byte-identical to upstream 15b38b5388dfdd17f4ab424e986ccd32c24d5b22 (skills/copywriting); LICENSE.txt is the upstream MIT notice (byte-identical to upstream LICENSE at that revision) so it ships with every deployed copy. Provenance record: docs/third-party/marketingskills-PROVENANCE.md. No Maxx-specific content. Exposure intent is on-demand (trigger scope overlaps the Copy OS family), but the deployer does not enforce exposure: that is a runtime setting (skillOverrides / disable-model-invocation) outside this repository."
   },
   {
    "skill": "copy-editing",
@@ -6408,7 +6408,7 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,
-   "notes": "Third-party, MIT (coreyhaines31/marketingskills). Byte-identical to upstream 15b38b5388dfdd17f4ab424e986ccd32c24d5b22 (skills/copy-editing). Imported so the global runtime resolves one pinned revision; project-level copies in other repositories are separate and unaffected. Deployed on-demand: installed but not auto-loaded, because trigger scope overlaps the active Copy OS family. No Maxx-specific content."
+   "notes": "Third-party, MIT (coreyhaines31/marketingskills). The ten skill files are byte-identical to upstream 15b38b5388dfdd17f4ab424e986ccd32c24d5b22 (skills/copy-editing); LICENSE.txt is the upstream MIT notice (byte-identical to upstream LICENSE at that revision) so it ships with every deployed copy. Provenance record: docs/third-party/marketingskills-PROVENANCE.md. No Maxx-specific content. Exposure intent is on-demand (trigger scope overlaps the Copy OS family), but the deployer does not enforce exposure: that is a runtime setting (skillOverrides / disable-model-invocation) outside this repository."
   }
  ],
  "d3": {
