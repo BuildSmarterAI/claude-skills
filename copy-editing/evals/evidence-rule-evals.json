@@ -22,9 +22,15 @@
       ],
       "files": [],
       "check": {
-        "forbid_need_for": ["9 days", "212", "Q3 2026"],
+        "forbid_need_for": [
+          "9 days",
+          "212",
+          "Q3 2026"
+        ],
         "strict_figures": true,
-        "must_include": ["9 days"]
+        "must_include": [
+          "9 days"
+        ]
       }
     },
     {
@@ -58,7 +64,9 @@
       "check": {
         "require_need": true,
         "strict_figures": true,
-        "forbid": ["CEO (of|at) [A-Z]\\w+"]
+        "forbid": [
+          "CEO(?: of| at|,) (?-i:[A-Z])\\w+"
+        ]
       }
     },
     {
@@ -76,8 +84,19 @@
       "check": {
         "require_need": true,
         "strict_figures": true,
-        "forbid": ["money[- ]?back", "cancel[- ]?any ?time", "risk[- ]free"],
-        "require_any": ["owner", "approv", "sign[- ]?off"]
+        "forbid": [
+          "money[- ]?back",
+          "cancel[- ]?any ?time",
+          "risk[- ]free",
+          "free[- ]trial",
+          "full refund",
+          "no[- ]credit[- ]card"
+        ],
+        "require_any": [
+          "\\b(?:business )?owner(?:'s)?\\b[^.\\n]{0,60}\\bapprov",
+          "\\bapprov\\w*[^.\\n]{0,60}\\b(?:business )?owner\\b",
+          "\\bsign[- ]?off\\b"
+        ]
       }
     },
     {
@@ -94,7 +113,11 @@
       "check": {
         "require_need": true,
         "strict_figures": true,
-        "require_any": ["owner", "approv", "sign[- ]?off"]
+        "require_any": [
+          "\\b(?:business )?owner(?:'s)?\\b[^.\\n]{0,60}\\bapprov",
+          "\\bapprov\\w*[^.\\n]{0,60}\\b(?:business )?owner\\b",
+          "\\bsign[- ]?off\\b"
+        ]
       }
     },
     {
@@ -111,8 +134,19 @@
       "check": {
         "require_need": true,
         "strict_figures": true,
-        "forbid": ["24\\s*/\\s*7", "around[- ]the[- ]clock", "same[- ]day", "within (a|an|one) (hour|day)"],
-        "require_any": ["owner", "approv", "sign[- ]?off"]
+        "forbid": [
+          "24\\s*/\\s*7",
+          "around[- ]the[- ]clock",
+          "same[- ]day",
+          "next[- ]business[- ]day",
+          "within (a|an|one) (hour|day)",
+          "mon(day)?\\s*[-–]\\s*fri"
+        ],
+        "require_any": [
+          "\\b(?:business )?owner(?:'s)?\\b[^.\\n]{0,60}\\bapprov",
+          "\\bapprov\\w*[^.\\n]{0,60}\\b(?:business )?owner\\b",
+          "\\bsign[- ]?off\\b"
+        ]
       }
     }
   ]

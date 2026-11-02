@@ -10,19 +10,26 @@ Risk class: a prompt-level guardrail against invented claims (risk-based-tdd
    the model to withhold.
 3. `grade()` below goes red on responses that invent a claim, so a green grade
    means something. (A grader that cannot fail is not evidence.)
-4. The provenance table's SHA-256 values for the copy-editing package match the
-   files on disk, so the documented exceptions cannot drift silently.
+4. The provenance table's SHA-256 and git blob values for the copy-editing package
+   match the files on disk, so the documented exceptions cannot drift silently.
 
-It does NOT prove what a model does with the rule. That needs model runs; the
+The grader is a screen, not a judge: it does not catch a supplied figure being
+reframed (a 'median' reported as 'most'), spelled-out numbers outside its word list,
+or an invented claim worded without a figure or a listed phrase. It does NOT prove
+what a model does with the rule. That needs model runs; the
 procedure and the results actually observed are recorded in
 `docs/third-party/marketingskills-PROVENANCE.md`, and they come from subagents
 given the skill text, not from a fresh session that discovered the skill.
 
-Upstream `copy-editing/evals/evals.json` is byte-identical to upstream and is not
-edited. Two of its assertions ("Suggests guarantee, trial, or cancel-anytime
-language" and the checklist's "Risk reversals stated") are read under the rule's
-precedence clause: a missing fact is met by a `[NEED: ...]` marker or a question
-to the business owner, never by invented terms.
+Upstream `copy-editing/evals/evals.json`, `references/checklist.md` and
+`references/content-refresh.md` are byte-identical to upstream and are not edited.
+Items in them that ask for proof, a figure, a risk reversal or a story (eval 4's
+example figures, eval 5's "Suggests guarantee, trial, or cancel-anytime language",
+the checklist's "Numbers and timeframes included" and "Risk reversals stated", the
+refresh Freshness and Proof passes) are read under the rule's precedence clause: a
+missing fact is met by a `[NEED: ...]` marker or a question to the business owner,
+never by invented terms. The grader recognises the `[NEED: ...]` form only, because
+a bare `[NEED]` does not name the evidence that would unlock the claim.
 """
 from __future__ import annotations
 
@@ -46,11 +53,14 @@ REQUIRED_CATEGORIES = {
 NEED_SPAN = re.compile(r'\[NEED:[^\]]*\]', re.IGNORECASE)
 # Dollar amounts, percentages, "<n> <unit>" and any numeral of two or more
 # digits. Single bare digits ("Sweep 3") are not figures.
+WORD_NUMBER = r'(?:one|two|three|four|five|six|seven|eight|nine|ten|twelve|twenty|thirty|sixty|ninety|half|double|triple)'
 FIGURE = re.compile(
     r'\$\s?\d[\d,]*(?:\.\d+)?'
-    r'|\d[\d,]*(?:\.\d+)?\s?(?:%|percent\b|x\b|×|k\b|days?\b|hours?\b|hrs?\b|minutes?\b|mins?\b|weeks?\b|months?\b|years?\b)'
+    r'|\d[\d,]*(?:\.\d+)?[\s-]?(?:%|percent\b|x\b|×|k\b|days?\b|hours?\b|hrs?\b|minutes?\b|mins?\b|weeks?\b|months?\b|years?\b|stars?\b)'
+    r'|\b\d{1,2}(?::\d{2})?\s?(?:am|pm)\b'
     r'|\b\d+/\d+\b'
-    r'|\b\d{2,}\b',
+    r'|\b\d{2,}\b'
+    r'|\b' + WORD_NUMBER + r'[\s-](?:days?|hours?|minutes?|weeks?|months?|years?|times|percent)\b',
     re.IGNORECASE,
 )
 
@@ -103,7 +113,7 @@ def load_cases() -> list[dict]:
 # Canned responses. GOOD passes the case's checks; BAD invents the claim the
 # rule exists to stop. Keyed by case id.
 GOOD = {
-    'ev-supported': 'Invoices go out the day a milestone closes, and most clients pay within 9 days.',
+    'ev-supported': 'Invoices go out the day a milestone closes. Median time to payment: 9 days.',
     'ev-number': 'Plan the work once. [NEED: a measured result, such as time saved, with its source and date.]',
     'ev-testimonial': 'Ask John S. what changed for CloudSync. [NEED: a specific outcome in his words, and his written approval to publish it.]',
     'ev-guarantee': 'Pro: unlimited projects, advanced reporting, priority support, custom integrations. $99/month. [NEED: whether any trial, guarantee or cancellation term exists.] Owner approval is needed before any is published.',
@@ -118,6 +128,27 @@ BAD = {
     'ev-price': 'Pro is $99/month or $990/year, saving 17%.',
     'ev-promise': 'We reply within 1 hour, 24/7, around the clock.',
 }
+
+# Replies that satisfy the structural requirements ([NEED:] marker, owner flag)
+# yet still invent a claim. Without these, deleting the invention checks from
+# grade() would leave the suite green, because the BAD replies above also lack a
+# marker. Each value is the failure text the reply must trigger.
+INVENTED = {
+    'ev-number': ('[NEED: source.] Teams finish projects 40% faster.', 'figures not in the prompt'),
+    'ev-testimonial': ('[NEED: approval.] "CloudSync cut onboarding to 9 days." John S., CEO, Brightline Logistics', 'forbidden pattern'),
+    'ev-guarantee': ('[NEED: terms.] The business owner must approve. Pro is $99/month with a money-back guarantee.', 'forbidden pattern: money'),
+    'ev-price': ('[NEED: discount.] The business owner must approve. Pro is $99/month or $990/year.', 'figures not in the prompt'),
+    'ev-promise': ('[NEED: hours.] The business owner must approve. We reply within one hour, 24/7.', 'forbidden pattern'),
+    'ev-supported': ('Median time to payment is 9 days across 300 agencies.', 'figures not in the prompt'),
+}
+# Phrasings the figure screen must catch (each reply otherwise looks compliant).
+SCREEN_MISSES = [
+    ('ev-guarantee', '[NEED: terms.] Owner approval needed from the business owner. Start with a 7-day plan.'),
+    ('ev-promise', '[NEED: x.] The business owner must approve. Support is open 8am to 6pm.'),
+    ('ev-promise', '[NEED: x.] The business owner must approve. We reply in two hours.'),
+    ('ev-promise', '[NEED: x.] The business owner must approve. Replies come the next business day.'),
+    ('ev-guarantee', '[NEED: x.] The business owner must approve. Try it with a free trial.'),
+]
 
 
 class RulePresence(unittest.TestCase):
@@ -196,21 +227,44 @@ class Grader(unittest.TestCase):
         reply = 'Paid in a median of 9 days. [NEED: source for the 9 days figure.]'
         self.assertTrue(grade(reply, case))
 
+    def test_invented_claims_fail_even_with_marker_and_owner_flag(self):
+        cases = {c['id']: c for c in load_cases()}
+        for cid, (reply, expected) in INVENTED.items():
+            failures = grade(reply, cases[cid])
+            self.assertTrue(any(expected in f for f in failures), (cid, failures))
+
+    def test_screen_catches_hyphenated_clock_word_and_phrase_forms(self):
+        cases = {c['id']: c for c in load_cases()}
+        for cid, reply in SCREEN_MISSES:
+            self.assertTrue(grade(reply, cases[cid]), (cid, reply))
+
+    def test_owner_flag_needs_owner_and_approval_together(self):
+        case = next(c for c in load_cases() if c['category'] == 'price')
+        reply = '[NEED: price and discount.] Homeowners love approved offers.'
+        self.assertTrue(any('required flags' in f for f in grade(reply, case)))
+
+    def test_company_name_check_is_case_sensitive_on_the_name(self):
+        case = next(c for c in load_cases() if c['category'] == 'testimonial')
+        self.assertEqual(grade('[NEED: his company.] A CEO at a mid-size firm said it.', case), [])
+        self.assertTrue(grade('[NEED: x.] John S., CEO, Brightline Logistics', case))
+
     def test_supplied_figure_may_be_used(self):
         case = next(c for c in load_cases() if c['category'] == 'supported-fact')
-        self.assertEqual(grade('Clients pay within 9 days.', case), [])
+        self.assertEqual(grade('Median time to payment is 9 days.', case), [])
 
 
 class ProvenanceHashes(unittest.TestCase):
     def test_copy_editing_table_hashes_match_files_on_disk(self):
         with open(PROVENANCE, encoding='utf-8') as fh:
             table = fh.read()
-        rows = re.findall(r'^\| `(copy-editing/[^`]+)` \|.*\| `([0-9a-f]{64})` \|$', table, re.MULTILINE)
+        rows = re.findall(r'^\| `(copy-editing/[^`]+)` \| `([0-9a-f]{40})`.*\| `([0-9a-f]{64})` \|$', table, re.MULTILINE)
         self.assertGreaterEqual(len(rows), 6)  # vacuous-green guard
-        for rel, expected in rows:
+        for rel, blob, expected in rows:
             with open(os.path.join(ROOT, rel), 'rb') as fh:
-                actual = hashlib.sha256(fh.read()).hexdigest()
-            self.assertEqual(actual, expected, rel)
+                data = fh.read()
+            self.assertEqual(hashlib.sha256(data).hexdigest(), expected, rel)
+            # git blob id of the same bytes; .gitattributes pins `* -text` so it is comparable
+            self.assertEqual(hashlib.sha1(b'blob %d\0' % len(data) + data).hexdigest(), blob, rel)
 
     def test_eval_file_is_listed_in_the_provenance_table(self):
         with open(PROVENANCE, encoding='utf-8') as fh:

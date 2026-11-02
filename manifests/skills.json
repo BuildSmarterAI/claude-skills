@@ -6404,7 +6404,7 @@
    "canonical_owner": "claude-skills repo",
    "origin": "coreyhaines31/marketingskills@15b38b5388dfdd17f4ab424e986ccd32c24d5b22",
    "adapter": null,
-   "expected_sha256": "73c195ef5e97a739f59f846f3b3df78caf097a10ec02d21d39b1322a8abd82b8",
+   "expected_sha256": "8d8af0b4763aa1362411561273eac05cc3e3070f68af0a0b2d705bc5d815bdc1",
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,

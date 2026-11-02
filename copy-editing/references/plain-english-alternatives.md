@@ -2,7 +2,7 @@
 
 Replace complex or pompous words with plain English alternatives.
 
-Source: plainlanguage.gov, "Use simple words and phrases" (U.S. federal government work, public domain; CC0 1.0 dedication in the PlainLanguage.gov repository, commit `fd7694740f19c0ed20ed71c2dd1dc92699e920fa`). Row text is copied from that page. Rows specific to government or military documents, and rows that would weaken, inflate or garble marketing copy, are omitted (see `docs/third-party/marketingskills-PROVENANCE.md`). "(omit)" means the word can usually be cut. Do not apply a swap that changes the meaning: check each one in context.
+Source: plainlanguage.gov, "Use simple words and phrases" (U.S. federal government work, public domain; CC0 1.0 dedication in the PlainLanguage.gov repository, commit `fd7694740f19c0ed20ed71c2dd1dc92699e920fa`). Row text is copied from that page. Rows specific to government or military documents, and rows that would weaken, inflate or garble marketing copy, are omitted (see `docs/third-party/marketingskills-PROVENANCE.md` in the BuildSmarterAI/claude-skills repository, which is not deployed with the skill). "(omit)" means the word can usually be cut. Do not apply a swap that changes the meaning: check each one in context.
 
 ---
 
