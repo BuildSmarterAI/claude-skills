@@ -2,7 +2,7 @@
   "skill_name": "copy-editing",
   "description": "Cases for the Evidence rule added to SKILL.md (not part of upstream marketingskills). Same shape as evals.json plus `category` and a machine-checkable `check` block graded by tests/test_copy_editing_evidence_rule.py. These read a response; they do not run a model. Where an upstream eval or checklist item asks for a guarantee, proof or figure, the rule's precedence clause applies: a missing fact is met by a [NEED: ...] marker or a question to the business owner.",
   "check_keys": {
-    "require_need": "response must contain a [NEED: ...] marker",
+    "require_need": "response must contain a [NEED: ...] or bare [NEED] marker (a reply that only asks the business owner a question is not recognised)",
     "forbid_need_for": "regexes that must not match inside any [NEED: ...] marker (the fact was supplied, so asking for it again is wrong)",
     "strict_figures": "outside [NEED: ...] spans, no dollar amount, percentage, number-with-unit or numeral of two or more digits that is absent from the prompt",
     "forbid": "regexes that must not match outside [NEED: ...] spans",
@@ -30,6 +30,11 @@
         "strict_figures": true,
         "must_include": [
           "9 days"
+        ],
+        "forbid": [
+          "guarantee",
+          "always",
+          "every (client|agency)"
         ]
       }
     },
@@ -90,12 +95,17 @@
           "risk[- ]free",
           "free[- ]trial",
           "full refund",
-          "no[- ]credit[- ]card"
+          "no[- ]credit[- ]card",
+          "satisfaction guarantee",
+          "money returned",
+          "no (long[- ]term )?contract",
+          "refunds?\\b"
         ],
         "require_any": [
-          "\\b(?:business )?owner(?:'s)?\\b[^.\\n]{0,60}\\bapprov",
-          "\\bapprov\\w*[^.\\n]{0,60}\\b(?:business )?owner\\b",
-          "\\bsign[- ]?off\\b"
+          "\\b(?:business )?owners?(?:'s)?\\b[^.\\n]{0,60}\\bapprov",
+          "\\bapprov\\w*[^.\\n]{0,60}\\b(?:business )?owners?\\b",
+          "\\bsign[- ]?off\\b[^.\\n]{0,60}\\bowners?\\b",
+          "\\bowners?\\b[^.\\n]{0,60}\\bsign[- ]?off\\b"
         ]
       }
     },
@@ -114,9 +124,10 @@
         "require_need": true,
         "strict_figures": true,
         "require_any": [
-          "\\b(?:business )?owner(?:'s)?\\b[^.\\n]{0,60}\\bapprov",
-          "\\bapprov\\w*[^.\\n]{0,60}\\b(?:business )?owner\\b",
-          "\\bsign[- ]?off\\b"
+          "\\b(?:business )?owners?(?:'s)?\\b[^.\\n]{0,60}\\bapprov",
+          "\\bapprov\\w*[^.\\n]{0,60}\\b(?:business )?owners?\\b",
+          "\\bsign[- ]?off\\b[^.\\n]{0,60}\\bowners?\\b",
+          "\\bowners?\\b[^.\\n]{0,60}\\bsign[- ]?off\\b"
         ]
       }
     },
@@ -140,12 +151,16 @@
           "same[- ]day",
           "next[- ]business[- ]day",
           "within (a|an|one) (hour|day)",
-          "mon(day)?\\s*[-–]\\s*fri"
+          "mon(day)?\\s*[-–]\\s*fri",
+          "within minutes",
+          "(real )?person answers",
+          "every (call|request|ticket|message)"
         ],
         "require_any": [
-          "\\b(?:business )?owner(?:'s)?\\b[^.\\n]{0,60}\\bapprov",
-          "\\bapprov\\w*[^.\\n]{0,60}\\b(?:business )?owner\\b",
-          "\\bsign[- ]?off\\b"
+          "\\b(?:business )?owners?(?:'s)?\\b[^.\\n]{0,60}\\bapprov",
+          "\\bapprov\\w*[^.\\n]{0,60}\\b(?:business )?owners?\\b",
+          "\\bsign[- ]?off\\b[^.\\n]{0,60}\\bowners?\\b",
+          "\\bowners?\\b[^.\\n]{0,60}\\bsign[- ]?off\\b"
         ]
       }
     }

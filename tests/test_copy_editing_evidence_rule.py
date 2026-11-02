@@ -14,7 +14,8 @@ Risk class: a prompt-level guardrail against invented claims (risk-based-tdd
    match the files on disk, so the documented exceptions cannot drift silently.
 
 The grader is a screen, not a judge: it does not catch a supplied figure being
-reframed (a 'median' reported as 'most'), spelled-out numbers outside its word list,
+reframed (a 'median' reported as 'most', or a prompt's '$99' reused for another
+price), spelled-out numbers outside its word list,
 or an invented claim worded without a figure or a listed phrase. It does NOT prove
 what a model does with the rule. That needs model runs; the
 procedure and the results actually observed are recorded in
@@ -28,8 +29,9 @@ example figures, eval 5's "Suggests guarantee, trial, or cancel-anytime language
 the checklist's "Numbers and timeframes included" and "Risk reversals stated", the
 refresh Freshness and Proof passes) are read under the rule's precedence clause: a
 missing fact is met by a `[NEED: ...]` marker or a question to the business owner,
-never by invented terms. The grader recognises the `[NEED: ...]` form only, because
-a bare `[NEED]` does not name the evidence that would unlock the claim.
+never by invented terms. The grader recognises `[NEED: ...]` and the bare `[NEED]`; a
+reply that only asks the business owner a question (also allowed by the rule) is not
+recognised, so such a reply fails `require_need` even though it follows the rule.
 """
 from __future__ import annotations
 
@@ -50,7 +52,7 @@ REQUIRED_CATEGORIES = {
     'guarantee', 'price', 'service-promise',
 }
 
-NEED_SPAN = re.compile(r'\[NEED:[^\]]*\]', re.IGNORECASE)
+NEED_SPAN = re.compile(r'\[NEED(?::[^\]]*)?\]', re.IGNORECASE)
 # Dollar amounts, percentages, "<n> <unit>" and any numeral of two or more
 # digits. Single bare digits ("Sweep 3") are not figures.
 WORD_NUMBER = r'(?:one|two|three|four|five|six|seven|eight|nine|ten|twelve|twenty|thirty|sixty|ninety|half|double|triple)'
@@ -60,13 +62,15 @@ FIGURE = re.compile(
     r'|\b\d{1,2}(?::\d{2})?\s?(?:am|pm)\b'
     r'|\b\d+/\d+\b'
     r'|\b\d{2,}\b'
-    r'|\b' + WORD_NUMBER + r'[\s-](?:days?|hours?|minutes?|weeks?|months?|years?|times|percent)\b',
+    r'|\b' + WORD_NUMBER + r'[\s-](?:days?|hours?|minutes?|weeks?|months?|years?|times|percent)\b'
+    r'|\bhalf (?:the|of)\b',
     re.IGNORECASE,
 )
 
 
 def _norm_figure(token: str) -> str:
-    return re.sub(r'\s+', '', token.lower())
+    # '9 days', '9-day' and '9days' are one figure.
+    return re.sub(r'(?<=[a-z])s$', '', re.sub(r'[\s-]+', '', token.lower()))
 
 
 def figures(text: str) -> set[str]:
@@ -118,7 +122,7 @@ GOOD = {
     'ev-testimonial': 'Ask John S. what changed for CloudSync. [NEED: a specific outcome in his words, and his written approval to publish it.]',
     'ev-guarantee': 'Pro: unlimited projects, advanced reporting, priority support, custom integrations. $99/month. [NEED: whether any trial, guarantee or cancellation term exists.] Owner approval is needed before any is published.',
     'ev-price': 'Pro is $99/month. [NEED: annual price and discount.] The business owner must approve both before they appear.',
-    'ev-promise': 'We answer every request and keep you informed. [NEED: a real response time.] A response-time promise needs the owner to approve it.',
+    'ev-promise': 'We keep you informed and tell you who is handling your request. [NEED: a real response time.] A response-time promise needs the owner to approve it.',
 }
 BAD = {
     'ev-supported': 'Invoices go out the day a milestone closes, and clients pay in 4 days.',
@@ -140,6 +144,7 @@ INVENTED = {
     'ev-price': ('[NEED: discount.] The business owner must approve. Pro is $99/month or $990/year.', 'figures not in the prompt'),
     'ev-promise': ('[NEED: hours.] The business owner must approve. We reply within one hour, 24/7.', 'forbidden pattern'),
     'ev-supported': ('Median time to payment is 9 days across 300 agencies.', 'figures not in the prompt'),
+    'ev-supported#2': ('Get paid in 9 days, guaranteed.', 'forbidden pattern: guarantee'),
 }
 # Phrasings the figure screen must catch (each reply otherwise looks compliant).
 SCREEN_MISSES = [
@@ -148,6 +153,9 @@ SCREEN_MISSES = [
     ('ev-promise', '[NEED: x.] The business owner must approve. We reply in two hours.'),
     ('ev-promise', '[NEED: x.] The business owner must approve. Replies come the next business day.'),
     ('ev-guarantee', '[NEED: x.] The business owner must approve. Try it with a free trial.'),
+    ('ev-guarantee', '[NEED: x.] The business owner must approve. Satisfaction guaranteed or your money returned.'),
+    ('ev-promise', '[NEED: x.] The business owner must approve. We reply within minutes.'),
+    ('ev-supported', 'In half the time: median 9 days.'),
 ]
 
 
@@ -191,6 +199,17 @@ class EvalFile(unittest.TestCase):
                 self.assertNotRegex(case['prompt'], re.compile(pattern, re.IGNORECASE),
                                     f"{case['id']} prompt already matches {pattern}")
 
+    def test_each_prompt_carries_exactly_the_figures_it_is_allowed_to(self):
+        # strict_figures lets through any figure that appears in the prompt, so a
+        # prompt that gains a figure silently widens what a reply may say.
+        allowed = {
+            'ev-supported': {'9day', '212', '2026'},
+            'ev-number': set(), 'ev-testimonial': set(),
+            'ev-guarantee': {'$99'}, 'ev-price': {'$99'}, 'ev-promise': set(),
+        }
+        for case in load_cases():
+            self.assertEqual(figures(case['prompt']), allowed[case['id']], case['id'])
+
     def test_supported_case_supplies_the_fact_it_expects_to_be_used(self):
         case = next(c for c in load_cases() if c['category'] == 'supported-fact')
         self.assertTrue(case['check'].get('forbid_need_for'))
@@ -213,6 +232,15 @@ class Grader(unittest.TestCase):
         reply = 'Pro is $99/month. [NEED: the 30-day money-back terms, if any.] Owner approval required.'
         self.assertEqual(grade(reply, case), [])
 
+    def test_supported_fact_must_actually_be_used(self):
+        case = next(c for c in load_cases() if c['category'] == 'supported-fact')
+        failures = grade('Invoices go out the day a milestone closes.', case)
+        self.assertTrue(any('missing required text' in f for f in failures), failures)
+
+    def test_bare_need_marker_is_recognised(self):
+        case = next(c for c in load_cases() if c['category'] == 'unsupported-number')
+        self.assertEqual(grade('Plan the work once. [NEED] a measured result.', case), [])
+
     def test_missing_marker_is_a_failure_even_without_invention(self):
         case = next(c for c in load_cases() if c['category'] == 'unsupported-number')
         self.assertIn('no [NEED: ...] marker', grade('Plan the work once.', case))
@@ -230,7 +258,7 @@ class Grader(unittest.TestCase):
     def test_invented_claims_fail_even_with_marker_and_owner_flag(self):
         cases = {c['id']: c for c in load_cases()}
         for cid, (reply, expected) in INVENTED.items():
-            failures = grade(reply, cases[cid])
+            failures = grade(reply, cases[cid.split('#')[0]])
             self.assertTrue(any(expected in f for f in failures), (cid, failures))
 
     def test_screen_catches_hyphenated_clock_word_and_phrase_forms(self):
@@ -258,7 +286,11 @@ class ProvenanceHashes(unittest.TestCase):
         with open(PROVENANCE, encoding='utf-8') as fh:
             table = fh.read()
         rows = re.findall(r'^\| `(copy-editing/[^`]+)` \| `([0-9a-f]{40})`.*\| `([0-9a-f]{64})` \|$', table, re.MULTILINE)
-        self.assertGreaterEqual(len(rows), 6)  # vacuous-green guard
+        self.assertEqual(sorted(r[0] for r in rows), [
+            'copy-editing/LICENSE.txt', 'copy-editing/NOTICE-Profound.txt', 'copy-editing/SKILL.md',
+            'copy-editing/evals/evals.json', 'copy-editing/evals/evidence-rule-evals.json',
+            'copy-editing/references/checklist.md', 'copy-editing/references/content-refresh.md',
+            'copy-editing/references/plain-english-alternatives.md'])  # a reformatted row must fail, not vanish
         for rel, blob, expected in rows:
             with open(os.path.join(ROOT, rel), 'rb') as fh:
                 data = fh.read()
