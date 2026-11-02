@@ -6,6 +6,33 @@ Catalog releases of `BuildSmarterAI/claude-skills`. Versioning policy:
 The version in [`catalog-version.json`](catalog-version.json) names the **catalog**, not any
 individual skill. Skills are not versioned independently.
 
+## [1.2.0] — 2026-11-02
+
+Adds two marketing-copy skills from `coreyhaines31/marketingskills` (MIT, revision `15b38b5`),
+installed to both runtimes and `on-demand` by intent (#24).
+
+### `copywriting`: third-party, unchanged
+
+Upstream bytes, plus the upstream `LICENSE.txt` and a `NOTICE-Profound.txt` for adapted passages.
+Classified `D. THIRD-PARTY-VENDORED`.
+
+### `copy-editing`: this catalogue's own edit of the upstream skill
+
+- **Evidence rule.** Numbers, testimonials, guarantees, prices, service-level promises, warranties
+  and customer stories must trace to the copy, the context file, the user's material or a dated
+  public primary source; otherwise the edit leaves a `[NEED: ...]` marker. Terms that are added or
+  changed go to the business owner. The rule takes precedence over upstream sweeps that ask for
+  proof or figures.
+- **Plain-English swap list replaced.** The upstream list, which closely matched a copyrighted
+  Plain English Campaign guide, is replaced by 195 rows from the public-domain plainlanguage.gov
+  list. Government jargon and swaps that garble marketing copy are omitted.
+- Classified `A. GLOBAL-CANONICAL`, not `D`, because it carries local edits: upstream updates are
+  merged by hand, never copied over it. `docs/consolidation/skill-ownership-policy.md` now states
+  that rule for any vendored skill that receives a local edit.
+
+Provenance, per-file hashes, the evaluation and its limits, and the rollback procedure:
+`docs/third-party/marketingskills-PROVENANCE.md`.
+
 ## [1.1.0] — 2026-08-31
 
 Adds the **Copy OS**: a reusable global copywriting and marketing-intelligence layer, and the
