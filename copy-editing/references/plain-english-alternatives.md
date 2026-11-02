@@ -66,7 +66,6 @@ Source: plainlanguage.gov, "Use simple words and phrases" (U.S. federal governme
 | Instead of | Use |
 |---|---|
 | deem | believe, consider, think |
-| delete | cut, drop |
 | depart | leave |
 | designate | appoint, choose, name |
 | desire | want, wish |
@@ -149,7 +148,6 @@ Source: plainlanguage.gov, "Use simple words and phrases" (U.S. federal governme
 | in regard to | about, concerning, on |
 | in relation to | about, with, to |
 | inter alia | (omit) |
-| interface | meet, work with |
 | interpose no objection | don't object |
 | in the amount of | for |
 | in the event of | if |
@@ -173,9 +171,7 @@ Source: plainlanguage.gov, "Use simple words and phrases" (U.S. federal governme
 | maintain | keep, support |
 | maximum | greatest, largest, most |
 | methodology | method |
-| minimum | least, smallest |
 | modify | change |
-| monitor | check, watch |
 
 ## N
 
@@ -183,7 +179,6 @@ Source: plainlanguage.gov, "Use simple words and phrases" (U.S. federal governme
 |---|---|
 | necessitate | cause, need |
 | notify | let know, tell |
-| not later than 10 May | by 10 May, before 11 May |
 | numerous | many |
 
 ## O
@@ -268,11 +263,9 @@ Source: plainlanguage.gov, "Use simple words and phrases" (U.S. federal governme
 | therefore | so |
 | therein | there |
 | thereof | its, their |
-| the use of | (omit) |
 | timely | prompt |
 | time period | (either one) |
 | transmit | send |
-| type | (omit) |
 
 ## U
 

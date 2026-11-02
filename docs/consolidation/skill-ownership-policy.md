@@ -28,6 +28,8 @@ plausible repository is not evidence.
 | **ADAPTER** | Same capability, deliberately different per runtime | this repo | never cross-deployed — one copy would break the other |
 | **DISABLED-PRESERVED** | Retired from exposure, byte-preserved | this repo + snapshot | staged out of the scanned root, never deleted |
 
+A vendored skill that receives a local edit becomes this repo's own (`GLOBAL-CANONICAL`); its upstream origin stays recorded and upstream updates are merged by hand.
+
 ## Deciding
 
 1. **Does a repository already contain it?** → `REPO-LOCAL`. Record the verified path.

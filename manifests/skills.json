@@ -6399,7 +6399,7 @@
    ],
    "mode": "IDENTICAL",
    "status": "on-demand",
-   "classification": "D. THIRD-PARTY-VENDORED",
+   "classification": "A. GLOBAL-CANONICAL",
    "family": null,
    "canonical_owner": "claude-skills repo",
    "origin": "coreyhaines31/marketingskills@15b38b5388dfdd17f4ab424e986ccd32c24d5b22",
@@ -6408,7 +6408,7 @@
    "divergence_decision": null,
    "divergence_reason": null,
    "usage": 0,
-   "notes": "Third-party, MIT (coreyhaines31/marketingskills). Three of the five upstream files in skills/copy-editing (evals/evals.json, references/checklist.md, references/content-refresh.md) are byte-identical to upstream 15b38b5388dfdd17f4ab424e986ccd32c24d5b22; two are documented exceptions, and one file is added: SKILL.md carries one added evidence-rule paragraph (expected_sha256 pins the modified bytes) and references/plain-english-alternatives.md is replaced by a list whose row text is copied from the CC0 plainlanguage.gov page (see docs/third-party/marketingskills-PROVENANCE.md, Exceptions to upstream identity); evals/evidence-rule-evals.json (not upstream) holds the cases for the evidence rule; LICENSE.txt is the upstream MIT notice (byte-identical to upstream LICENSE at that revision) so it ships with every deployed copy; NOTICE-Profound.txt (not upstream) carries the Profound MIT notice for adapted passages. Provenance, per-file hashes, attribution and open third-party-source items: docs/third-party/marketingskills-PROVENANCE.md. No Maxx-specific content. Exposure intent is on-demand (trigger scope overlaps the Copy OS family), but the deployer does not enforce exposure: in Claude Code that is the skillOverrides runtime setting (outside this repository) or disable-model-invocation frontmatter (which would break the byte pin); Codex exposure control is not established here."
+   "notes": "Locally maintained edit of a third-party MIT skill (coreyhaines31/marketingskills); classified A. GLOBAL-CANONICAL, not D, because it carries local edits (owner decision 2026-11-02, docs/consolidation/skill-ownership-policy.md): upstream updates are merged by hand, never copied over it. Three of the five upstream files in skills/copy-editing (evals/evals.json, references/checklist.md, references/content-refresh.md) are byte-identical to upstream 15b38b5388dfdd17f4ab424e986ccd32c24d5b22; two are documented exceptions, and one file is added: SKILL.md carries one added evidence-rule paragraph (expected_sha256 pins the modified bytes) and references/plain-english-alternatives.md is replaced by a list whose row text is copied from the CC0 plainlanguage.gov page (see docs/third-party/marketingskills-PROVENANCE.md, Exceptions to upstream identity); evals/evidence-rule-evals.json (not upstream) holds the cases for the evidence rule; LICENSE.txt is the upstream MIT notice (byte-identical to upstream LICENSE at that revision) so it ships with every deployed copy; NOTICE-Profound.txt (not upstream) carries the Profound MIT notice for adapted passages. Provenance, per-file hashes, attribution and open third-party-source items: docs/third-party/marketingskills-PROVENANCE.md. No Maxx-specific content. Exposure intent is on-demand (trigger scope overlaps the Copy OS family), but the deployer does not enforce exposure: in Claude Code that is the skillOverrides runtime setting (outside this repository) or disable-model-invocation frontmatter (which would break the byte pin); Codex exposure control is not established here."
   }
  ],
  "d3": {
