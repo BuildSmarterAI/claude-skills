@@ -154,18 +154,18 @@ class TestRuntimeDrift(AuditTestCase):
         self.assertIn('runtime_missing', rep.violations)
 
     def test_missing_on_demand_skill_is_a_violation(self):
-        """Settled 2026-08-24: `on-demand` IS deployed, just not auto-loaded.
+        """Settled 2026-08-24: `on-demand` IS deployed; exposure is a runtime setting.
 
-        The repository documents both readings and they conflict:
+        Before that date the repository documented both readings and they conflicted:
           - RELEASING.md: active<->on-demand changes "what is *loaded*, not what
             the catalog" ships  -> implies on-demand IS deployed.
           - canonical-runtime-reconciliation.md: on-demand ones "stay held"
             -> implies on-demand is NOT deployed.
 
         The live catalog cannot break the tie: there is exactly one deployable
-        on-demand entry (n=1). Reporting a violation on an unresolved premise
-        would manufacture a defect out of an open question, so this stays a
-        notice until someone settles the semantics.
+        on-demand entry (n=1), so it was reported only as a notice. The
+        semantics are now settled (above), and the assertions below expect a
+        violation.
         """
         e = self.add_skill('alpha', 'BODY\n')
         e['status'] = 'on-demand'

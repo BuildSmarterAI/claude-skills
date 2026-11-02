@@ -224,12 +224,12 @@ def _audit_runtime(rep, root, entries, runtime_roots, canonical_mtimes):
                 continue
             rt_file = os.path.join(rt_root, name, 'SKILL.md')
             if not os.path.isfile(rt_file):
-                # Exposure and deployment are independent. `status` controls
-                # what a runtime LOADS; mode and targets control what it
+                # Exposure and deployment are independent. `status` records
+                # exposure intent; mode and targets control what a runtime
                 # RECEIVES. A deployable entry targeting a runtime that is
                 # present on disk must therefore exist there whatever its
-                # status - `on-demand` means installed but not auto-loaded, not
-                # withheld. Settled 2026-08-24; previously split by severity
+                # status - `on-demand` is an exposure intent, not a reason to
+                # withhold the file. Settled 2026-08-24; previously split by severity
                 # because two documents disagreed and the catalog had a single
                 # on-demand entry to test them against.
                 rep.add('runtime_missing',

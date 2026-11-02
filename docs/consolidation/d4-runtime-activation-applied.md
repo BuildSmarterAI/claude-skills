@@ -1,6 +1,8 @@
 # D4 Runtime Activation — APPLIED
 
 > Applied 2026-08-21. Every change on this page is reversible; nothing was deleted.
+>
+> Dated record, not current state: checked 2026-11-01, the user-level `~/.claude/settings.json` holds no `skillOverrides`, so the counts below no longer describe the Claude runtime.
 
 ## Result
 

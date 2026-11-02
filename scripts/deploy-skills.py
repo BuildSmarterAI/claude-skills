@@ -48,9 +48,10 @@ EXCLUDE_NAMES = {'.env', '.DS_Store', 'Thumbs.db'}
 
 DEPLOYABLE_MODES = {'IDENTICAL', 'CLAUDE_ONLY', 'CODEX_ONLY'}
 # Delivery is governed by mode and targets; exposure is a separate axis.
-# `on-demand` means installed but not auto-loaded - all 105 skills switched off
-# via skillOverrides are still present on disk - so withholding the file would
-# make it impossible to load on demand at all. `hold` stays out: that flags
+# `on-demand` records an exposure intent; the deployer does not enforce it (in
+# Claude Code that is the `skillOverrides` setting or `disable-model-invocation`
+# frontmatter). The file must still be installed, or the skill could never be
+# loaded on demand at all. `hold` stays out: that flags
 # unsettled content, which is a statement about the bytes, not about exposure.
 DELIVERABLE_STATUS = {'active', 'on-demand'}
 

@@ -25,7 +25,7 @@ For the portfolio context, stack overview, and install commands, see `README.md`
   tests/      config.json
 ```
 
-There are 304 catalogued skills, governed by `manifests/skills.json`. All folder names are **kebab-case** and match the `name` field in their frontmatter -- CI enforces that agreement.
+There are 306 catalogued skills, governed by `manifests/skills.json`. All folder names are **kebab-case** and match the `name` field in their frontmatter -- CI enforces that agreement.
 
 ### Standard skills
 

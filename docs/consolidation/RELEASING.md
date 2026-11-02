@@ -44,8 +44,9 @@ second, unverified place to write a number.
 - editing a skill's body without changing what it can do
 - manifest bookkeeping: `expected_sha256` recomputation, notes, reasons
 - documentation, CI, or test changes
-- exposure changes (`active` ↔ `on-demand`) — those change what is *loaded*, not what the catalog
-  *contains*, and are recorded in the deployment state instead
+- exposure changes (`active` ↔ `on-demand`) — those do not change what the catalog *contains*; the
+  deployer neither enforces nor records exposure (it is a runtime setting, see
+  `docs/third-party/marketingskills-PROVENANCE.md`, "Exposure and targets")
 
 When a change spans levels, take the highest.
 
