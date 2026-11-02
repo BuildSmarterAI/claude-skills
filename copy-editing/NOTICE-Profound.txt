@@ -1,8 +1,8 @@
 NOTICE-Profound.txt
 
-Some files in this skill directory adapt material that the upstream authors
-credit to Profound's `improved-copywriting` and `humanizer` skills (and to
-Wispr Flow's skills published in the same repository):
+Some files in the copywriting and copy-editing skills adapt material that the
+upstream authors credit to Profound's `improved-copywriting` and `humanizer`
+skills (and to Wispr Flow's skills published in the same repository):
 https://github.com/retieedra-profound/skills-marketing-library
 (commit 80293f156c27d3f90aedebfb3c27309769b2eec6, MIT).
 

@@ -36,8 +36,8 @@ on a machine whose runtime still holds the old bytes.
 | `copy-editing/references/content-refresh.md` | `5def44f806c36e66b1d69400c33ec63a4e0d024d` | `ba73cdf278fe6b552eee27eb1452494f11f9d17ef67d720657e0982f76fb961b` |
 | `copy-editing/references/plain-english-alternatives.md` | `2fc323557dabdee6ee9f0a52e2a4c24f473fc775` | `df4f820d4c63ae8a517c64a243c101658352cd07d002355bf3c97de0a00f3775` |
 | `copy-editing/LICENSE.txt` | `7c48dd638a9ebed49a8ef0c0c4eea90105381cdf` (upstream `LICENSE`) | `b70d71e24e40fce5da8f4b6f9cd862096a048e433db7f3c8cac5e348e6d34591` |
-| `copywriting/NOTICE-Profound.txt` | `aa50aafc8b92318c19d7a533a61224a79095d560` (not upstream; header + Profound `LICENSE`) | `3e04460a405cb471a9a4b31e9b4bd59964522a46f7d4b106fcfad3d5757e1c5a` |
-| `copy-editing/NOTICE-Profound.txt` | `aa50aafc8b92318c19d7a533a61224a79095d560` (same bytes as the copywriting copy) | `3e04460a405cb471a9a4b31e9b4bd59964522a46f7d4b106fcfad3d5757e1c5a` |
+| `copywriting/NOTICE-Profound.txt` | `78b60f75033bb35d4f2a9987ab3363f2d44c4594` (not upstream; header + Profound `LICENSE`) | `25a397c287c700ce46273e645d93e8fe580542c7a67156557fa108025f4448f5` |
+| `copy-editing/NOTICE-Profound.txt` | `78b60f75033bb35d4f2a9987ab3363f2d44c4594` (same bytes as the copywriting copy) | `25a397c287c700ce46273e645d93e8fe580542c7a67156557fa108025f4448f5` |
 
 ## Attribution
 
@@ -68,8 +68,8 @@ session scratch directory, and each figure can be reproduced by the method above
 Campaign, web content best practices".
 - Manchester's copyright notice: "Material published by The University of Manchester on these web pages is copyright The University of Manchester and may not
   be reproduced without permission." No licence or permitted-reuse statement was found.
-- Against 15 Phrasebank pages: 0 shared 5-word sequences, 0 shared 8-word sequences. 5 of the file's 76 phrases of three or more words appear verbatim, all generic
-  connectives ("As a result,...", "Because of this,..."). Against PEC's A-Z and PEC's "How to write in plain English": 0 shared.
+- Against the Phrasebank section pages fetched: 0 shared 5-word sequences, 0 shared 8-word sequences. 5 of the file's 76 phrases of three or more words appear verbatim, all generic
+  connectives or hedges ("As a result,...", "Because of this,...", "in most cases"). Against PEC's A-Z and PEC's "How to write in plain English": 0 shared.
 
 **`copywriting/references/ai-tells.md` sources.** Wikipedia "Signs of AI writing" (CC BY-SA 4.0): 0 shared 5-grams. tropes.fyi, Guo, Stockton, EQ-Bench and the
 counter-view post share 1-4 generic 5-grams each and no 8-grams (for example "it's not X, it's Y"). Terms found: arXiv 2406.07016 CC BY-SA 4.0; arXiv 2510.15061 CC BY 4.0;
@@ -89,8 +89,10 @@ re-expressed for this skill"), `copy-editing/references/checklist.md` line 26 (P
 - MIT requires: "The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software." None of the three
   credits reproduces the copyright line or the permission text, and upstream's own `LICENSE` does not carry them.
 - Measured overlap with the Profound/Wispr files is concentrated, not spread: `copywriting/SKILL.md` against `profound/improved-copywriting` shares 52 5-grams
-  (3.35% of the imported file) and 16 8-grams (1.29%), including verbatim sentences ("plain, specific, and declarative. A page gets one or two punchy moments"). Every other
-  imported-file/source pair shares 0 8-grams. The earlier whole-corpus figure (21 of 13,273 8-grams, 0.16%) is an average over ten files and hides this.
+  (3.35% of the imported file) and 16 8-grams (1.29%), including verbatim sentences ("plain, specific, and declarative. A page gets one or two punchy moments"). The other
+  pairs measured in this session (`copywriting/references/ai-tells.md`, `copy-editing/SKILL.md` and `checklist.md`, each against the four Profound/Wispr skills, and
+  `copywriting/SKILL.md` against the other three) share 0 8-grams; the remaining imported files were not paired with these sources. The earlier whole-corpus figure
+  (21 of 13,273 8-grams, 0.16%, ten imported files against the repository's 24 text files) is an average that hides this concentration; its working is not preserved.
 - Structural reuse (same ordered items, wording changed): the A/B/C situation diagnosis, the three-question gate and its keep/sharpen/rewrite rule, and "decompose and lock"
   in `copywriting/SKILL.md`; the same A/B/C modes in `checklist.md`; the five "build a writer" questions and the seven human-writing traits, in order, in `ai-tells.md`
   against `humanizer`. Roughly a dozen ordered units across three files.
@@ -126,8 +128,8 @@ re-expressed for this skill"), `copy-editing/references/checklist.md` line 26 (P
   status is deliverable. In Claude Code, what is listed or auto-invoked comes from `skillOverrides` settings or `disable-model-invocation` frontmatter
   (editing frontmatter here would break the byte pin, so exposure must be set in runtime settings, owned outside this repository). How Codex exposure
   is controlled is not established here. Older text in `docs/consolidation/README.md` and `scripts/deploy-skills.py` describes `on-demand` as "not
-  auto-loaded"; read that as the catalog's intent, not as something the deployer performs. The same documents (and a comment in `deploy-skills.py` and a docstring in
-  `tests/test_deploy_plan.py`) cite "105 skills switched off via `skillOverrides`" in the live runtime; checked 2026-11-01, the user-level settings hold no
+  auto-loaded"; read that as the catalog's intent, not as something the deployer performs. A comment in `scripts/deploy-skills.py` (line 51) and the docstring of
+  `tests/test_deploy_plan.py` (line 12) cite "105 skills switched off via `skillOverrides`" in the live runtime; checked 2026-11-01, the user-level settings hold no
   `skillOverrides` at all (the only match in the files inspected is five unrelated `name-only` entries in the `maxx-seo-agent` project settings), so both skills
   are fully auto-discoverable today and were before this PR. The supported Claude Code controls are the `skillOverrides` setting (`name-only`,
   `user-invocable-only`, `off`) and `disable-model-invocation` in a skill's frontmatter (Claude Code changelog and settings examples, via Context7 on 2026-11-01).
@@ -138,7 +140,7 @@ re-expressed for this skill"), `copy-editing/references/checklist.md` line 26 (P
 - Targets are both runtimes because both stores already hold these skills (`~/.agents/skills` as real directories, `~/.claude/skills` as links into them,
   and neither is tracked in the installer lock), so a Claude-only target would still write through the link into the Codex store.
 - A project copy of these skills in another repository is independent of this record. A repository that loads project skills only (for example an SDK
-  orchestrator with `settingSources: ["project"]`) needs its own copy, and such a copy carries no `LICENSE.txt` unless it is copied from here.
+  orchestrator with `settingSources: ["project"]`) needs its own copy, and such a copy carries neither `LICENSE.txt` nor `NOTICE-Profound.txt` unless both are copied from here (the `maxx-seo-agent` copies hold the five upstream files only).
 
 ## Rollback
 
@@ -146,5 +148,5 @@ re-expressed for this skill"), `copy-editing/references/checklist.md` line 26 (P
 runtime would keep what was last deployed. To roll back, commit the previous upstream bytes into the two skill directories (upstream `e6fb742` for
 `copywriting` and `158bd3a` for `copy-editing`: on 2026-10-31 and again 2026-11-01 the live runtime `SKILL.md` files were byte-identical to those
 revisions), set each entry's `expected_sha256` to match, and run `deploy-skills.py --deploy --skill <name>`. This was rehearsed in scratch roots:
-the rolled-back tree passed `check-skill-consistency.py` and `deploy-skills.py --check` reported CLEAN. A leftover `LICENSE.txt` is harmless.
+the rolled-back tree passed `check-skill-consistency.py` and `deploy-skills.py --check` reported CLEAN. Leftover `LICENSE.txt` and `NOTICE-Profound.txt` files are harmless (the deployer never deletes), and the rehearsal predates the notice files.
 These skills were not in this catalogue before this import, so there is no older catalogue state to deploy from.
